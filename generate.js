@@ -1,9 +1,12 @@
-/* eslint-disable */
+const fs = require('fs');
+
+const app = `/* eslint-disable */
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { initializeApp } from "firebase/app";
 import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
 import { motion, AnimatePresence } from "framer-motion";
 
+// Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyA18GxWg2WNCj4tcj31PsanrtCeBE8ZDVw",
   authDomain: "comeback-os.firebaseapp.com",
@@ -16,6 +19,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+// Theme
 const T = {
   bg1: "#020408", bg2: "#0a0f14", bright: "#e8f8f0", muted: "#6a8a7a",
   dim: "#3a5a4a", green: "#00ff88", blue: "#00aaff", pink: "#ff0088",
@@ -23,49 +27,22 @@ const T = {
   border: "#1a2a2a", text: "#a8d8c0", bg: "#020408"
 };
 
+// Profile
 const PROFILE = {
   name: "Peash Rudra",
   title: "MSc CSE Candidate | Debate Champion",
   university: "Khulna University of Engineering & Technology",
   thesis: "CRO vs SHAP: Interpretable ML for Multi-omics Cancer Subtype Prediction",
   supervisor: "Dr. Susmita Islam",
-  gpa: "3.95",
   quotes: [
     "The fall was public. The comeback will be louder.",
     "Discipline > motivation. Every single time.",
     "3.95 GPA + Debate Champion = Unstoppable.",
-    "50kg→60kg. Thesis done. MSc admitted. Watch.",
-    "CRO + SHAP. Two interpretability methods. One breakthrough thesis.",
-    "Quit smoking. Gain weight. Defend thesis. Win at life.",
-    "Debate taught me to argue my case. Now I argue for my future.",
-    "Every day: +0.013kg. Every week: +1% thesis. Every month: closer to MSc."
-  ],
-  academics: [
-    {level:"BSc CSE (KUET)", gpa:"3.95", year:"2020-2024", badge:"GPA: 3.95"},
-    {level:"MSc CSE (KUET)", gpa:"Ongoing", year:"2026-2027", badge:"Target: 4.00"}
-  ],
-  skills: [
-    {name:"Python", level:85, icon:"🐍", note:"Core language"},
-    {name:"Machine Learning", level:78, icon:"🤖", note:"Scikit-learn, PyTorch"},
-    {name:"CRO", level:70, icon:"🧬", note:"Interpretability"},
-    {name:"SHAP", level:65, icon:"📊", note:"Feature importance"},
-    {name:"Debate", level:95, icon:"🎤", note:"Champion level"},
-    {name:"Public Speaking", level:90, icon:"📢", note:"Leadership"},
-    {name:"Research", level:72, icon:"🔬", note:"Paper writing"},
-    {name:"Data Analysis", level:80, icon:"📈", note:"Multi-omics"}
-  ],
-  achievements: [
-    {icon:"🏆", title:"Debate Champion", year:"2023", color:"#ffd700", org:"KUET"},
-    {icon:"🥇", title:"3.95 GPA", year:"2024", color:"#00ff88", org:"BSc CSE"},
-    {icon:"🧬", title:"CRO+SHAP Research", year:"2026", color:"#00aaff", org:"MSc Thesis"}
-  ],
-  targets: [
-    {uni:"KUET", status:"Target", color:"#00ff88"},
-    {uni:"BUET", status:"Target", color:"#00aaff"},
-    {uni:"DU", status:"Dream", color:"#ff8800"}
+    "50kg->60kg. Thesis done. MSc admitted. Watch."
   ]
 };
 
+// Weeks (May 6 - Aug 15, 2026)
 const WEEKS = [
   {week:1, phase:1, dates:"May 6-12"}, {week:2, phase:1, dates:"May 13-19"},
   {week:3, phase:1, dates:"May 20-26"}, {week:4, phase:1, dates:"May 27-Jun 2"},
@@ -81,101 +58,78 @@ function App() {
   const [tab, setTab] = useState("home");
   const [xp, setXp] = useState(0);
   const [quoteIdx, setQuoteIdx] = useState(0);
-  const [activeWeek, setActiveWeek] = useState(1);
   const [workoutDay, setWorkoutDay] = useState(1);
-  const [sets, setSets] = useState({});
-  const [weightLog, setWeightLog] = useState([{weight:50, date:"May 6"}]);
   const [waterCount, setWaterCount] = useState(0);
+  const [weightLog, setWeightLog] = useState([{weight:50, date:"May 6"}]);
   const [dailyLog, setDailyLog] = useState([]);
   const [habits, setHabits] = useState([
     {id:1, name:"Read thesis paper", color:T.green, streak:0, lastDone:""},
     {id:2, name:"Code 1 hour", color:T.blue, streak:0, lastDone:""},
     {id:3, name:"Gym workout", color:T.pink, streak:0, lastDone:""},
-    {id:4, name:"Apply university", color:T.orange, streak:0, lastDone:""},
-    {id:5, name:"No smoking", color:T.red, streak:0, lastDone:""}
+    {id:4, name:"Apply university", color:T.orange, streak:0, lastDone:""}
   ]);
   
   const gainXP = (amount) => {
     setXp(x => x + amount);
-    if(typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(50);
+    if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(50);
   };
   
   const TODAY = new Date().toDateString();
-  const curWeight = weightLog[weightLog.length - 1].weight;
+  const curWeight = weightLog[weightLog.length-1].weight;
   const wGained = Math.max(0, curWeight - 50);
   const daysGone = Math.max(0, Math.floor((new Date() - new Date("2026-05-06"))/86400000));
   const daysToGo = Math.max(0, Math.floor((new Date("2026-08-15") - new Date())/86400000));
-  const xpLevel = Math.floor(xp/100) + 1;
-  const rnk = xp < 500 ? "NEWBIE" : xp < 1500 ? "WARRIOR" : xp < 3000 ? "CHAMPION" : xp < 5000 ? "LEGEND" : "COMEBACK KING";
-  
+
   // Home Tab
   const Home = () => (
     <motion.div key="home" initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-20}} transition={{duration:0.3}} style={{padding:16}}>
       <div style={{background:T.bg2,padding:20,borderRadius:12,border:"1px solid "+T.green+"44"}}>
-        <div style={{display:"flex",gap:14,alignItems:"flex-start"}}>
-          <div style={{width:60,height:60,borderRadius:"50%",background:"linear-gradient(135deg,"+T.green+"44,"+T.blue+"44)",border:"2px solid "+T.green+"66",display:"flex",alignItems:"center",justifyContent:"center",fontSize:26}}>⚔️</div>
-          <div style={{flex:1}}>
-            <div style={{fontSize:22,fontWeight:900,color:T.green}}>{PROFILE.name}</div>
-            <div style={{fontSize:12,color:T.muted,marginTop:2}}>{PROFILE.title}</div>
-          </div>
-        </div>
-        <div style={{marginTop:14,paddingTop:14,borderTop:"1px solid "+T.border}}>
-          <div style={{fontSize:10,color:T.muted,letterSpacing:2,marginBottom:6}}>THESIS MISSION</div>
-          <div style={{fontSize:11,color:T.text,lineHeight:1.7}}>{PROFILE.thesis}</div>
-        </div>
+        <div style={{fontSize:22,fontWeight:900,color:T.green}}>{PROFILE.name}</div>
+        <div style={{fontSize:12,color:T.muted,marginTop:2}}>{PROFILE.title}</div>
       </div>
-    
-      <div style={{marginTop:12,background:T.bg2,padding:16,borderRadius:12,border:"1px solid "+T.blue+"44"}}>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
-          <div style={{fontSize:9,color:T.blue,letterSpacing:2}}>⚡ DAILY FUEL</div>
-          <div style={{fontSize:9,color:T.muted}}>{quoteIdx+1}/{PROFILE.quotes.length}</div>
-        </div>
-        <div style={{fontSize:13,color:T.bright,lineHeight:1.9,fontStyle:"italic",borderLeft:"3px solid "+T.green,paddingLeft:14}}>
-          {PROFILE.quotes[quoteIdx]}
-        </div>
+      <div style={{marginTop:12,background:T.bg2,padding:16,borderRadius:12}}>
+        <div style={{fontSize:9,color:T.blue,letterSpacing:2,marginBottom:8}}>⚡ DAILY FUEL</div>
+        <div style={{fontSize:13,color:T.text,lineHeight:1.9,fontStyle:"italic"}}>{PROFILE.quotes[quoteIdx]}</div>
         <div style={{display:"flex",gap:8,marginTop:12}}>
-          <button onClick={() => setQuoteIdx(q => (q - 1 + PROFILE.quotes.length) % PROFILE.quotes.length)} style={{padding:"6px 14px",background:"transparent",border:"1px solid "+T.border,color:T.muted,borderRadius:7,fontSize:10,cursor:"pointer"}}>← PREV</button>
-          <button onClick={() => setQuoteIdx(q => (q + 1) % PROFILE.quotes.length)} style={{flex:1,padding:"6px 14px",background:T.blue+"22",border:"1px solid "+T.blue+"44",color:T.blue,borderRadius:7,fontSize:10,cursor:"pointer"}}>NEXT QUOTE →</button>
+          <button onClick={() => setQuoteIdx(q => (q+1) % PROFILE.quotes.length)} style={{flex:1,padding:"6px 14px",background:T.blue+"22",border:"1px solid "+T.blue+"44",color:T.blue,borderRadius:7,fontSize:10,cursor:"pointer"}}>NEXT QUOTE</button>
         </div>
       </div>
-    
-      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginTop:12}}>
+      <div style={{marginTop:12,display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
         <div style={{background:T.green+"11",border:"1px solid "+T.green+"22",borderRadius:10,padding:12,textAlign:"center"}}>
           <div style={{fontSize:18,fontWeight:900,color:T.green}}>0%</div>
-          <div style={{fontSize:7,color:T.muted,marginTop:2}}>THESIS</div>
+          <div style={{fontSize:7,color:T.muted,marginTop:2}}THESIS</div>
         </div>
         <div style={{background:T.pink+"11",border:"1px solid "+T.pink+"22",borderRadius:10,padding:12,textAlign:"center"}}>
-          <div style={{fontSize:18,fontWeight:900,color:T.pink}}>+{wGained}kg</div>
-          <div style={{fontSize:7,color:T.muted,marginTop:2}}>BODY</div>
+          <div style={{fontSize:18,fontWeight:900,color:T.pink}}>{wGained}kg</div>
+          <div style={{fontSize:7,color:T.muted,marginTop:2}}BODY</div>
         </div>
       </div>
-    
       <div style={{marginTop:12,background:T.bg2,padding:14,borderRadius:12}}>
-        <div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}>
+        <div style={{display:"flex",justifyContent:"space-between"}}>
           <div>
             <div style={{fontSize:11,color:T.green}}>Start: May 6, 2026</div>
             <div style={{fontSize:9,color:T.muted}}>{daysGone} days gone</div>
           </div>
           <div style={{textAlign:"right"}}>
-            <div style={{fontSize:11,color:T.orange}}>Deadline: Aug 15, 2026</div>
+            <div style={{fontSize:11,color:T.orange}}>Deadline: Aug 15</div>
             <div style={{fontSize:9,color:T.muted}}>{daysToGo} days left</div>
           </div>
         </div>
-        <div style={{height:6,background:T.bg,borderRadius:3,overflow:"hidden"}}>
-          <div style={{width:Math.min(100,daysGone/(daysGone+daysToGo)*100)+"%",height:"100%",background:"linear-gradient(90deg,"+T.green+","+T.orange+")",borderRadius:3,transition:"width .6s"}} />
+        <div style={{height:6,background:T.bg, borderRadius:3,overflow:"hidden",marginTop:8}}>
+          <div style={{width:Math.min(100,daysGone/(daysGone+daysToGo)*100)+"%",height:"100%",background:"linear-gradient(90deg,"+T.green+","+T.orange+")",borderRadius:3}} />
         </div>
       </div>
     </motion.div>
   );
-  
+
   // Plan Tab
   const Plan = () => {
+    const [activeWeek, setActiveWeek] = useState(1);
     const w = WEEKS.find(x => x.week === activeWeek);
     return (
       <motion.div key="plan" initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-20}} transition={{duration:0.3}} style={{padding:16}}>
         <h2 style={{fontSize:16,fontWeight:900,color:T.bright,marginBottom:4}}>📅 THESIS PLAN</h2>
         <p style={{fontSize:11,color:T.muted,marginBottom:16}}>15 weeks • May 6 → Aug 15, 2026</p>
-        
         <div style={{display:"flex",gap:8,overflowX:"auto",marginBottom:16,paddingBottom:4}}>
           {WEEKS.map(wk => (
             <div key={wk.week} onClick={() => setActiveWeek(wk.week)} style={{padding:"8px 12px",background:activeWeek===wk.week?T.green+"22":"transparent",border:"1px solid "+(activeWeek===wk.week?T.green:T.border),borderRadius:8,cursor:"pointer",flexShrink:0,minWidth:80,textAlign:"center"}}>
@@ -184,84 +138,76 @@ function App() {
             </div>
           ))}
         </div>
-        
-        <div style={{background:T.bg2,padding:16,borderRadius:12,border:"1px solid "+T.blue+"44"}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
-            <div>
-              <div style={{fontSize:14,fontWeight:700,color:T.bright}}>Week {w.week}</div>
-              <div style={{fontSize:10,color:T.muted,marginTop:2}}>{w.dates} • Phase {w.phase}</div>
-            </div>
+        <div style={{background:T.bg2,padding:16,borderRadius:12}}>
+          <div style={{fontSize:14,fontWeight:700,color:T.bright,marginBottom:4}}>Week {w.week}: {w.dates}</div>
+          <div style={{fontSize:10,color:T.muted}}>Phase {w.phase} • Foundation → Implementation → Experiments → Writing</div>
+          <div style={{marginTop:12,padding:12,background:T.green+"11",borderRadius:8}}>
+            <div style={{fontSize:11,color:T.text}}>Tasks: Read CRO papers, Read SHAP papers, Survey multi-omics methods</div>
           </div>
-          <p style={{color:T.text}}>Tasks: Reading CRO/SHAP papers, Writing chapters, Lab implementation</p>
         </div>
       </motion.div>
     );
   };
-  
+
   // Body Tab
   const Body = () => {
     const DAYS = [
-      {name:"Chest + Tris", color:T.pink, exercises:["Bench Press 4x8-10","Incline Dumbbell 3x10-12","Cable Flys 3x12"]},
-      {name:"Back + Bis", color:T.blue, exercises:["Pullups 4x6-8","Barbell Rows 4x8-10","Lat Pulldowns 3x10"]},
-      {name:"Legs + Shoulders", color:T.orange, exercises:["Squats 4x8-10","Leg Press 3x10","Lunges 3x12"]},
-      {name:"Rest + Core", color:T.green, exercises:["Plank 3x60s","Crunches 3x20","Stretching 15min"]},
-      {name:"Cardio + Abs", color:T.red, exercises:["30min Run","Burpees 3x10","Mountain Climbers 3x20"]}
+      {name:"Chest + Tris",color:T.pink,exercises:["Bench Press 4x8-10","Incline DB 3x10-12"]},
+      {name:"Back + Bis",color:T.blue,exercises:["Pullups 4x6-8","Barbell Rows 4x8-10"]},
+      {name:"Legs + Shoulders",color:T.orange,exercises:["Squats 4x8-10","Overhead Press 4x8-10"]},
+      {name:"Rest + Core",color:T.green,exercises:["Plank 3x60s","Crunches 3x20"]},
+      {name:"Cardio + Abs",color:T.red,exercises:["30min Run","Burpees 3x10"]}
     ];
     const d = DAYS[workoutDay-1];
     return (
       <motion.div key="body" initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-20}} transition={{duration:0.3}} style={{padding:16}}>
         <h2 style={{fontSize:16,fontWeight:900,color:T.bright,marginBottom:4}}>💪 BODY GAINER</h2>
         <p style={{fontSize:11,color:T.muted,marginBottom:16}}>50kg → 60kg • Current: {curWeight}kg</p>
-        
         <div style={{display:"flex",gap:8,overflowX:"auto",marginBottom:16}}>
           {DAYS.map((day,i) => (
             <div key={i} onClick={() => setWorkoutDay(i+1)} style={{padding:"10px 14px",background:workoutDay===i+1?day.color+"22":"transparent",border:"1px solid "+(workoutDay===i+1?day.color:T.border),borderRadius:8,cursor:"pointer",flexShrink:0,minWidth:90,textAlign:"center"}}>
-              <div style={{fontSize:18,marginBottom:4}}>{day.name.split(" ")[0]}</div>
-              <div style={{fontSize:10,color:workoutDay===i+1?day.color:T.muted}}>Day {i+1}</div>
+              <div style={{fontSize:10,color:workoutDay===i+1?day.color:T.muted}}>{day.name.split(" ")[0]}</div>
             </div>
           ))}
         </div>
-        
-        <div style={{background:T.bg2,padding:16,borderRadius:12,border:"1px solid "+d.color+"44"}}>
+        <div style={{background:T.bg2,padding:16,borderRadius:12}}>
           <div style={{fontSize:14,fontWeight:700,color:T.bright,marginBottom:8}}>{d.name}</div>
           {d.exercises.map((ex,i) => (
-            <div key={i} style={{display:"flex",gap:10,alignItems:"center",marginBottom:i<d.exercises.length-1?10:0}}>
-              <div onClick={() => {
-                const key = workoutDay;
-                setSets(p => ({...p, [key]: [...((p[key]||[]).slice(0,i), !((p[key]||[])[i]), ...((p[key]||[]).slice(i+1))]}));
-                if(!((sets[workoutDay]||[])[i])) gainXP(5,"Set done");
-              }} style={{width:20,height:20,border:"1.5px solid "+(sets[workoutDay]&&sets[workoutDay][i]?d.color:d.color+"44"),borderRadius:4,flexShrink:0,background:sets[workoutDay]&&sets[workoutDay][i]?d.color+"33":"transparent",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>
-                {sets[workoutDay]&&sets[workoutDay][i]&&<span style={{color:d.color,fontWeight:900}}>✓</span>}
-              </div>
-              <div style={{flex:1,fontSize:12,color:sets[workoutDay]&&sets[workoutDay][i]?"#2a4a3a":T.text}}>{ex}</div>
+            <div key={i} style={{padding:"8px 12px",marginBottom:i<d.exercises.length-1?8:0,background:T.bg1,borderRadius:8}}>
+              <div style={{fontSize:12,color:T.text}}>{ex}</div>
             </div>
           ))}
+        </div>
+        <div style={{marginTop:12,background:T.bg2,padding:14,borderRadius:12}}>
+          <div style={{fontSize:9,color:T.pink,letterSpacing:2,marginBottom:8}}>⚖️ WEIGHT TRACKER</div>
+          <div style={{display:"flex",justifyContent:"space-between"}}>
+            <span style={{fontSize:11,color:T.text}}>Current: {curWeight}kg</span>
+            <span style={{fontSize:11,color:T.pink}}>+{wGained}kg gained</span>
+          </div>
         </div>
       </motion.div>
     );
   };
-  
+
   // Focus Tab
   const Focus = () => (
     <motion.div key="focus" initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-20}} transition={{duration:0.3}} style={{padding:16}}>
       <h2 style={{fontSize:16,fontWeight:900,color:T.bright,marginBottom:4}}>⏱ FOCUS MODE</h2>
+      <p style={{fontSize:11,color:T.muted,marginBottom:16}}>Pomodoro timer + habit tracker</p>
       <div style={{background:T.bg2,padding:20,borderRadius:12,border:"1px solid "+T.orange+"44",textAlign:"center"}}>
         <div style={{fontSize:9,color:T.orange,letterSpacing:2,marginBottom:8}}>POMODORO TIMER</div>
         <div style={{fontSize:48,fontWeight:900,color:T.orange,fontFamily:"monospace"}}>25:00</div>
-        <div style={{display:"flex",gap:8,justifyContent:"center",marginTop:12}}>
-          <button style={{padding:"8px 20px",background:T.orange+"22",border:"1px solid "+T.orange+"44",color:T.orange,borderRadius:7,fontSize:11,cursor:"pointer"}}>START</button>
-        </div>
+        <button style={{marginTop:12,padding:"8px 20px",background:T.orange+"22",border:"1px solid "+T.orange+"44",color:T.orange,borderRadius:7,fontSize:11,cursor:"pointer"}}>START</button>
       </div>
-    
       <div style={{marginTop:12,background:T.bg2,padding:14,borderRadius:12}}>
         <div style={{fontSize:9,color:T.cyan,letterSpacing:2,marginBottom:10}}>✅ DAILY HABITS</div>
         {habits.map(h => (
           <div key={h.id} style={{display:"flex",gap:10,alignItems:"center",padding:"10px 12px",marginBottom:8,background:h.lastDone===TODAY?h.color+"11":"transparent",border:"1px solid "+(h.lastDone===TODAY?h.color+"44":T.border),borderRadius:8}}>
             <div onClick={() => {
-              setHabits(p => p.map(x => x.id===h.id ? {...x, lastDone:TODAY, streak:x.lastDone===new Date(Date.now()-86400000).toDateString()?x.streak+1:1} : x));
+              setHabits(p => p.map(x => x.id===h.id ? {...x,lastDone:TODAY,streak:x.lastDone===new Date(Date.now()-86400000).toDateString()?x.streak+1:1} : x));
               if(h.lastDone!==TODAY) gainXP(10,"Habit done: "+h.name);
             }} style={{width:22,height:22,border:"2px solid "+(h.lastDone===TODAY?h.color:h.color+"44"),borderRadius:6,flexShrink:0,cursor:"pointer",background:h.lastDone===TODAY?h.color+"33":"transparent",display:"flex",alignItems:"center",justifyContent:"center"}}>
-              {h.lastDone===TODAY&&<span style={{color:h.color,fontWeight:900}}>✓</span>}
+              {h.lastDone===TODAY && <span style={{color:h.color,fontWeight:900}}>✓</span>}
             </div>
             <div style={{flex:1}}>
               <div style={{fontSize:12,color:T.text,fontWeight:600}}>{h.name}</div>
@@ -272,62 +218,39 @@ function App() {
       </div>
     </motion.div>
   );
-  
+
   // Me Tab
   const Me = () => (
     <motion.div key="me" initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-20}} transition={{duration:0.3}} style={{padding:16}}>
       <div style={{background:T.bg2,padding:20,borderRadius:12,border:"1px solid "+T.green+"44"}}>
-        <div style={{display:"flex",gap:14,alignItems:"flex-start"}}>
-          <div style={{width:60,height:60,borderRadius:"50%",background:"linear-gradient(135deg,"+T.green+"44,"+T.blue+"44)",border:"2px solid "+T.green+"66",display:"flex",alignItems:"center",justifyContent:"center",fontSize:26}}>⚔️</div>
-          <div style={{flex:1}}>
-            <div style={{fontSize:22,fontWeight:900,color:T.green}}>{PROFILE.name}</div>
-            <div style={{fontSize:12,color:T.muted,marginTop:2}}>{PROFILE.title}</div>
-          </div>
-        </div>
+        <div style={{fontSize:22,fontWeight:900,color:T.green}}>{PROFILE.name}</div>
+        <div style={{fontSize:12,color:T.muted,marginTop:2}}>{PROFILE.title}</div>
+        <div style={{fontSize:11,color:T.dim,marginTop:4}}>{PROFILE.university}</div>
       </div>
-    
       <div style={{marginTop:12,background:T.bg2,padding:14,borderRadius:12}}>
         <div style={{fontSize:9,color:T.muted,letterSpacing:2,marginBottom:10}}>🏆 ACHIEVEMENTS</div>
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
-          {PROFILE.achievements.map((a,i) => (
-            <div key={i} style={{background:a.color+"0d",border:"1px solid "+a.color+"33",borderRadius:10,padding:12}}>
-              <div style={{fontSize:24,marginBottom:4}}>{a.icon}</div>
-              <div style={{fontSize:11,color:T.bright,fontWeight:700}}>{a.title}</div>
-              <div style={{fontSize:9,color:T.muted,marginTop:2}}>{a.year}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-    
-      <div style={{marginTop:12,background:T.bg2,padding:14,borderRadius:12}}>
-        <div style={{fontSize:9,color:T.muted,letterSpacing:2,marginBottom:10}}>SKILLS</div>
-        {PROFILE.skills.map((s,i) => (
-          <div key={i} style={{marginBottom:10}}>
-            <div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}>
-              <span style={{fontSize:12,color:T.text}}>{s.icon} {s.name}</span>
-              <span style={{fontSize:11,color:s.level>80?T.green:s.level>50?T.orange:T.blue}}>{s.level}%</span>
-            </div>
-            <div style={{height:4,background:T.bg2,borderRadius:2,overflow:"hidden"}}>
-              <div style={{width:s.level+"%",height:"100%",background:s.level>80?T.green:s.level>50?T.orange:T.blue,transition:"width .8s"}} />
-            </div>
+        {["🏆 Debate Champion 2023","🥇 3.95 GPA 2024","🧬 CRO+SHAP Research 2026"].map((a,i) => (
+          <div key={i} style={{background:T.gold+"0d",border:"1px solid "+T.gold+"33",borderRadius:10,padding:12,marginBottom:8}}>
+            <div style={{fontSize:11,color:T.bright,fontWeight:700}}>{a}</div>
           </div>
         ))}
       </div>
     </motion.div>
   );
-  
+
   // Progress Tab
   const Progress = () => (
     <motion.div key="progress" initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-20}} transition={{duration:0.3}} style={{padding:16}}>
       <h2 style={{fontSize:16,fontWeight:900,color:T.bright,marginBottom:4}}>📈 PROGRESS</h2>
+      <p style={{fontSize:11,color:T.muted,marginBottom:16}}>Track your comeback journey</p>
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:12}}>
         <div style={{background:T.green+"11",border:"1px solid "+T.green+"22",borderRadius:10,padding:14,textAlign:"center"}}>
           <div style={{fontSize:24,fontWeight:900,color:T.green}}>0%</div>
-          <div style={{fontSize:8,color:T.muted,marginTop:2}}>THESIS</div>
+          <div style={{fontSize:8,color:T.muted,marginTop:2}}THESIS</div>
         </div>
         <div style={{background:T.pink+"11",border:"1px solid "+T.pink+"22",borderRadius:10,padding:14,textAlign:"center"}}>
-          <div style={{fontSize:24,fontWeight:900,color:T.pink}}>+{wGained}kg</div>
-          <div style={{fontSize:8,color:T.muted,marginTop:2}}>BODY</div>
+          <div style={{fontSize:24,fontWeight:900,color:T.pink}}>{wGained}kg</div>
+          <div style={{fontSize:8,color:T.muted,marginTop:2}}BODY</div>
         </div>
       </div>
       <div style={{background:T.bg2,padding:14,borderRadius:12}}>
@@ -342,29 +265,30 @@ function App() {
             <div style={{fontSize:10,color:T.muted}}>Gained so far</div>
           </div>
         </div>
-        <div style={{height:8,background:T.bg2,borderRadius:4,overflow:"hidden"}}>
-          <div style={{width:Math.min(100,(curWeight-50)*10)+"%",height:"100%",background:"linear-gradient(90deg,"+T.pink+","+T.green+")",borderRadius:4,transition:"width .6s"}} />
+        <div style={{height:8,background:T.bg,borderRadius:4,overflow:"hidden"}}>
+          <div style={{width:Math.min(100,(curWeight-50)*20)+"%",height:"100%",background:"linear-gradient(90deg,"+T.pink+","+T.green+")",borderRadius:4}} />
         </div>
       </div>
     </motion.div>
   );
-  
+
   // Tasks Tab
   const Tasks = () => (
     <motion.div key="tasks" initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-20}} transition={{duration:0.3}} style={{padding:16}}>
       <h2 style={{fontSize:16,fontWeight:900,color:T.bright,marginBottom:4}}>✅ TASKS & NOTES</h2>
+      <p style={{fontSize:11,color:T.muted,marginBottom:16}}>Daily tasks + quick notes</p>
       <div style={{background:T.bg2,padding:14,borderRadius:12,marginBottom:12}}>
         <div style={{fontSize:9,color:T.green,letterSpacing:2,marginBottom:10}}>📓 DAILY LOG</div>
         <textarea placeholder="Log your thoughts, wins, blockers..." style={{width:"100%",height:100,background:T.bg1,border:"1px solid "+T.border,borderRadius:8,padding:10,color:T.text,fontSize:12,resize:"vertical",boxSizing:"border-box"}} />
         <button onClick={() => gainXP(5,"Diary entry logged")} style={{width:"100%",marginTop:8,padding:10,background:T.green+"22",border:"1px solid "+T.green+"44",color:T.green,borderRadius:7,fontSize:11,cursor:"pointer"}}>SAVE ENTRY +5 XP</button>
       </div>
       <div style={{background:T.bg2,padding:14,borderRadius:12}}>
-        <div style={{fontSize:9,color:T.blue,letterSpacing:2,marginBottom:10}}>💧 WATER INTAKE</div>
+        <div style={{fontSize:9,color:T.blue,letterSpacing:2,marginBottom:8}}>💧 WATER INTAKE</div>
         <div style={{display:"flex",gap:5,marginBottom:8}}>
-          {Array.from({length:8},(_,i) => (
+          {[0,1,2,3,4,5,6,7].map(i => (
             <div key={i} onClick={() => {
-              if(i===waterCount){setWaterCount(w => w+1);if(waterCount+1===8) gainXP(15,"Hydrated! 💧");}
-              else if(i<waterCount) setWaterCount(i);
+              if(i===waterCount){setWaterCount(w=>w+1);if(waterCount+1===8)gainXP(15,"Hydrated! 💧");}
+              else if(i<waterCount)setWaterCount(i);
             }} style={{flex:1,height:30,borderRadius:5,background:i<waterCount?T.blue+"44":"transparent",border:"1.5px solid "+(i<waterCount?T.blue:T.border),cursor:"pointer",transition:"all .2s"}} />
           ))}
         </div>
@@ -372,14 +296,15 @@ function App() {
       </div>
     </motion.div>
   );
-  
+
   // Goals Tab
   const Goals = () => (
     <motion.div key="goals" initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-20}} transition={{duration:0.3}} style={{padding:16}}>
       <h2 style={{fontSize:16,fontWeight:900,color:T.bright,marginBottom:4}}>🎯 GOALS</h2>
+      <p style={{fontSize:11,color:T.muted,marginBottom:16}}>Admissions + personal targets</p>
       <div style={{background:T.bg2,padding:14,borderRadius:12,marginBottom:12}}>
         <div style={{fontSize:9,color:T.green,letterSpacing:2,marginBottom:10}}>🎓 MSC ADMISSIONS</div>
-        {PROFILE.targets.map((t,i) => (
+        {[{uni:"KUET",status:"Target",color:T.green},{uni:"BUET",status:"Target",color:T.blue},{uni:"DU",status:"Dream",color:T.orange}].map((t,i) => (
           <div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"10px 12px",marginBottom:8,background:t.color+"0d",border:"1px solid "+t.color+"33",borderRadius:8}}>
             <span style={{fontSize:13,color:T.bright,fontWeight:600}}>{t.uni}</span>
             <span style={{background:t.color+"22",border:"1px solid "+t.color+"33",color:t.color,fontSize:9,padding:"2px 8px",borderRadius:20}}>{t.status}</span>
@@ -395,70 +320,72 @@ function App() {
       </div>
     </motion.div>
   );
-  
+
   // Life Tab
   const Life = () => (
     <motion.div key="life" initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-20}} transition={{duration:0.3}} style={{padding:16}}>
       <h2 style={{fontSize:16,fontWeight:900,color:T.bright,marginBottom:4}}>⚡ LIFE</h2>
+      <p style={{fontSize:11,color:T.muted,marginBottom:16}}>Quit smoking + freelancing + research</p>
       <div style={{background:T.bg2,padding:14,borderRadius:12,marginBottom:12,border:"1px solid "+T.orange+"44"}}>
         <div style={{fontSize:9,color:T.orange,letterSpacing:2,marginBottom:8}}>🚭 QUIT SMOKING</div>
-        <p style={{color:T.text,marginBottom:8}}>Started at ~10/day. Target: 0 by June 1.</p>
-        <div style={{height:8,background:T.bg2,borderRadius:4,overflow:"hidden"}}>
-          <div style={{width:"50%",height:"100%",background:"linear-gradient(90deg,"+T.red+","+T.orange+")",borderRadius:4,transition:"width .6s"}} />
+        <div style={{fontSize:14,color:T.text,marginBottom:8}}>Started at ~10/day. Target: 0 by June 1.</div>
+        <div style={{height:8,background:T.bg,borderRadius:4,overflow:"hidden"}}>
+          <div style={{width:"50%",height:"100%",background:"linear-gradient(90deg,"+T.red+","+T.orange+")",borderRadius:4}} />
         </div>
       </div>
       <div style={{background:T.bg2,padding:14,borderRadius:12}}>
         <div style={{fontSize:9,color:T.blue,letterSpacing:2,marginBottom:8}}>💼 FREELANCING</div>
-        <p style={{color:T.text,marginBottom:8}}>Target: Tk 5,000/month starting Aug 2026</p>
-        <p style={{color:T.muted,fontSize:11}}>Build Fiverr + Upwork profiles using your thesis.</p>
+        <div style={{fontSize:14,color:T.text,marginBottom:8}}>Target: Tk 5,000/month starting Aug 2026</div>
+        <div style={{fontSize:11,color:T.muted}}>Build Fiverr + Upwork profiles using your thesis as portfolio proof.</div>
       </div>
     </motion.div>
   );
-  
+
   // Stats Tab
   const Stats = () => (
     <motion.div key="stats" initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-20}} transition={{duration:0.3}} style={{padding:16}}>
       <h2 style={{fontSize:16,fontWeight:900,color:T.bright,marginBottom:4}}>🏅 STATS</h2>
+      <p style={{fontSize:11,color:T.muted,marginBottom:16}}>XP + achievements + analytics</p>
       <div style={{background:"linear-gradient(135deg,#0a0800,#040814)",padding:16,borderRadius:12,border:"2px solid "+T.gold+"66",marginBottom:12}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
           <div>
             <div style={{fontSize:9,color:T.gold,letterSpacing:3}}>COMEBACK RANK</div>
-            <div style={{fontSize:26,fontWeight:900,color:T.gold}}>{rnk}</div>
-            <div style={{fontSize:11,color:T.muted}}>Level {xpLevel} • {xp} XP</div>
+            <div style={{fontSize:26,fontWeight:900,color:T.gold}}>NEWBIE</div>
+            <div style={{fontSize:11,color:T.muted}}>Level {Math.floor(xp/100)+1} • {xp} XP</div>
           </div>
           <div style={{background:T.gold+"22",border:"1px solid "+T.gold+"44",borderRadius:12,padding:12,textAlign:"center"}}>
-            <div style={{fontSize:36,fontWeight:900,color:T.gold}}>{xpLevel}</div>
-            <div style={{fontSize:7,color:T.gold+"88"}}>LEVEL</div>
+            <div style={{fontSize:36,fontWeight:900,color:T.gold}}>{Math.floor(xp/100)+1}</div>
+            <div style={{fontSize:7,color:T.gold+"88"}}LEVEL</div>
           </div>
         </div>
       </div>
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
         <div style={{background:T.green+"11",border:"1px solid "+T.green+"22",borderRadius:10,padding:12,textAlign:"center"}}>
           <div style={{fontSize:20,fontWeight:900,color:T.green}}>0%</div>
-          <div style={{fontSize:7,color:T.muted,marginTop:2}}>THESIS</div>
+          <div style={{fontSize:7,color:T.muted,marginTop:2}}THESIS</div>
         </div>
         <div style={{background:T.orange+"11",border:"1px solid "+T.orange+"22",borderRadius:10,padding:12,textAlign:"center"}}>
-          <div style={{fontSize:20,fontWeight:900,color:T.orange}}>{Object.keys(sets).length}</div>
-          <div style={{fontSize:7,color:T.muted,marginTop:2}}>WORKOUTS</div>
+          <div style={{fontSize:20,fontWeight:900,color:T.orange}}>0</div>
+          <div style={{fontSize:7,color:T.muted,marginTop:2}}WORKOUTS</div>
         </div>
       </div>
     </motion.div>
   );
-  
+
   // Main Render
   return (
     <div style={{background:T.bg,paddingBottom:68,minHeight:"100vh",maxWidth:430,margin:"0 auto",color:T.bright,overflowX:"hidden"}}>
       <AnimatePresence mode="wait">
-        {tab === "home" && <Home />}
-        {tab === "plan" && <Plan />}
-        {tab === "body" && <Body />}
-        {tab === "focus" && <Focus />}
-        {tab === "me" && <Me />}
-        {tab === "progress" && <Progress />}
-        {tab === "tasks" && <Tasks />}
-        {tab === "goals" && <Goals />}
-        {tab === "life" && <Life />}
-        {tab === "stats" && <Stats />}
+        {tab==="home" && <Home />}
+        {tab==="plan" && <Plan />}
+        {tab==="body" && <Body />}
+        {tab==="focus" && <Focus />}
+        {tab==="me" && <Me />}
+        {tab==="progress" && <Progress />}
+        {tab==="tasks" && <Tasks />}
+        {tab==="goals" && <Goals />}
+        {tab==="life" && <Life />}
+        {tab==="stats" && <Stats />}
       </AnimatePresence>
 
       {/* Bottom Nav */}
@@ -486,3 +413,7 @@ function App() {
 }
 
 export default App;
+`;
+
+fs.writeFileSync('src/App.js', app);
+console.log('Generated src/App.js with', app.length, 'characters');

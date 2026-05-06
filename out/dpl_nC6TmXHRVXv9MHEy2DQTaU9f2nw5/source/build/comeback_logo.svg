@@ -1,0 +1,320 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <!-- Background gradient -->
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#020d0a"/>
+      <stop offset="50%" stop-color="#020408"/>
+      <stop offset="100%" stop-color="#030c18"/>
+    </linearGradient>
+
+    <!-- Main glow filter -->
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+    <!-- Strong glow -->
+    <filter id="strongglow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="18" result="blur1"/>
+      <feGaussianBlur stdDeviation="6" result="blur2"/>
+      <feMerge>
+        <feMergeNode in="blur1"/>
+        <feMergeNode in="blur2"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Ultra glow for apex -->
+    <filter id="apex" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="28" result="b1"/>
+      <feGaussianBlur stdDeviation="10" result="b2"/>
+      <feMerge>
+        <feMergeNode in="b1"/>
+        <feMergeNode in="b2"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Shard gradients - center (brightest) -->
+    <linearGradient id="shardC" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#00ff88" stop-opacity="0.3"/>
+      <stop offset="40%" stop-color="#00ff88" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#aaffd4" stop-opacity="1"/>
+    </linearGradient>
+
+    <!-- Shard gradient - left -->
+    <linearGradient id="shardL" x1="0%" y1="100%" x2="10%" y2="0%">
+      <stop offset="0%" stop-color="#00cc66" stop-opacity="0.15"/>
+      <stop offset="50%" stop-color="#00ee77" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#00ff88" stop-opacity="0.9"/>
+    </linearGradient>
+
+    <!-- Shard gradient - right -->
+    <linearGradient id="shardR" x1="0%" y1="100%" x2="-10%" y2="0%">
+      <stop offset="0%" stop-color="#00cc66" stop-opacity="0.15"/>
+      <stop offset="50%" stop-color="#00ee77" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#00ff88" stop-opacity="0.9"/>
+    </linearGradient>
+
+    <!-- Debris/fall gradient (faded) -->
+    <linearGradient id="debris" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#00ff88" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#00ff88" stop-opacity="0.04"/>
+    </linearGradient>
+
+    <!-- Blue accent gradient -->
+    <linearGradient id="blueAcc" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00b4ff" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#0066aa" stop-opacity="0.2"/>
+    </linearGradient>
+
+    <!-- Rim glow gradient -->
+    <linearGradient id="rim" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#00ff88" stop-opacity="0.5"/>
+      <stop offset="50%" stop-color="#00ff88" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#00b4ff" stop-opacity="0.3"/>
+    </linearGradient>
+
+    <!-- Text gradient -->
+    <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00ff88"/>
+      <stop offset="50%" stop-color="#aaffd4"/>
+      <stop offset="100%" stop-color="#00ff88"/>
+    </linearGradient>
+
+    <!-- Clip path for rounded square -->
+    <clipPath id="roundedClip">
+      <rect x="0" y="0" width="1024" height="1024" rx="220" ry="220"/>
+    </clipPath>
+  </defs>
+
+  <!-- === BACKGROUND === -->
+  <rect x="0" y="0" width="1024" height="1024" rx="220" ry="220" fill="url(#bg)"/>
+
+  <!-- Grid lines (very subtle) -->
+  <g clip-path="url(#roundedClip)" opacity="0.06">
+    <line x1="0" y1="128" x2="1024" y2="128" stroke="#00ff88" stroke-width="1"/>
+    <line x1="0" y1="256" x2="1024" y2="256" stroke="#00ff88" stroke-width="1"/>
+    <line x1="0" y1="384" x2="1024" y2="384" stroke="#00ff88" stroke-width="1"/>
+    <line x1="0" y1="512" x2="1024" y2="512" stroke="#00ff88" stroke-width="1"/>
+    <line x1="0" y1="640" x2="1024" y2="640" stroke="#00ff88" stroke-width="1"/>
+    <line x1="0" y1="768" x2="1024" y2="768" stroke="#00ff88" stroke-width="1"/>
+    <line x1="0" y1="896" x2="1024" y2="896" stroke="#00ff88" stroke-width="1"/>
+    <line x1="128" y1="0" x2="128" y2="1024" stroke="#00ff88" stroke-width="1"/>
+    <line x1="256" y1="0" x2="256" y2="1024" stroke="#00ff88" stroke-width="1"/>
+    <line x1="384" y1="0" x2="384" y2="1024" stroke="#00ff88" stroke-width="1"/>
+    <line x1="512" y1="0" x2="512" y2="1024" stroke="#00ff88" stroke-width="1"/>
+    <line x1="640" y1="0" x2="640" y2="1024" stroke="#00ff88" stroke-width="1"/>
+    <line x1="768" y1="0" x2="768" y2="1024" stroke="#00ff88" stroke-width="1"/>
+    <line x1="896" y1="0" x2="896" y2="1024" stroke="#00ff88" stroke-width="1"/>
+  </g>
+
+  <!-- Corner circuit details -->
+  <g clip-path="url(#roundedClip)" opacity="0.18" stroke="#00ff88" stroke-width="1.5" fill="none">
+    <!-- Top left circuit -->
+    <polyline points="220,80 280,80 280,140"/>
+    <circle cx="280" cy="80" r="4" fill="#00ff88"/>
+    <polyline points="80,220 80,160 140,160"/>
+    <circle cx="80" cy="160" r="4" fill="#00ff88"/>
+    <!-- Top right circuit -->
+    <polyline points="804,80 744,80 744,140"/>
+    <circle cx="744" cy="80" r="4" fill="#00ff88"/>
+    <polyline points="944,220 944,160 884,160"/>
+    <circle cx="944" cy="160" r="4" fill="#00ff88"/>
+    <!-- Bottom left -->
+    <polyline points="220,944 280,944 280,884"/>
+    <circle cx="280" cy="944" r="4" fill="#00ff88"/>
+    <!-- Bottom right -->
+    <polyline points="804,944 744,944 744,884"/>
+    <circle cx="744" cy="944" r="4" fill="#00ff88"/>
+  </g>
+
+  <!-- === BORDER GLOW === -->
+  <rect x="3" y="3" width="1018" height="1018" rx="218" ry="218" 
+    fill="none" stroke="url(#rim)" stroke-width="3" opacity="0.8"/>
+  <rect x="8" y="8" width="1008" height="1008" rx="214" ry="214" 
+    fill="none" stroke="#00ff88" stroke-width="1" opacity="0.12"/>
+
+  <!-- === RADIAL AMBIENT GLOW (background atmosphere) === -->
+  <radialGradient id="ambient" cx="50%" cy="45%" r="50%">
+    <stop offset="0%" stop-color="#00ff88" stop-opacity="0.07"/>
+    <stop offset="100%" stop-color="#00ff88" stop-opacity="0"/>
+  </radialGradient>
+  <rect x="0" y="0" width="1024" height="1024" rx="220" ry="220" fill="url(#ambient)"/>
+
+  <!-- === FALL LINE (horizontal break - the turning point) === -->
+  <!-- Glowing horizontal separator -->
+  <g filter="url(#glow)">
+    <line x1="180" y1="616" x2="844" y2="616" stroke="#00ff88" stroke-width="1.5" opacity="0.35"/>
+  </g>
+  <!-- Tick marks on the line -->
+  <g stroke="#00ff88" stroke-width="1.5" opacity="0.5">
+    <line x1="180" y1="610" x2="180" y2="622"/>
+    <line x1="240" y1="613" x2="240" y2="619"/>
+    <line x1="300" y1="613" x2="300" y2="619"/>
+    <line x1="360" y1="613" x2="360" y2="619"/>
+    <line x1="420" y1="613" x2="420" y2="619"/>
+    <line x1="512" y1="610" x2="512" y2="622"/>
+    <line x1="604" y1="613" x2="604" y2="619"/>
+    <line x1="664" y1="613" x2="664" y2="619"/>
+    <line x1="724" y1="613" x2="724" y2="619"/>
+    <line x1="784" y1="613" x2="784" y2="619"/>
+    <line x1="844" y1="610" x2="844" y2="622"/>
+  </g>
+
+  <!-- === DEBRIS (fallen fragments — the 32/100 era) === -->
+  <!-- Small scattered triangles below the line, faded and broken -->
+  <g opacity="0.22" filter="url(#glow)">
+    <!-- Broken shard 1 -->
+    <polygon points="362,648 395,700 329,700" fill="url(#debris)" stroke="#00ff88" stroke-width="1"/>
+    <!-- Broken shard 2 -->
+    <polygon points="460,660 476,700 444,695" fill="url(#debris)" stroke="#00ff88" stroke-width="0.8"/>
+    <!-- Broken shard 3 - tiny -->
+    <polygon points="540,652 558,680 526,674" fill="url(#debris)" stroke="#00ff88" stroke-width="0.8"/>
+    <!-- Broken shard 4 -->
+    <polygon points="620,644 660,710 584,706" fill="url(#debris)" stroke="#00ff88" stroke-width="1"/>
+    <!-- Micro fragments -->
+    <polygon points="290,660 302,675 278,672" fill="#00ff88" opacity="0.15"/>
+    <polygon points="710,656 722,668 700,668" fill="#00ff88" opacity="0.15"/>
+    <polygon points="495,680 504,696 484,692" fill="#00ff88" opacity="0.12"/>
+    <polygon points="580,670 592,688 568,686" fill="#00ff88" opacity="0.1"/>
+  </g>
+
+  <!-- GST echo — faint "32" ghost -->
+  <text x="512" y="752" text-anchor="middle" 
+    font-family="'Courier New', monospace" font-size="52" font-weight="900"
+    fill="#00ff88" opacity="0.04" letter-spacing="8">3 2</text>
+
+  <!-- === MAIN SHARDS (THE COMEBACK — rising above the line) === -->
+
+  <!-- LEFT OUTER SHARD (farthest left, lowest) -->
+  <g filter="url(#glow)">
+    <polygon points="296,608 356,608 400,220 316,280" 
+      fill="url(#shardL)" opacity="0.55"/>
+    <polygon points="296,608 356,608 400,220 316,280" 
+      fill="none" stroke="#00ff88" stroke-width="1.5" opacity="0.7"/>
+  </g>
+
+  <!-- RIGHT OUTER SHARD (mirror) -->
+  <g filter="url(#glow)">
+    <polygon points="728,608 668,608 624,220 708,280" 
+      fill="url(#shardR)" opacity="0.55"/>
+    <polygon points="728,608 668,608 624,220 708,280" 
+      fill="none" stroke="#00ff88" stroke-width="1.5" opacity="0.7"/>
+  </g>
+
+  <!-- LEFT INNER SHARD (taller, more vivid) -->
+  <g filter="url(#strongglow)">
+    <polygon points="388,608 452,608 472,148 396,210" 
+      fill="url(#shardL)" opacity="0.75"/>
+    <polygon points="388,608 452,608 472,148 396,210" 
+      fill="none" stroke="#00ff88" stroke-width="2" opacity="0.9"/>
+  </g>
+
+  <!-- RIGHT INNER SHARD -->
+  <g filter="url(#strongglow)">
+    <polygon points="636,608 572,608 552,148 628,210" 
+      fill="url(#shardR)" opacity="0.75"/>
+    <polygon points="636,608 572,608 552,148 628,210" 
+      fill="none" stroke="#00ff88" stroke-width="2" opacity="0.9"/>
+  </g>
+
+  <!-- CENTER SHARD — THE APEX — tallest, brightest, sharpest -->
+  <!-- Glow aura behind it -->
+  <g filter="url(#apex)">
+    <polygon points="450,608 574,608 512,68" fill="#00ff88" opacity="0.3"/>
+  </g>
+  <!-- The shard itself -->
+  <g filter="url(#strongglow)">
+    <polygon points="452,608 572,608 512,72" fill="url(#shardC)"/>
+    <polygon points="452,608 572,608 512,72" 
+      fill="none" stroke="#aaffd4" stroke-width="2.5" opacity="1"/>
+  </g>
+
+  <!-- APEX DOT — the very tip, ultra bright -->
+  <g filter="url(#apex)">
+    <circle cx="512" cy="72" r="16" fill="#ffffff" opacity="0.9"/>
+    <circle cx="512" cy="72" r="8" fill="#aaffd4" opacity="1"/>
+    <circle cx="512" cy="72" r="4" fill="#ffffff" opacity="1"/>
+  </g>
+
+  <!-- Light rays from apex -->
+  <g filter="url(#glow)" opacity="0.25" stroke="#aaffd4" stroke-width="1">
+    <line x1="512" y1="72" x2="200" y2="0"/>
+    <line x1="512" y1="72" x2="824" y2="0"/>
+    <line x1="512" y1="72" x2="512" y2="0"/>
+    <line x1="512" y1="72" x2="350" y2="20"/>
+    <line x1="512" y1="72" x2="674" y2="20"/>
+  </g>
+
+  <!-- Inner edge highlights (bright edge lines on shards) -->
+  <g filter="url(#strongglow)" stroke="#aaffd4" stroke-width="2" fill="none" opacity="0.8">
+    <!-- Left edge of center shard -->
+    <line x1="452" y1="608" x2="512" y2="72"/>
+    <!-- Right edge of center shard -->
+    <line x1="572" y1="608" x2="512" y2="72"/>
+  </g>
+
+  <!-- Shard junction glow dots at base line -->
+  <g filter="url(#glow)">
+    <circle cx="296" cy="608" r="4" fill="#00ff88" opacity="0.6"/>
+    <circle cx="356" cy="608" r="4" fill="#00ff88" opacity="0.6"/>
+    <circle cx="388" cy="608" r="5" fill="#00ff88" opacity="0.8"/>
+    <circle cx="452" cy="608" r="6" fill="#aaffd4" opacity="1"/>
+    <circle cx="512" cy="608" r="7" fill="#ffffff" opacity="0.9"/>
+    <circle cx="572" cy="608" r="6" fill="#aaffd4" opacity="1"/>
+    <circle cx="636" cy="608" r="5" fill="#00ff88" opacity="0.8"/>
+    <circle cx="668" cy="608" r="4" fill="#00ff88" opacity="0.6"/>
+    <circle cx="728" cy="608" r="4" fill="#00ff88" opacity="0.6"/>
+  </g>
+
+  <!-- === SIDE ACCENT LINES (data/tech feel) === -->
+  <g opacity="0.3" stroke="#00b4ff" stroke-width="1" fill="none">
+    <line x1="140" y1="400" x2="240" y2="400"/>
+    <line x1="140" y1="400" x2="140" y2="620"/>
+    <circle cx="140" cy="400" r="3" fill="#00b4ff"/>
+    <circle cx="240" cy="400" r="3" fill="#00b4ff" opacity="0.5"/>
+
+    <line x1="884" y1="400" x2="784" y2="400"/>
+    <line x1="884" y1="400" x2="884" y2="620"/>
+    <circle cx="884" cy="400" r="3" fill="#00b4ff"/>
+    <circle cx="784" cy="400" r="3" fill="#00b4ff" opacity="0.5"/>
+  </g>
+
+  <!-- === TYPOGRAPHY === -->
+
+  <!-- "comeback" main wordmark -->
+  <text x="512" y="848"
+    text-anchor="middle"
+    font-family="'Orbitron', 'Courier New', monospace"
+    font-size="104"
+    font-weight="900"
+    letter-spacing="2"
+    fill="url(#textGrad)"
+    filter="url(#glow)">comeback</text>
+
+  <!-- ".io" suffix - smaller, accent color -->
+  <text x="512" y="920"
+    text-anchor="middle"
+    font-family="'Orbitron', 'Courier New', monospace"
+    font-size="48"
+    font-weight="700"
+    letter-spacing="8"
+    fill="#00b4ff"
+    opacity="0.9"
+    filter="url(#glow)">.io</text>
+
+  <!-- Tagline -->
+  <text x="512" y="976"
+    text-anchor="middle"
+    font-family="'Courier New', monospace"
+    font-size="22"
+    font-weight="400"
+    letter-spacing="10"
+    fill="#00ff88"
+    opacity="0.4">RISE · PROVE · CONQUER</text>
+
+  <!-- === FINAL OUTER GLOW RING === -->
+  <rect x="0" y="0" width="1024" height="1024" rx="220" ry="220" 
+    fill="none" stroke="#00ff88" stroke-width="2" opacity="0.2"/>
+</svg>

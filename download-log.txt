@@ -1,0 +1,159 @@
+🔑 Got authentication token
+
+🔍 Fetching deployment info for: nC6TmXHRVXv9MHEy2DQTaU9f2nw5
+   Resolving teams...
+   Trying nC6TmXHRVXv9MHEy2DQTaU9f2nw5 in personal account...
+   Trying dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5 in personal account...
+✅ Got deployment info
+
+📦 Deployment ID:  dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5
+🌐 Deployment URL: mission-comeback-kerx8664k-peashdasrudras-projects.vercel.app
+📁 Project:        mission-comeback
+
+📋 Fetching file tree from API...
+
+✅ Got file tree (10 top-level entries)
+
+📁 Output directory: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source
+
+🗑️  Clearing previous download...
+
+⬇️  Downloading files...
+   (Use --verbose to see detailed progress)
+
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\icons\icon-128.png
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\icons\icon-144.png
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\icons\icon-152.png
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\icons\icon-192.png
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\icons\icon-384.png
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\icons\icon-48.png
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\icons\icon-512.png
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\icons\icon-72.png
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\icons\icon-96.png
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\static\css\main.e6c13ad2.css
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\static\css\main.e6c13ad2.css.map
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\static\js\453.f4d027c7.chunk.js
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\static\js\453.f4d027c7.chunk.js.map
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\static\js\main.f4e46704.js
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\static\js\main.f4e46704.js.LICENSE.txt
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\static\js\main.f4e46704.js.map
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\apple-touch-icon.png
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\asset-manifest.json
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\comeback_logo.svg
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\index.html
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\manifest.json
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\robots.txt
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\public\icons\icon-128.png
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\public\icons\icon-144.png
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\public\icons\icon-152.png
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\public\icons\icon-192.png
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\public\icons\icon-384.png
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\public\icons\icon-48.png
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\public\icons\icon-512.png
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\public\icons\icon-72.png
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\public\icons\icon-96.png
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\public\apple-touch-icon.png
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\public\comeback_logo.svg
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\public\index.html
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\public\manifest.json
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\public\robots.txt
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\src\ADMISSIONS_INTEGRATION_GUIDE.md
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\src\AdmissionsDashboard.jsx
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\src\App.css
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\src\App.js
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\src\admissions_features.js
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\src\index.css
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\src\index.js
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\src\logo.svg
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\src\reportWebVitals.js
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\src\setupTests.js
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\.env.txt
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\.hintrc
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\.vercelignore
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\VERCEL_DEPLOYMENT_GUIDE.md
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\package-lock.json
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\package.json
+✅ Downloaded: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\vercel.json
+
+🎉 All files processed successfully!
+
+📊 Running comparison...
+
+📁 Total files: 53
+   ✅ Downloaded: 53
+   ⏭️  Skipped: 0
+   ❌ Failed: 0
+💾 Total size: 6.50 MB
+
+📈 File types breakdown:
+   png               20 files
+   js                 7 files
+   json               6 files
+   txt                4 files
+   css                3 files
+   map                3 files
+   svg                3 files
+   html               2 files
+   md                 2 files
+   jsx                1 files
+
+🌳 File structure tree:
+
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\.env.txt
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\.hintrc
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\.vercelignore
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\apple-touch-icon.png
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\asset-manifest.json
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\comeback_logo.svg
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\icons\icon-128.png
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\icons\icon-144.png
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\icons\icon-152.png
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\icons\icon-192.png
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\icons\icon-384.png
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\icons\icon-48.png
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\icons\icon-512.png
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\icons\icon-72.png
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\icons\icon-96.png
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\index.html
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\manifest.json
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\robots.txt
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\static\css\main.e6c13ad2.css
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\static\css\main.e6c13ad2.css.map
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\static\js\453.f4d027c7.chunk.js
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\static\js\453.f4d027c7.chunk.js.map
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\static\js\main.f4e46704.js
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\static\js\main.f4e46704.js.LICENSE.txt
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\build\static\js\main.f4e46704.js.map
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\package-lock.json
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\package.json
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\public\apple-touch-icon.png
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\public\comeback_logo.svg
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\public\icons\icon-128.png
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\public\icons\icon-144.png
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\public\icons\icon-152.png
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\public\icons\icon-192.png
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\public\icons\icon-384.png
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\public\icons\icon-48.png
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\public\icons\icon-512.png
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\public\icons\icon-72.png
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\public\icons\icon-96.png
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\public\index.html
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\public\manifest.json
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\public\robots.txt
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\src\admissions_features.js
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\src\ADMISSIONS_INTEGRATION_GUIDE.md
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\src\AdmissionsDashboard.jsx
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\src\App.css
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\src\App.js
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\src\index.css
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\src\index.js
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\src\logo.svg
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\src\reportWebVitals.js
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\src\setupTests.js
+├── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\VERCEL_DEPLOYMENT_GUIDE.md
+└── 📄 C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\source\vercel.json
+
+✨ Download and verification complete!
+📄 Full log saved to: C:\Users\kcv4373001\comeback-os\out\dpl_nC6TmXHRVXv9MHEy2DQTaU9f2nw5\download-log.txt
+   (Use --verbose to see file tree and skipped files)
+
