@@ -1,11 +1,11 @@
 // ─── ADMISSIONS DASHBOARD — ULTRA EDITION ─────────────────────────────
 // XP system, achievements, pomodoro, notes, search, quotes, confetti, glass morphism
-// Last Updated: May 6, 2026 — Framer Motion + 50+ New Features
+// Last Updated: May 6, 2026
 
 import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import {
   ADMISSIONS_NEWS, ADMISSIONS_TIPS, ADMISSIONS_TRICKS, ADMISSIONS_TRACKER_TEMPLATE,
-  FINAL_ADMISSION_STRATEGY, SOP_TEMPLATES, SCHOLARSHIP_GUIDE,
+  FINAL_ADMISSION_STRATEGY, INTERVIEW_PREP, SOP_TEMPLATES, SCHOLARSHIP_GUIDE,
   ALL_UNIVERSITIES, DAILY_PULSE, VIVA_PRACTICE_QUESTIONS, DOCUMENT_READINESS,
   RESEARCH_PAPER_TRACKER, QUICK_STATS, MOTIVATIONAL_QUOTES, ACHIEVEMENTS,
 } from "./admissions_features.js";
@@ -156,12 +156,6 @@ export function AdmissionsDashboard({ T, orb, mono, raj, C }) {
   const [pomodoroSessions, setPomodoroSessions] = useState(0);
   const [showShortcuts, setShowShortcuts] = useState(false);
   const [expandedUniSections, setExpandedUniSections] = useState({});
-  // NEW: 100+ features state
-  const [activeFeatureCategory, setActiveFeatureCategory] = useState("dashboard");
-  const [showFeatureDetails, setShowFeatureDetails] = useState(null);
-  const [xpHistory, setXpHistory] = useState([]);
-  const [burnoutRisk, setBurnoutRisk] = useState(0);
-  const [showNotification, setShowNotification] = useState(null);
 
   const searchInputRef = useRef(null);
   const searchRef = useRef(null);
