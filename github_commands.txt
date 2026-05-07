@@ -1,0 +1,13 @@
+#How to Push Your Updates
+git add . ; git commit -m "Update my app" ; git push origin main
+
+#How to Pull Updates from the Repository
+git pull origin main
+
+# The "Git Undo" (Terminal)
+#If you want to move your local code back to exactly how it is on GitHub (deleting your current local mistakes):
+git reset --hard origin/main
+#-- Use code with caution.Warning: This will delete any local work you haven't pushed yet, so use it only if you want a total reset.
+
+# The "Revert a Specific Commit"If you want to "undo" your last push but keep your files:
+git revert HEAD ; git push origin main
