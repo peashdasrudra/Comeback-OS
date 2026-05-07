@@ -1,3 +1,8 @@
+import ThesisChapterProgress from "./ThesisChapterProgress";
+import ResearchMilestoneTracker from "./ResearchMilestoneTracker";
+import CSExamAlgorithmVisualizer from "./CSExamAlgorithmVisualizer";
+import CodingProblemTracker from "./CodingProblemTracker";
+
 const PlanTab = ({ activeWeek, setActiveWeek, tDone, togT, taskNotes, setTaskNotes, openNote, setOpenNote, T, orb, mono, raj, C, WEEKS, pc, weekPct, Ring }) => {
   const w = WEEKS.find(x => x.week === activeWeek);
   const col = pc(w.phase);
@@ -82,6 +87,11 @@ const PlanTab = ({ activeWeek, setActiveWeek, tDone, togT, taskNotes, setTaskNot
           <button onClick={() => activeWeek < 15 && setActiveWeek(a => a + 1)} disabled={activeWeek === 15} style={{ padding: "9px 18px", borderRadius: 8, border: `1px solid ${col}55`, background: col + "22", color: col, fontSize: 11, ...mono, cursor: activeWeek === 15 ? "not-allowed" : "pointer" }}>NEXT →</button>
         </div>
       </div>
+
+      <ThesisChapterProgress T={T} C={C} mono={mono} orb={orb} raj={raj} />
+      <ResearchMilestoneTracker />
+      <CSExamAlgorithmVisualizer />
+      <CodingProblemTracker />
     </div>
   );
 };

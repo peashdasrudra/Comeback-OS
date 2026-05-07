@@ -1649,15 +1649,7 @@ function AppMain({ initialData:D, pinHash, onPinChange }){
         <div style={{paddingBottom:68, paddingTop:72}}>
            
           <Sidebar tab={tab} setTab={setTab} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} T={T} />
-          <SleepMoodCorrelator T={T} orb={orb} mono={mono} raj={raj} C={C} />
-          <ThesisProgressRings T={T} orb={orb} mono={mono} raj={raj} C={C} />
-          <BattleModeToggle T={T} orb={orb} mono={mono} raj={raj} C={C} />
-          <StreakFlameVisualizer T={T} orb={orb} mono={mono} raj={raj} C={C} />
-          <PersonalAIAssistant T={T} orb={orb} mono={mono} raj={raj} C={C} />
-          <InteractiveQuickActionGrid T={T} orb={orb} mono={mono} raj={raj} C={C} />
-          <CinematicWelcomeHUD T={T} orb={orb} mono={mono} raj={raj} C={C} />
-          <RealTimeStatusIndicator T={T} orb={orb} mono={mono} raj={raj} C={C} />
-          <AppStatusPipeline T={T} orb={orb} mono={mono} raj={raj} C={C} />
+
         {tab==="home"&&<Home {...{
             mood, setMood, moodLog, setMoodLog, sleepLog, setSleepLog, sleepHours, setSleepHours, sleepQuality, setSleepQuality,
             waterCount, setWaterCount, calorieLog, setCalorieLog, calInput, setCalInput, calLabel, setCalLabel,

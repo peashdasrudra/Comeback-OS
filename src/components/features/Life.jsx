@@ -1,3 +1,7 @@
+import FreelanceTracker from "./FreelanceTracker";
+import AppStatusPipeline from "./AppStatusPipeline";
+import ComebackTimeline from "./ComebackTimeline";
+
 const Life = (props) => {
   const {
     lifeTab, setLifeTab,
@@ -307,7 +311,10 @@ const Life = (props) => {
               </div>
             ))}
           </div>
-          <div style={{display:"flex",flexDirection:"column",gap:6,maxHeight:280,overflowY:"auto"}}>
+            <FreelanceTracker />
+          <AppStatusPipeline T={T} C={C} mono={mono} orb={orb} raj={raj} />
+          <ComebackTimeline />
+            <div style={{display:"flex",flexDirection:"column",gap:6,maxHeight:280,overflowY:"auto"}}>
             {freelanceLog.map((f,i)=>(
               <div key={f.id||i} style={{...C({padding:"10px 12px",border:`1px solid ${f.status==="Earned"?T.green:f.status==="In Progress"?T.gold:T.border}22`})}}>
                 <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>

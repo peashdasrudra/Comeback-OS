@@ -2,13 +2,7 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { BookOpen, CheckCircle, Lock, FileText } from "lucide-react";
 
-const chapters = [
-  { id: 1, title: "Introduction", pct: 95, color: "#3b82f6", status: "done" },
-  { id: 2, title: "Literature Review", pct: 90, color: "#8b5cf6", status: "done" },
-  { id: 3, title: "Methodology", pct: 85, color: "#10b981", status: "progress" },
-  { id: 4, title: "Results & Analysis", pct: 75, color: "#f59e0b", status: "progress" },
-  { id: 5, title: "Conclusion", pct: 40, color: "#ef4444", status: "pending" }
-];
+const chapters = [];
 
 const ThesisChapterProgress = ({ T, C, mono, orb, raj }) => {
   const [chapterData, setChapterData] = useState(chapters);

@@ -38,14 +38,9 @@ const initialState = {
   quoteIdx: 0,
   workoutDay: 1,
   waterCount: 0,
-  weightLog: [{weight:50, date:"May 6"}],
+  weightLog: [],
   dailyLog: [],
-  habits: [
-    {id:1, name:"Read thesis paper", color:T.green, streak:0, lastDone:""},
-    {id:2, name:"Code 1 hour", color:T.blue, streak:0, lastDone:""},
-    {id:3, name:"Gym workout", color:T.pink, streak:0, lastDone:""},
-    {id:4, name:"Apply university", color:T.orange, streak:0, lastDone:""}
-  ],
+  habits: [],
   mood: null,
   moodLog: [],
   sleepLog: [],

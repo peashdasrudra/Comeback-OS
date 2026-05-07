@@ -2,74 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { Target, CheckCircle, Clock, Play, Circle } from "lucide-react";
 
-const milestones = [
-  {
-    id: 1,
-    name: "Foundation",
-    description: "Literature review, dataset acquisition (TCGA-BRCA, METABRIC), and baseline methodology setup",
-    status: "completed",
-    date: "2025-12-15",
-    progress: 100,
-    subMilestones: [
-      { name: "Literature Review", done: true },
-      { name: "Dataset Collection", done: true },
-      { name: "Baseline Models", done: true }
-    ]
-  },
-  {
-    id: 2,
-    name: "Implementation",
-    description: "CRO algorithm development, SHAP integration, and multi-omics data preprocessing pipeline",
-    status: "completed",
-    date: "2026-02-28",
-    progress: 100,
-    subMilestones: [
-      { name: "CRO Algorithm", done: true },
-      { name: "SHAP Integration", done: true },
-      { name: "Data Pipeline", done: true }
-    ]
-  },
-  {
-    id: 3,
-    name: "Experiments",
-    description: "Running comparative experiments, hyperparameter tuning, and cross-validation on cancer subtypes",
-    status: "in-progress",
-    date: "2026-05-07",
-    progress: 65,
-    subMilestones: [
-      { name: "CRO vs SHAP Comparison", done: true },
-      { name: "Subtype Prediction", done: true },
-      { name: "Hyperparameter Tuning", done: false },
-      { name: "Statistical Validation", done: false }
-    ]
-  },
-  {
-    id: 4,
-    name: "Writing",
-    description: "Thesis manuscript preparation, result visualization, and defense preparation materials",
-    status: "pending",
-    date: "2026-07-15",
-    progress: 15,
-    subMilestones: [
-      { name: "Results Chapter", done: false },
-      { name: "Discussion Chapter", done: false },
-      { name: "Defense Slides", done: false }
-    ]
-  },
-  {
-    id: 5,
-    name: "Defense",
-    description: "Thesis defense presentation, viva voce, and final submission to KUET",
-    status: "pending",
-    date: "2026-09-30",
-    progress: 0,
-    subMilestones: [
-      { name: "Defense Presentation", done: false },
-      { name: "Viva Preparation", done: false },
-      { name: "Final Submission", done: false }
-    ]
-  }
-];
+const milestones = [];
 
 const nodeColors = {
   completed: "#00ff88",

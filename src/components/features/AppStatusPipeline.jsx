@@ -9,12 +9,7 @@ const stages = [
   { id: "admitted", label: "ADMITTED", color: "#10b981", icon: Award }
 ];
 
-const applications = [
-  { uni: "KUET", program: "MSc CSE", currentStage: "submitted", color: "#10b981" },
-  { uni: "BUET", program: "MSc CSE", currentStage: "planning", color: "#3b82f6" },
-  { uni: "KU", program: "MSc CSE", currentStage: "planning", color: "#06b6d4" },
-  { uni: "DU", program: "MSc CSE", currentStage: "planning", color: "#8b5cf6" }
-];
+const applications = [];
 
 const AppStatusPipeline = ({ T, C, mono, orb, raj }) => {
   const [apps, setApps] = useState(applications);

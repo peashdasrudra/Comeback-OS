@@ -2,20 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { Code2, CheckCircle, Circle, Filter, Plus, X } from "lucide-react";
 
-const problems = [
-  { id: 1, title: "Two Sum", difficulty: "Easy", category: "Array", solved: true, date: "2026-04-10", time: "5 min", attempts: 1 },
-  { id: 2, title: "Add Two Numbers", difficulty: "Medium", category: "Linked List", solved: true, date: "2026-04-12", time: "15 min", attempts: 2 },
-  { id: 3, title: "Longest Substring Without Repeating Characters", difficulty: "Medium", category: "String", solved: true, date: "2026-04-15", time: "25 min", attempts: 3 },
-  { id: 4, title: "Median of Two Sorted Arrays", difficulty: "Hard", category: "Array", solved: true, date: "2026-04-20", time: "45 min", attempts: 4 },
-  { id: 5, title: "Longest Palindromic Substring", difficulty: "Medium", category: "String", solved: true, date: "2026-04-25", time: "20 min", attempts: 2 },
-  { id: 6, title: "ZigZag Conversion", difficulty: "Medium", category: "String", solved: false, date: null, time: null, attempts: 0 },
-  { id: 7, title: "Reverse Integer", difficulty: "Easy", category: "Math", solved: true, date: "2026-03-28", time: "8 min", attempts: 1 },
-  { id: 8, title: "String to Integer (atoi)", difficulty: "Medium", category: "String", solved: false, date: null, time: null, attempts: 0 },
-  { id: 9, title: "Palindrome Number", difficulty: "Easy", category: "Math", solved: true, date: "2026-04-05", time: "6 min", attempts: 1 },
-  { id: 10, title: "Regular Expression Matching", difficulty: "Hard", category: "Dynamic Programming", solved: false, date: null, time: null, attempts: 0 },
-  { id: 11, title: "Container With Most Water", difficulty: "Medium", category: "Array", solved: true, date: "2026-05-01", time: "18 min", attempts: 2 },
-  { id: 12, title: "Integer to Roman", difficulty: "Medium", category: "Math", solved: false, date: null, time: null, attempts: 0 },
-];
+const problems = [];
 
 const difficultyColors = {
   Easy: { bg: "#00ff8820", border: "#00ff8844", text: "#00ff88", glow: "#00ff8833" },

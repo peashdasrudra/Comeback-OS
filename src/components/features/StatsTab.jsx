@@ -1,4 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
+import DashboardOverview from "./DashboardOverview";
+import BodyTransformation from "./BodyTransformation";
 
 const StatsTab = ({
   ACHIEVEMENTS_DEF,
@@ -99,8 +101,11 @@ const StatsTab = ({
                </div>
              </div>
 
-             {/* Key stats grid */}
-             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:12}}>
+          <DashboardOverview />
+          <BodyTransformation />
+
+          {/* Key stats grid */}
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:12}}>
                {[
                  {l:"THESIS PROGRESS",v:`${tp}%`,sub:`${taskCount} tasks done`,c:T.green,icon:"🧪"},
                  {l:"WORKOUT DAYS",v:workoutDays,sub:`${streak}d streak 🔥`,c:T.orange,icon:"💪"},

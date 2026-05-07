@@ -2,13 +2,7 @@ import { motion, useInView } from "framer-motion";
 import { useEffect, useRef } from "react";
 import { Trophy, Star, TrendingUp } from "lucide-react";
 
-const milestones = [
-  { id: 1, title: "GST Score: 32/100", date: "2021", icon: "📉", color: "#ff2244", glowColor: "#ff224444", x: 20, y: 80 },
-  { id: 2, title: "Started CS Degree", date: "2022", icon: "🎓", color: "#ff8800", glowColor: "#ff880044", x: 35, y: 65 },
-  { id: 3, title: "CGPA: 3.95", date: "2024", icon: "🏆", color: "#00ff88", glowColor: "#00ff8844", x: 50, y: 40 },
-  { id: 4, title: "Debate Champion", date: "2025", icon: "🏆", color: "#ffd700", glowColor: "#ffd70044", x: 65, y: 25 },
-  { id: 5, title: "MSc CSE @ KUET", date: "2026", icon: "🎓", color: "#00b4ff", glowColor: "#00b4ff44", x: 80, y: 15 }
-];
+const milestones = [];
 
 const ComebackTimeline = () => {
   const ref = useRef(null);

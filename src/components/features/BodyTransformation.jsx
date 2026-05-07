@@ -3,29 +3,12 @@ import { useState, useEffect } from "react";
 import { TrendingUp, Target } from "lucide-react";
 
 const BodyTransformation = () => {
-  const [currentWeight, setCurrentWeight] = useState(54.2);
+  const [currentWeight, setCurrentWeight] = useState(0);
   const targetWeight = 60;
   const startWeight = 50;
-  const progress = ((currentWeight - startWeight) / (targetWeight - startWeight)) * 100;
+  const progress = currentWeight > 0 ? ((currentWeight - startWeight) / (targetWeight - startWeight)) * 100 : 0;
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (currentWeight < 55.5) {
-        setCurrentWeight(prev => +(prev + 0.1).toFixed(1));
-      }
-    }, 3000);
-    return () => clearInterval(interval);
-  }, [currentWeight]);
-
-  const workouts = [
-    { day: "Mon", chest: 85, back: 78, legs: 92 },
-    { day: "Tue", chest: 0, back: 0, legs: 0 },
-    { day: "Wed", chest: 78, back: 88, legs: 85 },
-    { day: "Thu", chest: 0, back: 0, legs: 0 },
-    { day: "Fri", chest: 90, back: 82, legs: 88 },
-    { day: "Sat", chest: 0, back: 0, legs: 95 },
-    { day: "Sun", chest: 0, back: 0, legs: 0 }
-  ];
+  const workouts = [];
 
   return (
     <motion.div

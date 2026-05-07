@@ -1,4 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
+import BattleModeToggle from "./BattleModeToggle";
 
 const FocusTab = ({
   pomLeft, pomMode, deepFocusLeft, getRank, xp, T, orb, raj, mono, C, Ring,
@@ -18,6 +19,8 @@ const FocusTab = ({
     <div style={{padding:16}}>
       <div style={{...orb,fontSize:15,fontWeight:900,color:T.bright,marginBottom:4}}>FOCUS CONTROL</div>
       <div style={{fontSize:11,color:T.muted,marginBottom:12,...raj}}>Pomodoro · Deep Focus · Habits · XP Log · Music</div>
+
+      <BattleModeToggle T={T} orb={orb} mono={mono} raj={raj} C={C} />
 
       {/* Tab switcher */}
       <div style={{display:"flex",background:T.bg1,borderRadius:10,border:`1px solid ${T.border}`,marginBottom:14,overflow:"hidden",overflowX:"auto"}}>

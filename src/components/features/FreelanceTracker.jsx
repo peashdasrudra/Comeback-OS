@@ -2,11 +2,7 @@ import { motion, useSpring } from "framer-motion";
 import { useState, useEffect } from "react";
 import { TrendingUp, Target } from "lucide-react";
 
-const projects = [
-  { id: 1, name: "Portfolio Website", amount: 1500, status: "Paid", date: "2026-01" },
-  { id: 2, name: "E-commerce App", amount: 2000, status: "In Progress", date: "2026-03" },
-  { id: 3, name: "Blog Platform", amount: 1500, status: "Pending", date: "2026-05" }
-];
+const projects = [];
 
 const FreelanceTracker = () => {
   const targetEarnings = 5000;
