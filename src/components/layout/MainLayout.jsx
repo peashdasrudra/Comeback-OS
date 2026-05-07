@@ -94,19 +94,16 @@ const MainLayout = ({ children }) => {
       </motion.div>
 
       {/* Main Content */}
-      <div className="pt-16 px-4">
+      <div className="pt-14 px-3">
         <AnimatePresence mode="wait">
           <motion.div
             key={tab}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.25 }}
           >
-            {/* Tab-specific content */}
-            <div className="mt-4">
-              {children}
-            </div>
+            {children}
           </motion.div>
         </AnimatePresence>
       </div>

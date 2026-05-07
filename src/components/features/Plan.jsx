@@ -1,3 +1,5 @@
+import { CheckCircle, ArrowRight } from "lucide-react";
+
 const Plan = (props) => {
   const { activeWeek, setActiveWeek, tasksDone, setTasksDone, taskNotes, setTaskNotes, openNote, setOpenNote, T, orb, mono, raj, C, WEEKS, pc, weekPct, Ring } = props;
   const w = WEEKS.find(x => x.week === activeWeek);
@@ -24,7 +26,12 @@ const Plan = (props) => {
                 {done && <span style={{ fontSize: 11, color: sc, fontWeight: 900 }}>✓</span>}
               </div>
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 12, color: done ? "#2a4a3a" : T.text, lineHeight: 1.6, textDecoration: done ? "line-through" : "none", ...raj }}>{task}</div>
+                <div style={{ fontSize: 12, color: done ? "#2a4a3a" : T.text, lineHeight: 1.6, textDecoration: done ? "line-through" : "none", ...raj }}>
+                  {task.startsWith("??? ") && <CheckCircle size={12} style={{ display: "inline", marginRight: 3, verticalAlign: "middle", color: "#ffd700" }} />}
+                  {task.startsWith("?? ") && !task.startsWith("??? ") && <CheckCircle size={12} style={{ display: "inline", marginRight: 3, verticalAlign: "middle", color: sc }} />}
+                  {task.startsWith("? ") && !task.startsWith("?? ") && <ArrowRight size={12} style={{ display: "inline", marginRight: 3, verticalAlign: "middle", color: T.blue }} />}
+                  {task.replace(/^[?\s]{1,3}/, "").replace(/\uFFFD/g, "-")}
+                </div>
                 <button onClick={() => setOpenNote(openNote === nk ? null : nk)} style={{ fontSize: 10, color: taskNotes[nk] ? T.gold : T.muted, background: "transparent", border: "none", cursor: "pointer", padding: "2px 0", ...mono }}>
                   {taskNotes[nk] ? "📝 note" : "+ note"}
                 </button>
@@ -60,7 +67,7 @@ const Plan = (props) => {
           <div>
             <div style={{ fontSize: 8, color: col, letterSpacing: 3, ...mono, marginBottom: 4 }}>PHASE {w.phase} · {["FOUNDATION", "IMPLEMENTATION", "EXPERIMENTS", "WRITING"][w.phase - 1]}</div>
             <div style={{ ...orb, fontSize: 22, fontWeight: 900, color: T.bright }}>WEEK {w.week}</div>
-            <div style={{ fontSize: 11, color: T.muted, marginTop: 2, ...raj }}>{w.dates}</div>
+            <div style={{ fontSize: 11, color: T.muted, marginTop: 2, ...raj }}>{w.dates.replace(/\uFFFD/g, "-")}</div>
           </div>
           <Ring pct={prog} size={58} stroke={5} color={col} label={`${prog}%`} />
         </div>
@@ -79,11 +86,11 @@ const Plan = (props) => {
         <div style={{ display: "flex", gap: 8, marginBottom: 14 }}>
           <div style={{ flex: 1, background: "#1a050a", border: `1px solid ${T.red}33`, borderRadius: 10, padding: 12 }}>
             <div style={{ fontSize: 9, color: T.red, letterSpacing: 2, marginBottom: 5, ...mono }}>⚠️ BLOCKER</div>
-            <div style={{ fontSize: 11, color: "#ffaaaa", lineHeight: 1.7, ...raj }}>{w.blocker}</div>
+            <div style={{ fontSize: 11, color: "#ffaaaa", lineHeight: 1.7, ...raj }}>{w.blocker.replace(/\uFFFD/g, "-")}</div>
           </div>
           <div style={{ flex: 1, background: col + "08", border: `1px solid ${col}33`, borderRadius: 10, padding: 12 }}>
             <div style={{ fontSize: 9, color: col, letterSpacing: 2, marginBottom: 5, ...mono }}>🏁 MILESTONE</div>
-            <div style={{ fontSize: 11, color: T.text, lineHeight: 1.7, ...raj }}>{w.milestone}</div>
+            <div style={{ fontSize: 11, color: T.text, lineHeight: 1.7, ...raj }}>{w.milestone.replace(/\uFFFD/g, "-")}</div>
           </div>
         </div>
         <div style={{ display: "flex", justifyContent: "space-between" }}>

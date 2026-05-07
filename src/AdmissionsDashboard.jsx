@@ -3,6 +3,7 @@
 // Last Updated: May 6, 2026
 
 import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import { motion } from "framer-motion";
 import {
   ADMISSIONS_NEWS, ADMISSIONS_TIPS, ADMISSIONS_TRICKS, ADMISSIONS_TRACKER_TEMPLATE,
   FINAL_ADMISSION_STRATEGY, INTERVIEW_PREP, SOP_TEMPLATES, SCHOLARSHIP_GUIDE,
@@ -12,7 +13,6 @@ import {
 
 const GLOW = (color) => `0 0 8px ${color}44, 0 0 20px ${color}22`;
 const STRONG_GLOW = (color) => `0 0 10px ${color}55, 0 0 25px ${color}33, 0 0 50px ${color}11`;
-const GRADIENT = (c1, c2) => `linear-gradient(135deg, ${c1}15, ${c2}08)`;
 const GLASS = (bg) => `linear-gradient(135deg, ${bg}88, ${bg}44)`;
 
 const LEVELS = [
@@ -62,23 +62,23 @@ function AnimatedCounter({ value, color, fontSize, prefix = "", suffix = "" }) {
 }
 
 function StatCard({ label, value, icon, color, sub, delay = 0 }) {
-  const [hovered, setHovered] = useState(false);
   return (
-    <div
-      onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
+    <motion.div
+      whileHover={{ scale: 1.03, y: -3 }}
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
       style={{
-        background: GRADIENT(color, "#000"), border: `1px solid ${hovered ? color + "55" : color + "33"}`,
-        borderRadius: 12, padding: "12px 10px", textAlign: "center",
-        boxShadow: hovered ? STRONG_GLOW(color) : GLOW(color),
-        transition: "all .3s ease", transform: hovered ? "translateY(-3px) scale(1.02)" : "scale(1)",
+        background: `rgba(255,255,255,0.05)`, border: `1px solid ${color}44`,
+        borderRadius: 20, padding: "12px 10px", textAlign: "center",
+        backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
+        boxShadow: GLOW(color),
         animation: `fadeInUp .4s ease-out ${delay}ms both`,
       }}
     >
-      <div style={{ fontSize: 18, animation: hovered ? "float 1.5s ease-in-out infinite" : "none" }}>{icon}</div>
+      <div style={{ fontSize: 18 }}>{icon}</div>
       <AnimatedCounter value={value} color={color} fontSize={16} />
       <div style={{ fontSize: 8, color: "#3a6a5a", fontFamily: "'Share Tech Mono',monospace", marginTop: 2, letterSpacing: 1 }}>{label}</div>
       {sub && <div style={{ fontSize: 7, color: "#2a5a3a", marginTop: 3 }}>{sub}</div>}
-    </div>
+    </motion.div>
   );
 }
 
@@ -94,33 +94,32 @@ function PriorityBadge({ priority }) {
 
 function ProgressBar({ pct, color, height = 4, animated = true }) {
   return (
-    <div style={{ height, background: "#0a1520", borderRadius: height, overflow: "hidden" }}>
+    <div style={{ height, background: "#0a1520", borderRadius: height, overflow: "hidden", boxShadow: `inset 0 0 4px ${color}22` }}>
       <div style={{
         width: `${pct}%`, height: "100%", background: color,
         transition: "width .8s ease", borderRadius: height,
         animation: animated ? "progressBar 1s ease-out" : "none",
         backgroundSize: "200% 100%",
         backgroundImage: `linear-gradient(90deg, ${color}, ${color}cc, ${color})`,
+        boxShadow: `0 0 8px ${color}44, 0 0 20px ${color}22`,
       }} />
     </div>
   );
 }
 
 function GlassCard({ children, borderColor, bg, padding = 14, style = {}, glow, hover = true }) {
-  const [h, setH] = useState(false);
   return (
-    <div
-      onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)}
+    <motion.div
+      whileHover={hover ? { scale: 1.02, y: -2 } : {}}
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
       style={{
-        background: bg ? GLASS(bg) : "rgba(10,20,30,0.6)",
-        backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)",
+        background: bg ? GLASS(bg) : "rgba(255,255,255,0.05)",
+        backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
         border: `1px solid ${borderColor || "rgba(255,255,255,0.1)"}`,
-        borderRadius: 14, padding, transition: "all .3s ease",
-        boxShadow: glow || (h && hover ? "0 8px 32px rgba(0,0,0,0.3)" : "none"),
-        transform: h && hover ? "translateY(-2px)" : "none",
+        borderRadius: 24, padding, boxShadow: glow || "0 8px 32px rgba(0,0,0,0.2)",
         ...style,
       }}
-    >{children}</div>
+    >{children}</motion.div>
   );
 }
 
@@ -430,10 +429,14 @@ export function AdmissionsDashboard({ T, orb, mono, raj, C }) {
       )}
 
       {/* ── TOP BAR: XP, Streak, Search, Quote ── */}
-      <div style={{
-        background: "rgba(10,20,30,0.5)", backdropFilter: "blur(10px)",
-        border: `1px solid ${T.border}`, borderRadius: 12, padding: "8px 10px", marginBottom: 10,
-      }}>
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        style={{
+          background: "rgba(255,255,255,0.05)", backdropFilter: "blur(20px)",
+          border: "1px solid rgba(255,255,255,0.1)", borderRadius: 24, padding: "8px 10px", marginBottom: 10,
+        }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <div style={{
@@ -485,13 +488,19 @@ export function AdmissionsDashboard({ T, orb, mono, raj, C }) {
             }}>✕</button>
           )}
         </div>
-      </div>
+      </motion.div>
 
       {/* ── TAB NAVIGATION ── */}
-      <div ref={searchRef} style={{
-        display: "flex", gap: 3, marginBottom: 12, overflowX: "auto", paddingBottom: 6,
-        borderBottom: `1px solid ${T.border}`, scrollbarWidth: "thin",
-      }}>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3, delay: 0.1 }}
+        ref={searchRef}
+        style={{
+          display: "flex", gap: 3, marginBottom: 12, overflowX: "auto", paddingBottom: 6,
+          borderBottom: `1px solid rgba(255,255,255,0.1)`, scrollbarWidth: "thin",
+        }}
+      >
         {tabs.map(tab => (
           <button key={tab.id} onClick={() => handleTab(tab.id)} style={{
             padding: "5px 10px", borderRadius: 6, border: "none",
@@ -504,7 +513,7 @@ export function AdmissionsDashboard({ T, orb, mono, raj, C }) {
             position: "relative", overflow: "hidden",
           }}>{tab.label}</button>
         ))}
-      </div>
+      </motion.div>
 
       {/* ── CONTENT WITH TRANSITIONS ── */}
       <div style={{ animation: tabTransition ? "fadeIn .3s ease-out" : "none" }}>
@@ -685,20 +694,35 @@ export function AdmissionsDashboard({ T, orb, mono, raj, C }) {
             <div style={{ fontSize: 9, color: T.muted, letterSpacing: 2, ...mono, marginBottom: 8 }}>🏛️ YOUR UNIVERSITY TARGETS</div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 6, marginBottom: 12 }}>
               {ALL_UNIVERSITIES.map((u, i) => (
-                <div key={u.id} onClick={() => { setSelectedUni(u.id); handleTab("unis"); }} style={{
-                  background: GRADIENT(u.color, "#000"), border: `1.5px solid ${bookmarks.includes(u.id) ? T.gold + "66" : u.color + "33"}`,
-                  borderRadius: 12, padding: "10px 8px", cursor: "pointer", textAlign: "center",
-                  boxShadow: GLOW(u.color), transition: "all .3s ease",
-                  animation: `scaleIn .3s ease-out ${i * 60}ms both`,
-                }}>
+                <motion.div
+                  key={u.id}
+                  whileHover={{ scale: 1.05, y: -3 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                  onClick={() => { setSelectedUni(u.id); handleTab("unis"); }}
+                  style={{
+                    background: `rgba(255,255,255,0.05)`,
+                    backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
+                    border: `1.5px solid ${u.color}44`,
+                    borderRadius: 20, padding: "10px 8px", cursor: "pointer", textAlign: "center",
+                    boxShadow: GLOW(u.color),
+                    animation: `scaleIn .3s ease-out ${i * 60}ms both`,
+                  }}
+                >
                   <div style={{ fontSize: 18 }}>{u.icon}</div>
                   <div style={{ ...orb, fontSize: 12, fontWeight: 900, color: u.color }}>{u.name}</div>
                   <div style={{ fontSize: 7, color: T.muted, ...mono, marginTop: 2 }}>{u.tier} Tier</div>
                   <div style={{ marginTop: 6 }}>
-                    <AnimatedCounter value={u.yourChance} color={u.yourChance >= 80 ? T.green : u.yourChance >= 60 ? T.orange : T.red} fontSize={14} suffix="%" />
+                    <div style={{
+                      display: "inline-flex", alignItems: "center", gap: 4,
+                      padding: "2px 8px", borderRadius: 8,
+                      background: `rgba(255,255,255,0.05)`, backdropFilter: "blur(4px)",
+                      boxShadow: `0 0 8px ${(c => c)(u.yourChance >= 80 ? T.green : u.yourChance >= 60 ? T.orange : T.red)}33`,
+                    }}>
+                      <AnimatedCounter value={u.yourChance} color={u.yourChance >= 80 ? T.green : u.yourChance >= 60 ? T.orange : T.red} fontSize={14} suffix="%" />
+                    </div>
                     <div style={{ fontSize: 7, color: T.muted, ...mono }}>{u.label}</div>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
 
@@ -776,14 +800,20 @@ export function AdmissionsDashboard({ T, orb, mono, raj, C }) {
                         background: "transparent", border: "none", cursor: "pointer", fontSize: 16, padding: 4,
                         filter: bookmarks.includes(u.id) ? "none" : "grayscale(1)", transition: "all .2s",
                       }}>{bookmarks.includes(u.id) ? "🔖" : "📑"}</button>
-                      <div style={{
-                        width: 52, height: 52, borderRadius: 10, background: u.color + "15",
-                        border: `2px solid ${u.yourChance >= 80 ? T.green : u.yourChance >= 60 ? T.orange : T.red}`,
-                        display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-                      }}>
+                      <motion.div
+                        whileHover={{ scale: 1.08 }}
+                        transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                        style={{
+                          width: 52, height: 52, borderRadius: 14, background: `rgba(255,255,255,0.05)`,
+                          backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)",
+                          border: `2px solid ${(c => c)(u.yourChance >= 80 ? T.green : u.yourChance >= 60 ? T.orange : T.red)}`,
+                          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+                          boxShadow: `0 0 12px ${(c => c)(u.yourChance >= 80 ? T.green : u.yourChance >= 60 ? T.orange : T.red)}44, 0 0 30px ${(c => c)(u.yourChance >= 80 ? T.green : u.yourChance >= 60 ? T.orange : T.red)}22`,
+                        }}
+                      >
                         <AnimatedCounter value={u.yourChance} color={u.yourChance >= 80 ? T.green : u.yourChance >= 60 ? T.orange : T.red} fontSize={16} suffix="%" />
                         <div style={{ fontSize: 6, color: T.muted, ...mono }}>{u.label}</div>
-                      </div>
+                      </motion.div>
                     </div>
                   </div>
                   <div style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 4, marginBottom: 10 }}>
