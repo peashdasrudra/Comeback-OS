@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu } from "lucide-react";
 
 const MainLayout = ({ children }) => {
-  const { sidebarOpen, setSidebarOpen, tab, setTab } = useApp();
+  const { sidebarOpen, setSidebarOpen, tab, setTab, xp } = useApp();
+  const level = Math.floor(xp / 100) + 1;
 
   const navItems = [
     { id: "home", label: "Dashboard", icon: "🏠" },
@@ -20,14 +21,23 @@ const MainLayout = ({ children }) => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#020408] text-white max-w-[430px] mx-auto relative" style={{ paddingBottom: '68px' }}>
-      {/* Sidebar Toggle */}
-      <button 
-        onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="fixed top-3 left-3 z-[1001] w-9 h-9 rounded-lg bg-[#0a1520]/90 border border-[#0d2030] flex items-center justify-center hover:bg-[#0d2030] transition-colors"
-      >
-        <Menu size={16} className="text-green-400" />
-      </button>
+    <div className="min-h-screen bg-[#020408] text-white max-w-[430px] mx-auto relative">
+      {/* Fixed Frosted Header */}
+      <div className="fixed top-0 w-full max-w-[430px] z-50 bg-[#020408]/60 backdrop-blur-xl border-b border-white/5">
+        <div className="flex items-center gap-3 px-3 h-14">
+          <button 
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="w-9 h-9 rounded-lg bg-[#0a1520]/90 border border-[#0d2030] flex items-center justify-center hover:bg-[#0d2030] transition-colors"
+          >
+            <Menu size={16} className="text-green-400" />
+          </button>
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10">
+            <span className="text-[10px] font-orbitron font-bold text-green-400">LV.{level}</span>
+            <span className="text-[8px] text-gray-500 font-mono">{xp} XP</span>
+          </div>
+          <div className="flex-1" />
+        </div>
+      </div>
 
       {/* Sidebar Overlay */}
       <AnimatePresence>
@@ -93,8 +103,8 @@ const MainLayout = ({ children }) => {
         </div>
       </motion.div>
 
-      {/* Main Content */}
-      <div className="pt-14 px-3">
+      {/* Main Content — scrolls under frosted header */}
+      <div className="pt-20 pb-24 h-screen overflow-y-auto scrollbar-hide">
         <AnimatePresence mode="wait">
           <motion.div
             key={tab}

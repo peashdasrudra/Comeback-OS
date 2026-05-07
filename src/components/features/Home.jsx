@@ -15,14 +15,17 @@ const Home = (props) => {
         <div className="absolute top-1/3 right-0 w-[300px] h-[300px] bg-orange-500/5 rounded-full blur-[100px]" />
       </div>
 
+      {/* Full-width hero banner */}
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, ease: "easeOut" }}
+        className="w-full"
       >
         <CinematicWelcomeHUD />
       </motion.div>
 
+      {/* Asymmetrical bento grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         <motion.div
           initial={{ opacity: 0, x: -24 }}
@@ -33,7 +36,7 @@ const Home = (props) => {
           <motion.div
             whileHover={{ scale: 1.01, y: -2 }}
             whileTap={{ scale: 0.99 }}
-            className="group bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-5 md:p-6 shadow-xl hover:shadow-[0_0_30px_rgba(0,180,255,0.12)] transition-shadow duration-500"
+            className="group bg-white/[0.02] backdrop-blur-2xl border border-white/[0.05] shadow-2xl shadow-black/50 rounded-3xl p-5 md:p-6 hover:shadow-[0_0_30px_rgba(0,180,255,0.12)] transition-shadow duration-500"
           >
             <InteractiveQuickActionGrid />
           </motion.div>
@@ -47,9 +50,11 @@ const Home = (props) => {
           <motion.div
             whileHover={{ scale: 1.01, y: -2 }}
             whileTap={{ scale: 0.99 }}
-            className="group bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-5 md:p-6 shadow-xl hover:shadow-[0_0_30px_rgba(255,136,0,0.12)] transition-shadow duration-500"
+            className="group bg-white/[0.02] backdrop-blur-2xl border border-white/[0.05] shadow-2xl shadow-black/50 rounded-3xl p-5 md:p-6 hover:shadow-[0_0_30px_rgba(255,136,0,0.12)] transition-shadow duration-500"
           >
-            <StreakFlameVisualizer T={T} C={C} mono={mono} orb={orb} raj={raj} streak={streak} />
+            <div className="w-full">
+              <StreakFlameVisualizer T={T} C={C} mono={mono} orb={orb} raj={raj} streak={streak} />
+            </div>
           </motion.div>
         </motion.div>
       </div>
@@ -62,7 +67,7 @@ const Home = (props) => {
         <motion.div
           whileHover={{ scale: 1.005, y: -1 }}
           whileTap={{ scale: 0.995 }}
-          className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-4 md:p-5 shadow-xl hover:shadow-[0_0_25px_rgba(52,211,153,0.1)] transition-shadow duration-500 w-fit"
+          className="bg-white/[0.02] backdrop-blur-2xl border border-white/[0.05] shadow-2xl shadow-black/50 rounded-3xl p-4 md:p-5 hover:shadow-[0_0_25px_rgba(52,211,153,0.1)] transition-shadow duration-500"
         >
           <RealTimeStatusIndicator />
         </motion.div>

@@ -691,36 +691,55 @@ export function AdmissionsDashboard({ T, orb, mono, raj, C }) {
               </div>
             </GlassCard>
 
-            <div style={{ fontSize: 9, color: T.muted, letterSpacing: 2, ...mono, marginBottom: 8 }}>🏛️ YOUR UNIVERSITY TARGETS</div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 6, marginBottom: 12 }}>
-              {ALL_UNIVERSITIES.map((u, i) => (
+            <div style={{ fontSize: 9, color: T.muted, letterSpacing: 2, ...mono, marginBottom: 8 }}>🏛️ YOUR UNIVERSITY PIPELINE</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 12 }}>
+              {[...ALL_UNIVERSITIES].sort((a, b) => b.yourChance - a.yourChance).map((u, i) => (
                 <motion.div
                   key={u.id}
-                  whileHover={{ scale: 1.05, y: -3 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.05, duration: 0.4 }}
+                  whileHover={{ scale: 1.01, y: -2 }}
                   onClick={() => { setSelectedUni(u.id); handleTab("unis"); }}
                   style={{
-                    background: `rgba(255,255,255,0.05)`,
-                    backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
-                    border: `1.5px solid ${u.color}44`,
-                    borderRadius: 20, padding: "10px 8px", cursor: "pointer", textAlign: "center",
-                    boxShadow: GLOW(u.color),
-                    animation: `scaleIn .3s ease-out ${i * 60}ms both`,
+                    background: `rgba(255,255,255,0.04)`,
+                    backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
+                    border: `1px solid ${u.color}33`,
+                    borderRadius: 20, padding: "14px 16px", cursor: "pointer",
+                    boxShadow: `0 4px 24px rgba(0,0,0,0.3)`,
+                    overflow: "hidden",
+                    position: "relative",
                   }}
                 >
-                  <div style={{ fontSize: 18 }}>{u.icon}</div>
-                  <div style={{ ...orb, fontSize: 12, fontWeight: 900, color: u.color }}>{u.name}</div>
-                  <div style={{ fontSize: 7, color: T.muted, ...mono, marginTop: 2 }}>{u.tier} Tier</div>
-                  <div style={{ marginTop: 6 }}>
-                    <div style={{
-                      display: "inline-flex", alignItems: "center", gap: 4,
-                      padding: "2px 8px", borderRadius: 8,
-                      background: `rgba(255,255,255,0.05)`, backdropFilter: "blur(4px)",
-                      boxShadow: `0 0 8px ${(c => c)(u.yourChance >= 80 ? T.green : u.yourChance >= 60 ? T.orange : T.red)}33`,
-                    }}>
-                      <AnimatedCounter value={u.yourChance} color={u.yourChance >= 80 ? T.green : u.yourChance >= 60 ? T.orange : T.red} fontSize={14} suffix="%" />
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                      <span style={{ fontSize: 22 }}>{u.icon}</span>
+                      <div>
+                        <div style={{ ...orb, fontSize: 14, fontWeight: 900, color: T.bright }}>{u.name}</div>
+                        <div style={{ fontSize: 8, color: u.color, ...mono, opacity: 0.8 }}>{u.tier} Tier · {u.location}</div>
+                      </div>
                     </div>
-                    <div style={{ fontSize: 7, color: T.muted, ...mono }}>{u.label}</div>
+                    <motion.div
+                      whileHover={{ scale: 1.08 }}
+                      style={{
+                        padding: "6px 14px", borderRadius: 10,
+                        background: `rgba(255,255,255,0.06)`,
+                        backdropFilter: "blur(8px)",
+                        border: `1.5px solid ${u.yourChance >= 80 ? T.green : u.yourChance >= 60 ? T.orange : T.red}`,
+                        boxShadow: `0 0 16px ${(c => c)(u.yourChance >= 80 ? T.green : u.yourChance >= 60 ? T.orange : T.red)}33`,
+                      }}
+                    >
+                      <AnimatedCounter value={u.yourChance} color={u.yourChance >= 80 ? T.green : u.yourChance >= 60 ? T.orange : T.red} fontSize={18} suffix="%" />
+                    </motion.div>
+                  </div>
+                  <div style={{ height: 4, background: "rgba(255,255,255,0.06)", borderRadius: 2, overflow: "hidden", position: "relative" }}>
+                    <div style={{
+                      width: `${u.yourChance}%`, height: "100%",
+                      background: u.yourChance >= 80 ? T.green : u.yourChance >= 60 ? T.orange : T.red,
+                      borderRadius: 2,
+                      boxShadow: `0 0 8px ${u.yourChance >= 80 ? T.green : u.yourChance >= 60 ? T.orange : T.red}`,
+                      transition: "width .8s ease",
+                    }} />
                   </div>
                 </motion.div>
               ))}
