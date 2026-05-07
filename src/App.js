@@ -27,6 +27,7 @@ import FocusTab from "./components/features/FocusTab";
 import MeTab from "./components/features/MeTab";
 import ProgressTab from "./components/features/ProgressTab";
 import PlanTab from "./components/features/PlanTab";
+import { AppProvider } from "./context/AppContext";
 
 // ─── FIREBASE CONFIG ─────────────────────────────────────────────────────────
 // Get these values from: console.firebase.google.com
@@ -1045,14 +1046,14 @@ export default function App(){
 
   // Main app — receives fully-loaded initialData
   return(
-    <>
+    <AppProvider>
       <style>{GSTYLE}</style>
       <AppMain
         initialData={loadedData}
         pinHash={pinHash}
         onPinChange={handleSetPin}
       />
-    </>
+    </AppProvider>
   );
 }
 
