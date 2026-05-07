@@ -110,11 +110,13 @@ const raj={fontFamily:"'Rajdhani',sans-serif"};
 
 // ─── PROFILE ───
 const PROFILE = {
-  name:"Peash Rudra",title:"CS Engineer · Researcher · Musician · Athlete · 007",
+  name:"Peash Das Rudra", age:25, title:"Final-year CSE · RevOps Team Lead · eFootball Athlete · Cricket #7",
   university:"Northern University of Business and Technology, Bangladesh (NUBTK)",
   degree:"B.Sc. Computer Science & Engineering",
-  thesis:"xAI-Driven Evolutionary Feature Selection for Multi-Omics Cancer Classification: A CRO and SHAP Integrated Framework",
-  supervisor:"Mr. Riaz Mohammed — CRO Expert, 2–3 Published Papers",
+  thesis:"Interpretable ML for Cancer Subtype Prediction using CRO and SHAP",
+  supervisor:"Md. Riaz Mahmud",
+  career:{from:"CRM Intern",to:"RevOps Team Lead",company:"Clickless"},
+  sports:{eFootball:{team:"Bayern Munich",role:"Player"},cricket:{role:"Wicketkeeper-batsman",jersey:7}},
   height:"5'10\" (177 cm)", startWeight:50, targetWeight:60,
   academics:[
     {level:"PSC",gpa:"5.0 / 5.0",year:"2012",badge:"🏅 SCHOLARSHIP"},
@@ -1053,6 +1055,7 @@ function AppMain({ initialData:D, pinHash, onPinChange }){
 
   // ── ALL STATE — initialized from D (already loaded from Firebase) ──
   const [tab,setTab]                       = useState("home");
+  const [sidebarOpen,setSidebarOpen]       = useState(false);
   const [tasksDone,setTasksDone]           = useState(D.tasksDone||{});
   const [taskNotes,setTaskNotes]           = useState(D.taskNotes||{});
   const [openNote,setOpenNote]             = useState(null);
@@ -3154,6 +3157,7 @@ function AppMain({ initialData:D, pinHash, onPinChange }){
           {[
             {id:"ielts",  l:"🌍 IELTS"},
             {id:"music",  l:"🎵 MUSIC"},
+            {id:"sports", l:"⚽ SPORTS"},
             {id:"hustle", l:"💰 HUSTLE"},
             {id:"profs",  l:"📧 PROFS"},
             {id:"papers", l:"📄 PAPERS"},
@@ -3358,6 +3362,18 @@ function AppMain({ initialData:D, pinHash, onPinChange }){
                 </div>
               ))}
               {musicLog.length===0&&<div style={{textAlign:"center",padding:"24px",color:T.muted,...raj}}>No sessions logged. Even 10 minutes of daily singing practice compounds.</div>}
+            </div>
+          </div>
+        )}
+
+        {/* ── SPORTS (eFootball + Cricket) ── */}
+        {lifeTab==="sports"&&(
+          <div style={{padding:16}}>
+            <div style={{...C({padding:"14px",marginBottom:12,background:"linear-gradient(135deg,#1a0080,transparent)",border:`1px solid ${T.pink}44`})}}>
+              <div style={{fontSize:9,color:T.pink,letterSpacing:2,...mono,marginBottom:8}}>⚽ TACTICAL ATHLETE</div>
+              <div style={{...orb,fontSize:16,fontWeight:900,color:T.bright,marginBottom:4}}>Peash Das Rudra</div>
+              <div style={{fontSize:11,color:T.muted,...raj,marginBottom:2}}>eFootball: Bayern Munich · Cricket: Wicketkeeper-batsman #7</div>
+              <div style={{fontSize:9,color:T.dim,...mono}}>Age 25 · Final-year CSE @ NUBTK</div>
             </div>
           </div>
         )}
@@ -4210,22 +4226,30 @@ function AppMain({ initialData:D, pinHash, onPinChange }){
         {/* ── TOP NAV BAR ── */}
         <div style={{background:"linear-gradient(180deg,#020d08,#020408)",borderBottom:`1px solid ${T.green}33`,padding:"10px 16px 8px",position:"sticky",top:0,zIndex:100,backdropFilter:"blur(12px)"}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-            <div>
-              <div style={{...orb,fontSize:13,fontWeight:900,...gt(T.green)}}>⚔️ COMEBACK OS</div>
-              <div style={{display:"flex",gap:6,alignItems:"center",marginTop:2}}>
-                <div style={{fontSize:9,color:T.dim,letterSpacing:1,...mono}}>{rank.title} · {Math.max(0,Math.floor((new Date("2026-06-01")-new Date())/86400000))}d LEFT</div>
-                <span style={{fontSize:9,color:T.border}}>·</span>
-                <LiveTimeBar/>
+            <div style={{display:"flex",alignItems:"center",gap:10}}>
+              <button onClick={()=>setSidebarOpen(o=>!o)} className="btn-tap" style={{background:"transparent",border:`1px solid ${T.border}`,borderRadius:8,padding:"6px 8px",cursor:"pointer",display:"flex",alignItems:"center",gap:4}}>
+                <div style={{width:16,height:2,background:T.green,borderRadius:1,position:"relative",transition:"all .2s",boxShadow:`0 0 6px ${T.green}44`}}>
+                  <div style={{width:16,height:2,background:T.green,borderRadius:1,position:"absolute",top:5,left:0,transition:"all .2s"}}/>
+                  <div style={{width:12,height:2,background:T.green,borderRadius:1,position:"absolute",top:-5,left:0,transition:"all .2s"}}/>
+                </div>
+              </button>
+              <div>
+                <div style={{...orb,fontSize:13,fontWeight:900,...gt(T.green)}}>⚔️ COMEBACK OS</div>
+                <div style={{display:"flex",gap:6,alignItems:"center",marginTop:2}}>
+                  <div style={{fontSize:9,color:T.dim,letterSpacing:1,...mono}}>{rank.title} · {Math.max(0,Math.floor((new Date("2026-06-01")-new Date())/86400000))}d LEFT</div>
+                  <span style={{fontSize:9,color:T.border}}>·</span>
+                  <LiveTimeBar/>
+                </div>
               </div>
             </div>
             <div style={{display:"flex",alignItems:"center",gap:8}}>
               <button onClick={()=>{if(!battlePin){setShowSetPin(true);}else{setBattleMode(true);setBattleStart(Date.now());}}} className="btn-tap" style={{padding:"5px 10px",background:T.pink+"22",border:`1px solid ${T.pink}33`,borderRadius:8,color:T.pink,fontSize:9,...mono,cursor:"pointer",letterSpacing:1}}>⚔️</button>
               <div style={{textAlign:"right"}}>
-                <div style={{...orb,fontSize:11,color:T.green,fontWeight:700}}>{tp}%</div>
+                <div style={{...orb,fontSize:11,fontWeight:700,color:T.green}}>{tp}%</div>
                 <div style={{fontSize:8,color:T.gold,...mono}}>⚡{xp} · LVL{xpLevel}</div>
               </div>
-              <Ring pct={tp} size={38} stroke={3} color={T.green}/>
             </div>
+            <Ring pct={tp} size={38} stroke={3} color={T.green}/>
           </div>
           <div style={{position:"absolute",inset:0,background:"repeating-linear-gradient(0deg,transparent,transparent 3px,#00ff0804 4px)",pointerEvents:"none"}}/>
         </div>
@@ -4245,18 +4269,18 @@ function AppMain({ initialData:D, pinHash, onPinChange }){
         )}
 
         {/* ── MAIN CONTENT ── */}
-        <div style={{paddingBottom:68}}>
-          
+        <div style={{paddingBottom:68, paddingTop:72}}>
+           
           <Sidebar tab={tab} setTab={setTab} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} T={T} />
-          <SleepMoodCorrelator T={T} orb={orb} mono={mono} raj={raj} />
-          <ThesisProgressRings T={T} orb={orb} mono={mono} raj={raj} />
-          <BattleModeToggle T={T} orb={orb} mono={mono} raj={raj} />
-          <StreakFlameVisualizer T={T} orb={orb} mono={mono} raj={raj} />
-          <PersonalAIAssistant T={T} orb={orb} mono={mono} raj={raj} />
-          <InteractiveQuickActionGrid T={T} orb={orb} mono={mono} raj={raj} />
-          <CinematicWelcomeHUD T={T} orb={orb} mono={mono} raj={raj} />
-          <RealTimeStatusIndicator T={T} orb={orb} mono={mono} raj={raj} />
-          <AppStatusPipeline T={T} orb={orb} mono={mono} raj={raj} />
+          <SleepMoodCorrelator T={T} orb={orb} mono={mono} raj={raj} C={C} />
+          <ThesisProgressRings T={T} orb={orb} mono={mono} raj={raj} C={C} />
+          <BattleModeToggle T={T} orb={orb} mono={mono} raj={raj} C={C} />
+          <StreakFlameVisualizer T={T} orb={orb} mono={mono} raj={raj} C={C} />
+          <PersonalAIAssistant T={T} orb={orb} mono={mono} raj={raj} C={C} />
+          <InteractiveQuickActionGrid T={T} orb={orb} mono={mono} raj={raj} C={C} />
+          <CinematicWelcomeHUD T={T} orb={orb} mono={mono} raj={raj} C={C} />
+          <RealTimeStatusIndicator T={T} orb={orb} mono={mono} raj={raj} C={C} />
+          <AppStatusPipeline T={T} orb={orb} mono={mono} raj={raj} C={C} />
         {tab==="home"&&<Home {...{
             mood, setMood, moodLog, setMoodLog, sleepLog, setSleepLog, sleepHours, setSleepHours, sleepQuality, setSleepQuality,
             waterCount, setWaterCount, calorieLog, setCalorieLog, calInput, setCalInput, calLabel, setCalLabel,
@@ -4277,6 +4301,7 @@ function AppMain({ initialData:D, pinHash, onPinChange }){
             T, orb, mono, raj, C, DAYS, Ring, RestTimer
           }} />}
           {tab==="focus"&&Focus()}
+          {tab==="admissions"&&<AdmissionsDashboard T={T} orb={orb} mono={mono} raj={raj} C={C} />}
           {tab==="me"&&Me()}
           {tab==="progress"&&Progress()}
           {tab==="tasks"&&TasksNotes()}
@@ -4393,11 +4418,9 @@ function AppMain({ initialData:D, pinHash, onPinChange }){
             {id:"plan",icon:"📅",label:"PLAN"},
             {id:"body",icon:"💪",label:"BODY"},
             {id:"focus",icon:"⏱",label:"FOCUS"},
-            {id:"me",icon:"👤",label:"ME"},
-            {id:"progress",icon:"📈",label:"TRACK"},
-            {id:"tasks",icon:"✅",label:"TASKS"},
-            {id:"goals",icon:"🎯",label:"GOALS"},
+            {id:"admissions",icon:"🎓",label:"ADMIT"},
             {id:"life",icon:"⚡",label:"LIFE"},
+            {id:"me",icon:"👤",label:"ME"},
             {id:"stats",icon:"🏅",label:"STATS"},
           ].map(t=>(
             <div key={t.id} className="tabitem" onClick={()=>setTab(t.id)} style={{flex:1,padding:"7px 2px",textAlign:"center",cursor:"pointer",borderTop:tab===t.id?`2px solid ${T.green}`:"2px solid transparent",background:tab===t.id?"#00ff8808":"transparent",transition:"all .2s",minWidth:40}}>
