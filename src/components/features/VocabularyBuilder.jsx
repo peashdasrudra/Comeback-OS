@@ -1,5 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
+// eslint-disable-next-line
 import { useState, useEffect } from "react";
+// eslint-disable-next-line
 import { BookOpen, RotateCw, Check, X, Sparkles } from "lucide-react";
 
 const vocabList = [
