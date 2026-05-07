@@ -1,3 +1,4 @@
+import DashboardOverview from "./DashboardOverview";
 import CinematicWelcomeHUD from "./CinematicWelcomeHUD";
 import InteractiveQuickActionGrid from "./InteractiveQuickActionGrid";
 import RealTimeStatusIndicator from "./RealTimeStatusIndicator";
@@ -62,6 +63,7 @@ const Home = (props) => {
 
    return (
     <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 12 }}>
+       <DashboardOverview />
        <CinematicWelcomeHUD />
        <RealTimeStatusIndicator />
        <InteractiveQuickActionGrid />

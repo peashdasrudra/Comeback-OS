@@ -1,5 +1,4 @@
 import { useApp } from "../../context/AppContext";
-import DashboardOverview from "../features/DashboardOverview";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu } from "lucide-react";
 
@@ -104,9 +103,6 @@ const MainLayout = ({ children }) => {
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
           >
-            {/* Dashboard Overview - Fixed for all tabs */}
-            <DashboardOverview />
-            
             {/* Tab-specific content */}
             <div className="mt-4">
               {children}
