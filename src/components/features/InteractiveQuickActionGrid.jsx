@@ -17,13 +17,13 @@ const InteractiveQuickActionGrid = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 2 + i * 0.15, duration: 0.6 }}
           whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
-          className="relative group cursor-pointer bg-zinc-900/80 border border-zinc-800 rounded-2xl p-5 flex flex-col items-center gap-3 overflow-hidden"
+          className="relative group cursor-pointer bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-2xl p-5 flex flex-col items-center gap-3 overflow-hidden"
         >
           <div
             className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-xl"
             style={{ background: `radial-gradient(circle at center, ${a.color}33, transparent 70%)` }}
           />
-          <div className="relative z-10 w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: `${a.color}22` }}>
+          <div className="relative z-10 w-10 h-10 rounded-xl flex items-center justify-center bg-white/5">
             <a.icon size={20} style={{ color: a.color }} />
           </div>
           <div className="relative z-10 text-center">

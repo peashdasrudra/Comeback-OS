@@ -1289,7 +1289,7 @@ function AppMain({ initialData:D, pinHash, onPinChange }){
   const totalPct=()=>{const tot=WEEKS.reduce((a,w)=>a+w.thesis.length+w.csprep.length+w.ielts.length+w.admission.length,0);const done=Object.values(tasksDone).filter(Boolean).length;return tot===0?0:Math.round((done/tot)*100);};
   const pc=(ph)=>({1:T.orange,2:T.green,3:T.blue,4:"#a855f7"})[ph];
   const gt=(color)=>({color,textShadow:`0 0 10px ${color}44`});
-  const C=(extra={})=>({background:T.bg1,border:`1px solid ${T.border}`,borderRadius:12,...extra});
+  const C=(extra={})=>({background:"transparent",border:`1px solid ${T.border}`,borderRadius:12,...extra});
   const tp=totalPct();
   const curWeight=weightLog.length>0?weightLog[weightLog.length-1].weight:50;
   const wGained=Math.max(0,curWeight-50).toFixed(1);
@@ -1601,7 +1601,7 @@ function AppMain({ initialData:D, pinHash, onPinChange }){
         )}
 
         {/* ── TOP NAV BAR ── */}
-        <div style={{background:"linear-gradient(180deg,#020d08,#020408)",borderBottom:`1px solid ${T.green}33`,padding:"10px 16px 8px",position:"sticky",top:0,zIndex:100,backdropFilter:"blur(12px)"}}>
+        <div style={{background:"rgba(2,4,8,0.4)",borderBottom:`1px solid rgba(255,255,255,0.05)`,padding:"10px 16px 8px",position:"sticky",top:0,zIndex:100,backdropFilter:"blur(24px)",WebkitBackdropFilter:"blur(24px)"}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
             <div style={{display:"flex",alignItems:"center",gap:10}}>
               <button onClick={()=>setSidebarOpen(o=>!o)} className="btn-tap" style={{background:"transparent",border:`1px solid ${T.border}`,borderRadius:8,padding:"6px 8px",cursor:"pointer",display:"flex",alignItems:"center",gap:4}}>
@@ -1778,7 +1778,7 @@ function AppMain({ initialData:D, pinHash, onPinChange }){
         <button onClick={()=>setShowQuickLog(q=>!q)} className="btn-tap" style={{position:"fixed",bottom:78,right:16,width:48,height:48,borderRadius:"50%",background:`linear-gradient(135deg,${T.green},${T.blue})`,border:"none",color:"#020408",fontSize:22,cursor:"pointer",zIndex:showQuickLog?1901:150,boxShadow:`0 4px 20px ${T.green}66`,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:900,transition:"all .2s",transform:showQuickLog?"rotate(45deg)":"rotate(0)"}}>+</button>
 
         {/* ── BOTTOM NAV ── */}
-        <div style={{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:430,background:"rgba(2,4,8,0.97)",borderTop:`1px solid ${T.green}22`,backdropFilter:"blur(16px)",display:"flex",zIndex:100,overflowX:"auto"}}>
+        <div style={{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:430,background:"rgba(2,4,8,0.4)",borderTop:"1px solid rgba(255,255,255,0.05)",backdropFilter:"blur(24px)",WebkitBackdropFilter:"blur(24px)",display:"flex",zIndex:100,overflowX:"auto"}}>
           {[
             {id:"home",icon:"🏠",label:"HOME"},
             {id:"plan",icon:"📅",label:"PLAN"},

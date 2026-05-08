@@ -23,8 +23,8 @@ const MainLayout = ({ children }) => {
   return (
     <div className="min-h-screen bg-[#020408] text-white max-w-[430px] mx-auto relative">
       {/* Fixed Frosted Header */}
-      <div className="fixed top-0 w-full max-w-[430px] z-50 bg-[#020408]/60 backdrop-blur-xl border-b border-white/5">
-        <div className="flex items-center gap-3 px-3 h-14">
+      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-[100] bg-[#020408]/40 backdrop-blur-3xl border-b border-white/5 px-4 py-3">
+        <div className="flex items-center gap-3">
           <button 
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className="w-9 h-9 rounded-lg bg-[#0a1520]/90 border border-[#0d2030] flex items-center justify-center hover:bg-[#0d2030] transition-colors"
@@ -104,7 +104,7 @@ const MainLayout = ({ children }) => {
       </motion.div>
 
       {/* Main Content — scrolls under frosted header */}
-      <div className="pt-20 pb-24 h-screen overflow-y-auto scrollbar-hide">
+      <div className="pt-20 pb-28 px-4 h-screen overflow-y-auto scrollbar-hide w-full">
         <AnimatePresence mode="wait">
           <motion.div
             key={tab}

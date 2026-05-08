@@ -19,7 +19,7 @@ const StreakFlameVisualizer = ({ T, C, mono, orb, raj, streak }) => {
 
   return (
     <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6 }}
-      style={{ ...C({ padding: "14px", marginBottom: 12, background: "linear-gradient(135deg,#0a0500,transparent)", border: `2px solid ${flameColor}44` }) }}
+      style={{ ...C({ padding: "14px", marginBottom: 12, background: "transparent", border: `2px solid ${flameColor}44` }) }}
     >
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
         <div style={{ fontSize: 9, color: flameColor, letterSpacing: 2, ...mono }}>🔥 STREAK FLAME</div>

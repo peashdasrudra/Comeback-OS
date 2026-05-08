@@ -110,13 +110,13 @@ function ProgressBar({ pct, color, height = 4, animated = true }) {
 function GlassCard({ children, borderColor, bg, padding = 14, style = {}, glow, hover = true }) {
   return (
     <motion.div
-      whileHover={hover ? { scale: 1.02, y: -2 } : {}}
+      whileHover={hover ? { scale: 1.01, y: -2 } : {}}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
       style={{
-        background: bg ? GLASS(bg) : "rgba(255,255,255,0.05)",
-        backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
-        border: `1px solid ${borderColor || "rgba(255,255,255,0.1)"}`,
-        borderRadius: 24, padding, boxShadow: glow || "0 8px 32px rgba(0,0,0,0.2)",
+        background: bg ? GLASS(bg) : "rgba(255,255,255,0.03)",
+        backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)",
+        border: `1px solid ${borderColor || "rgba(255,255,255,0.08)"}`,
+        borderRadius: 24, padding, boxShadow: glow || "0 8px 32px rgba(0,0,0,0.3)",
         ...style,
       }}
     >{children}</motion.div>
@@ -702,16 +702,17 @@ export function AdmissionsDashboard({ T, orb, mono, raj, C }) {
                   whileHover={{ scale: 1.01, y: -2 }}
                   onClick={() => { setSelectedUni(u.id); handleTab("unis"); }}
                   style={{
-                    background: `rgba(255,255,255,0.04)`,
-                    backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
-                    border: `1px solid ${u.color}33`,
-                    borderRadius: 20, padding: "14px 16px", cursor: "pointer",
-                    boxShadow: `0 4px 24px rgba(0,0,0,0.3)`,
+                    background: "rgba(255,255,255,0.03)",
+                    backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)",
+                    border: `1px solid rgba(255,255,255,0.08)`,
+                    borderRadius: 20, padding: "18px 20px", cursor: "pointer",
+                    boxShadow: `0 8px 32px rgba(0,0,0,0.3)`,
                     overflow: "hidden",
                     position: "relative",
+                    transition: "all 0.2s ease",
                   }}
                 >
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                       <span style={{ fontSize: 22 }}>{u.icon}</span>
                       <div>
@@ -732,12 +733,12 @@ export function AdmissionsDashboard({ T, orb, mono, raj, C }) {
                       <AnimatedCounter value={u.yourChance} color={u.yourChance >= 80 ? T.green : u.yourChance >= 60 ? T.orange : T.red} fontSize={18} suffix="%" />
                     </motion.div>
                   </div>
-                  <div style={{ height: 4, background: "rgba(255,255,255,0.06)", borderRadius: 2, overflow: "hidden", position: "relative" }}>
+                  <div style={{ height: 4, background: "rgba(255,255,255,0.04)", borderRadius: 4, overflow: "hidden", position: "relative" }}>
                     <div style={{
                       width: `${u.yourChance}%`, height: "100%",
                       background: u.yourChance >= 80 ? T.green : u.yourChance >= 60 ? T.orange : T.red,
-                      borderRadius: 2,
-                      boxShadow: `0 0 8px ${u.yourChance >= 80 ? T.green : u.yourChance >= 60 ? T.orange : T.red}`,
+                      borderRadius: 4,
+                      boxShadow: `0 0 12px ${u.yourChance >= 80 ? T.green : u.yourChance >= 60 ? T.orange : T.red}, 0 0 24px ${u.yourChance >= 80 ? T.green : u.yourChance >= 60 ? T.orange : T.red}44`,
                       transition: "width .8s ease",
                     }} />
                   </div>
@@ -846,6 +847,15 @@ export function AdmissionsDashboard({ T, orb, mono, raj, C }) {
                   <div style={{ background: T.green + "08", border: `1px solid ${T.green}22`, borderRadius: 8, padding: 10, marginBottom: 10 }}>
                     <div style={{ fontSize: 8, color: T.green, letterSpacing: 2, ...mono, marginBottom: 4 }}>✅ WHY APPLY</div>
                     <div style={{ fontSize: 10, color: T.text, lineHeight: 1.6, ...raj }}>{u.whyApply}</div>
+                  </div>
+                  <div style={{ height: 3, background: "rgba(255,255,255,0.04)", borderRadius: 4, overflow: "hidden", marginBottom: 10 }}>
+                    <div style={{
+                      width: `${u.yourChance}%`, height: "100%",
+                      background: u.yourChance >= 80 ? T.green : u.yourChance >= 60 ? T.orange : T.red,
+                      borderRadius: 4,
+                      boxShadow: `0 0 10px ${u.yourChance >= 80 ? T.green : u.yourChance >= 60 ? T.orange : T.red}, 0 0 20px ${u.yourChance >= 80 ? T.green : u.yourChance >= 60 ? T.orange : T.red}33`,
+                      transition: "width .8s ease",
+                    }} />
                   </div>
                 </div>
                 {/* Collapsible sections */}

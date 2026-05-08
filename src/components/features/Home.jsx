@@ -19,24 +19,26 @@ const Home = (props) => {
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
+        whileHover={{ y: -5, boxShadow: '0 25px 50px -12px rgba(0, 255, 136, 0.25)' }}
         transition={{ duration: 0.7, ease: "easeOut" }}
-        className="w-full"
+        className="bg-white/[0.03] backdrop-blur-3xl border border-white/10 rounded-[24px] shadow-[0_8px_32px_rgba(0,0,0,0.3)] overflow-hidden p-6 mb-4"
       >
         <CinematicWelcomeHUD />
       </motion.div>
 
       {/* Asymmetrical bento grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      <div className="grid grid-cols-3 gap-5">
         <motion.div
           initial={{ opacity: 0, x: -24 }}
           animate={{ opacity: 1, x: 0 }}
+          whileHover={{ y: -5, boxShadow: '0 25px 50px -12px rgba(0, 255, 136, 0.25)' }}
           transition={{ delay: 0.15, duration: 0.6, ease: "easeOut" }}
-          className="lg:col-span-2"
+          className="col-span-2"
         >
           <motion.div
             whileHover={{ scale: 1.01, y: -2 }}
             whileTap={{ scale: 0.99 }}
-            className="group bg-white/[0.02] backdrop-blur-2xl border border-white/[0.05] shadow-2xl shadow-black/50 rounded-3xl p-5 md:p-6 hover:shadow-[0_0_30px_rgba(0,180,255,0.12)] transition-shadow duration-500"
+            className="bg-white/[0.03] backdrop-blur-3xl border border-white/10 rounded-[24px] shadow-[0_8px_32px_rgba(0,0,0,0.3)] overflow-hidden"
           >
             <InteractiveQuickActionGrid />
           </motion.div>
@@ -45,16 +47,15 @@ const Home = (props) => {
         <motion.div
           initial={{ opacity: 0, x: 24 }}
           animate={{ opacity: 1, x: 0 }}
+          whileHover={{ y: -5, boxShadow: '0 25px 50px -12px rgba(0, 255, 136, 0.25)' }}
           transition={{ delay: 0.25, duration: 0.6, ease: "easeOut" }}
         >
           <motion.div
             whileHover={{ scale: 1.01, y: -2 }}
             whileTap={{ scale: 0.99 }}
-            className="group bg-white/[0.02] backdrop-blur-2xl border border-white/[0.05] shadow-2xl shadow-black/50 rounded-3xl p-5 md:p-6 hover:shadow-[0_0_30px_rgba(255,136,0,0.12)] transition-shadow duration-500"
+            className="bg-white/[0.03] backdrop-blur-3xl border border-white/10 rounded-[24px] shadow-[0_8px_32px_rgba(0,0,0,0.3)] overflow-hidden p-5 min-h-[250px] relative"
           >
-            <div className="w-full">
-              <StreakFlameVisualizer T={T} C={C} mono={mono} orb={orb} raj={raj} streak={streak} />
-            </div>
+            <StreakFlameVisualizer T={T} C={C} mono={mono} orb={orb} raj={raj} streak={streak} />
           </motion.div>
         </motion.div>
       </div>
@@ -62,12 +63,13 @@ const Home = (props) => {
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
+        whileHover={{ y: -5, boxShadow: '0 25px 50px -12px rgba(0, 255, 136, 0.25)' }}
         transition={{ delay: 0.35, duration: 0.6, ease: "easeOut" }}
       >
         <motion.div
           whileHover={{ scale: 1.005, y: -1 }}
           whileTap={{ scale: 0.995 }}
-          className="bg-white/[0.02] backdrop-blur-2xl border border-white/[0.05] shadow-2xl shadow-black/50 rounded-3xl p-4 md:p-5 hover:shadow-[0_0_25px_rgba(52,211,153,0.1)] transition-shadow duration-500"
+          className="bg-white/[0.03] backdrop-blur-3xl border border-white/10 rounded-[24px] shadow-[0_8px_32px_rgba(0,0,0,0.3)] overflow-hidden"
         >
           <RealTimeStatusIndicator />
         </motion.div>
