@@ -9,26 +9,62 @@ const actions = [
 
 const InteractiveQuickActionGrid = () => {
   return (
-    <div className="grid grid-cols-3 gap-4">
+    // ✅ FIX: Removed per-cell dark backgrounds — they lived inside a glass card,
+    //          creating a box-in-box effect. Cells now use transparent bases with
+    //          colored borders + hover glows only.
+    <div className="grid grid-cols-3 gap-3 p-5">
       {actions.map((a, i) => (
         <motion.div
           key={a.label}
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 2 + i * 0.15, duration: 0.6 }}
-          whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
-          className="relative group cursor-pointer bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-2xl p-5 flex flex-col items-center gap-3 overflow-hidden"
+          transition={{ delay: 2 + i * 0.12, duration: 0.5 }}
+          whileHover={{
+            scale: 1.04,
+            transition: { duration: 0.18 },
+          }}
+          whileTap={{ scale: 0.97 }}
+          className="relative group cursor-pointer rounded-2xl p-4 flex flex-col items-center gap-2.5 overflow-hidden"
+          style={{
+            // ✅ Transparent base — the parent glass card is the real panel
+            background: "transparent",
+            border: `1px solid ${a.color}28`,
+            transition: "border-color 0.25s",
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.borderColor = a.color + "80";
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.borderColor = a.color + "28";
+          }}
         >
+          {/* Radial glow on hover */}
           <div
-            className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-xl"
-            style={{ background: `radial-gradient(circle at center, ${a.color}33, transparent 70%)` }}
+            className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            style={{ background: `radial-gradient(circle at 50% 60%, ${a.color}18, transparent 70%)` }}
           />
-          <div className="relative z-10 w-10 h-10 rounded-xl flex items-center justify-center bg-white/5">
-            <a.icon size={20} style={{ color: a.color }} />
+
+          {/* Icon */}
+          <div
+            className="relative z-10 w-9 h-9 rounded-xl flex items-center justify-center"
+            style={{
+              background: a.color + "15",
+              border: `1px solid ${a.color}33`,
+              boxShadow: `0 0 12px ${a.color}22`,
+            }}
+          >
+            <a.icon size={18} style={{ color: a.color }} />
           </div>
+
+          {/* Text */}
           <div className="relative z-10 text-center">
-            <div className="text-white text-xs font-bold tracking-wide">{a.label}</div>
-            <div className="text-zinc-500 text-[10px] font-mono mt-0.5">{a.desc}</div>
+            <div
+              className="text-white text-[11px] font-bold tracking-wide"
+              style={{ fontFamily: "'Rajdhani', sans-serif" }}
+            >
+              {a.label}
+            </div>
+            <div className="text-zinc-500 text-[9px] font-mono mt-0.5">{a.desc}</div>
           </div>
         </motion.div>
       ))}

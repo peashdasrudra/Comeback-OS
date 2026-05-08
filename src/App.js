@@ -1600,6 +1600,19 @@ function AppMain({ initialData:D, pinHash, onPinChange }){
           </div>
         )}
 
+        {/* ── GLOBAL AMBIENT LIGHTS ── */}
+<div style={{position:"fixed",inset:0,zIndex:0,pointerEvents:"none",overflow:"hidden"}}>
+  <div style={{position:"absolute",top:"-15%",left:"5%",width:460,height:460,
+    background:"radial-gradient(circle,rgba(0,255,136,0.13) 0%,transparent 70%)",
+    filter:"blur(80px)"}}/>
+  <div style={{position:"absolute",bottom:"-10%",right:"0%",width:400,height:400,
+    background:"radial-gradient(circle,rgba(0,180,255,0.11) 0%,transparent 70%)",
+    filter:"blur(70px)"}}/>
+  <div style={{position:"absolute",top:"45%",right:"-5%",width:260,height:260,
+    background:"radial-gradient(circle,rgba(255,0,110,0.08) 0%,transparent 70%)",
+    filter:"blur(55px)"}}/>
+</div>
+
         {/* ── TOP NAV BAR ── */}
         <div style={{background:"rgba(2,4,8,0.4)",borderBottom:`1px solid rgba(255,255,255,0.05)`,padding:"10px 16px 8px",position:"sticky",top:0,zIndex:100,backdropFilter:"blur(24px)",WebkitBackdropFilter:"blur(24px)"}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
@@ -1646,7 +1659,7 @@ function AppMain({ initialData:D, pinHash, onPinChange }){
         )}
 
         {/* ── MAIN CONTENT ── */}
-        <div style={{paddingBottom:68, paddingTop:72}}>
+        <div style={{paddingBottom:68, paddingTop:0}}>
            
           <Sidebar tab={tab} setTab={setTab} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} T={T} />
 
