@@ -30,7 +30,7 @@ const Me = () => {
       {/* Hero Card with Radial Mesh Gradient */}
       <motion.div
         whileHover={{ scale: 1.01, y: -2 }}
-        className="bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-green-900/20 via-[#020408] to-[#020408] backdrop-blur-xl border border-green-500/20 rounded-2xl p-5 shadow-xl relative overflow-hidden">
+        className="bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-emerald-900/20 via-[#0a1520] to-[#0a1520] border border-white/10 backdrop-blur-3xl rounded-[32px] p-8 shadow-xl relative overflow-hidden">
         <div className="absolute inset-0 bg-white/[0.02] rounded-2xl" />
         <div className="relative z-10">
           <div className="text-2xl font-bold font-orbitron text-green-400">Peash Das Rudra</div>
@@ -47,7 +47,7 @@ const Me = () => {
           <Award size={16} className="text-blue-400" />
           <span className="text-[9px] text-blue-400 tracking-[2px] font-mono">ACADEMIC RECORD</span>
         </div>
-        <div className="relative border-l-2 border-white/5 pl-6 space-y-5">
+        <div className="border-l-2 border-white/5 ml-4 pl-8 flex flex-col gap-6">
           {academicDegrees.map((d, i) => (
             <motion.div
               key={d.degree}
@@ -60,7 +60,7 @@ const Me = () => {
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: i * 0.1 + 0.2, type: "spring", stiffness: 400 }}
-                className="absolute w-2.5 h-2.5 bg-green-500 rounded-full shadow-[0_0_12px_#22c55e] -left-[23px] top-2"
+                className="absolute w-4 h-4 bg-[#0a1520] border-2 border-emerald-500 rounded-full shadow-[0_0_12px_#22c55e] -left-[9px] top-1"
               />
               <div className="text-xs font-bold font-orbitron text-green-400">{d.degree}</div>
               <div className="text-[11px] text-gray-300 font-rajdhani">{d.title}</div>

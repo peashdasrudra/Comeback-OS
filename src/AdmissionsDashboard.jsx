@@ -94,14 +94,14 @@ function PriorityBadge({ priority }) {
 
 function ProgressBar({ pct, color, height = 4, animated = true }) {
   return (
-    <div style={{ height, background: "#0a1520", borderRadius: height, overflow: "hidden", boxShadow: `inset 0 0 4px ${color}22` }}>
+    <div className="bg-white/5 rounded overflow-hidden" style={{ height }}>
       <div style={{
         width: `${pct}%`, height: "100%", background: color,
         transition: "width .8s ease", borderRadius: height,
         animation: animated ? "progressBar 1s ease-out" : "none",
         backgroundSize: "200% 100%",
         backgroundImage: `linear-gradient(90deg, ${color}, ${color}cc, ${color})`,
-        boxShadow: `0 0 8px ${color}44, 0 0 20px ${color}22`,
+        boxShadow: `0 0 10px ${color}`,
       }} />
     </div>
   );
@@ -112,11 +112,11 @@ function GlassCard({ children, borderColor, bg, padding = 14, style = {}, glow, 
     <motion.div
       whileHover={hover ? { scale: 1.01, y: -2 } : {}}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      className="bg-white/[0.03] backdrop-blur-2xl rounded-2xl"
       style={{
-        background: bg ? GLASS(bg) : "rgba(255,255,255,0.03)",
-        backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)",
         border: `1px solid ${borderColor || "rgba(255,255,255,0.08)"}`,
-        borderRadius: 24, padding, boxShadow: glow || "0 8px 32px rgba(0,0,0,0.3)",
+        padding, boxShadow: glow || "0 8px 32px rgba(0,0,0,0.3)",
+        ...(bg ? { background: GLASS(bg) } : {}),
         ...style,
       }}
     >{children}</motion.div>
@@ -387,7 +387,7 @@ export function AdmissionsDashboard({ T, orb, mono, raj, C }) {
   const xpProgress = Math.round(((xp - lvl.prevXp) / (lvl.nextXp - lvl.prevXp)) * 100);
 
   return (
-    <div style={{ padding: "12px", position: "relative" }}>
+    <div className="relative bg-transparent p-3">
       <Confetti active={confettiActive} />
 
       {/* Achievement Popup */}
@@ -701,16 +701,7 @@ export function AdmissionsDashboard({ T, orb, mono, raj, C }) {
                   transition={{ delay: i * 0.05, duration: 0.4 }}
                   whileHover={{ scale: 1.01, y: -2 }}
                   onClick={() => { setSelectedUni(u.id); handleTab("unis"); }}
-                  style={{
-                    background: "rgba(255,255,255,0.03)",
-                    backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)",
-                    border: `1px solid rgba(255,255,255,0.08)`,
-                    borderRadius: 20, padding: "18px 20px", cursor: "pointer",
-                    boxShadow: `0 8px 32px rgba(0,0,0,0.3)`,
-                    overflow: "hidden",
-                    position: "relative",
-                    transition: "all 0.2s ease",
-                  }}
+                  className="bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-2xl p-5 mb-4 cursor-pointer relative overflow-hidden"
                 >
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -733,14 +724,17 @@ export function AdmissionsDashboard({ T, orb, mono, raj, C }) {
                       <AnimatedCounter value={u.yourChance} color={u.yourChance >= 80 ? T.green : u.yourChance >= 60 ? T.orange : T.red} fontSize={18} suffix="%" />
                     </motion.div>
                   </div>
-                  <div style={{ height: 4, background: "rgba(255,255,255,0.04)", borderRadius: 4, overflow: "hidden", position: "relative" }}>
-                    <div style={{
-                      width: `${u.yourChance}%`, height: "100%",
-                      background: u.yourChance >= 80 ? T.green : u.yourChance >= 60 ? T.orange : T.red,
-                      borderRadius: 4,
-                      boxShadow: `0 0 12px ${u.yourChance >= 80 ? T.green : u.yourChance >= 60 ? T.orange : T.red}, 0 0 24px ${u.yourChance >= 80 ? T.green : u.yourChance >= 60 ? T.orange : T.red}44`,
-                      transition: "width .8s ease",
-                    }} />
+                  <div className="h-1 bg-white/5 rounded overflow-hidden">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${u.yourChance}%` }}
+                      transition={{ duration: 0.8, ease: "easeOut" }}
+                      className="h-full rounded"
+                      style={{
+                        background: u.yourChance >= 80 ? T.green : u.yourChance >= 60 ? T.orange : T.red,
+                        boxShadow: `0 0 10px ${u.yourChance >= 80 ? T.green : u.yourChance >= 60 ? T.orange : T.red}`,
+                      }}
+                    />
                   </div>
                 </motion.div>
               ))}

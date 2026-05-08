@@ -19,7 +19,7 @@ const Home = (props) => {
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
-        whileHover={{ y: -5, boxShadow: '0 25px 50px -12px rgba(0, 255, 136, 0.25)' }}
+        whileHover={{ y: -4, scale: 1.01 }}
         transition={{ duration: 0.7, ease: "easeOut" }}
         className="bg-white/[0.03] backdrop-blur-3xl border border-white/10 rounded-[24px] shadow-[0_8px_32px_rgba(0,0,0,0.3)] overflow-hidden p-6 mb-4"
       >
@@ -31,7 +31,7 @@ const Home = (props) => {
         <motion.div
           initial={{ opacity: 0, x: -24 }}
           animate={{ opacity: 1, x: 0 }}
-          whileHover={{ y: -5, boxShadow: '0 25px 50px -12px rgba(0, 255, 136, 0.25)' }}
+          whileHover={{ y: -4, scale: 1.01 }}
           transition={{ delay: 0.15, duration: 0.6, ease: "easeOut" }}
           className="col-span-2"
         >
@@ -47,7 +47,7 @@ const Home = (props) => {
         <motion.div
           initial={{ opacity: 0, x: 24 }}
           animate={{ opacity: 1, x: 0 }}
-          whileHover={{ y: -5, boxShadow: '0 25px 50px -12px rgba(0, 255, 136, 0.25)' }}
+          whileHover={{ y: -4, scale: 1.01 }}
           transition={{ delay: 0.25, duration: 0.6, ease: "easeOut" }}
         >
           <motion.div
@@ -63,7 +63,7 @@ const Home = (props) => {
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
-        whileHover={{ y: -5, boxShadow: '0 25px 50px -12px rgba(0, 255, 136, 0.25)' }}
+        whileHover={{ y: -4, scale: 1.01 }}
         transition={{ delay: 0.35, duration: 0.6, ease: "easeOut" }}
       >
         <motion.div
