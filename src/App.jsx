@@ -1,45 +1,59 @@
 /* eslint-disable */
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { initializeApp } from "firebase/app";
 import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
-import { AdmissionsDashboard } from "./AdmissionsDashboard";
-import Home from "./components/features/Home";
-import Plan from "./components/features/Plan";
-import Body from "./components/features/Body";
-import BodyTab from "./components/features/BodyTab";
-import PageTransition from "./components/layout/PageTransition";
-import Sidebar from "./components/layout/Sidebar";
-import SleepMoodCorrelator from "./components/features/SleepMoodCorrelator";
-import ThesisProgressRings from "./components/features/ThesisProgressRings";
-import BattleModeToggle from "./components/features/BattleModeToggle";
-import StreakFlameVisualizer from "./components/features/StreakFlameVisualizer";
-import PersonalAIAssistant from "./components/features/PersonalAIAssistant";
-import InteractiveQuickActionGrid from "./components/features/InteractiveQuickActionGrid";
-import CinematicWelcomeHUD from "./components/features/CinematicWelcomeHUD";
-import RealTimeStatusIndicator from "./components/features/RealTimeStatusIndicator";
-import AppStatusPipeline from "./components/features/AppStatusPipeline";
-import ResearchMilestoneTracker from "./components/features/ResearchMilestoneTracker";
-import Life from "./components/features/Life";
-import StatsTab from "./components/features/StatsTab";
-import TasksNotes from "./components/features/TasksNotes";
-import Goals from "./components/features/Goals";
-import FocusTab from "./components/features/FocusTab";
-import MeTab from "./components/features/MeTab";
-import ProgressTab from "./components/features/ProgressTab";
-import PlanTab from "./components/features/PlanTab";
-import { AppProvider } from "./context/AppContext";
+
+const AdmissionsDashboard = lazy(() => import("./AdmissionsDashboard"));
+const AdmissionsTab = lazy(() => import("./components/features/AdmissionsTab"));
+const Home = lazy(() => import("./components/features/Home"));
+const DashboardOverview = lazy(() => import("./components/features/DashboardOverview"));
+const Plan = lazy(() => import("./components/features/Plan"));
+const Body = lazy(() => import("./components/features/Body"));
+const BodyTab = lazy(() => import("./components/features/BodyTab"));
+const PageTransition = lazy(() => import("./components/layout/PageTransition"));
+const Sidebar = lazy(() => import("./components/layout/Sidebar"));
+const SleepMoodCorrelator = lazy(() => import("./components/features/SleepMoodCorrelator"));
+const ThesisProgressRings = lazy(() => import("./components/features/ThesisProgressRings"));
+const BattleModeToggle = lazy(() => import("./components/features/BattleModeToggle"));
+const StreakFlameVisualizer = lazy(() => import("./components/features/StreakFlameVisualizer"));
+const PersonalAIAssistant = lazy(() => import("./components/features/PersonalAIAssistant"));
+const InteractiveQuickActionGrid = lazy(() => import("./components/features/InteractiveQuickActionGrid"));
+const CinematicWelcomeHUD = lazy(() => import("./components/features/CinematicWelcomeHUD"));
+const RealTimeStatusIndicator = lazy(() => import("./components/features/RealTimeStatusIndicator"));
+const AppStatusPipeline = lazy(() => import("./components/features/AppStatusPipeline"));
+const ResearchMilestoneTracker = lazy(() => import("./components/features/ResearchMilestoneTracker"));
+const Life = lazy(() => import("./components/features/Life"));
+const StatsTab = lazy(() => import("./components/features/StatsTab"));
+const TasksNotes = lazy(() => import("./components/features/TasksNotes"));
+const Goals = lazy(() => import("./components/features/Goals"));
+const FocusTab = lazy(() => import("./components/features/FocusTab"));
+const MeTab = lazy(() => import("./components/features/MeTab"));
+const ProgressTab = lazy(() => import("./components/features/ProgressTab"));
+const PlanTab = lazy(() => import("./components/features/PlanTab"));
+const { AppProvider } = lazy(() => import("./context/AppContext"));
+
+// Fallback for lazy loading
+const PageLoader = () => (
+  <div className="flex items-center justify-center min-h-screen bg-[#020408]">
+    <div className="w-8 h-8 border-2 border-green-500/30 border-t-green-400 rounded-full animate-spin" />
+  </div>
+);
 
 // ─── FIREBASE CONFIG ─────────────────────────────────────────────────────────
-// Get these values from: console.firebase.google.com
-//   → Your Project → ⚙️ Settings → Your apps → </> Web → Register → copy config
+// Values loaded from environment variables for security
 const firebaseConfig = {
-  apiKey: "AIzaSyA18GxWg2WNCj4tcj31PsanrtCeBE8ZDVw",
-  authDomain: "comeback-os.firebaseapp.com",
-  projectId: "comeback-os",
-  storageBucket: "comeback-os.firebasestorage.app",
-  messagingSenderId: "536594041438",
-  appId: "1:536594041438:web:39f3763fe00631215b82cf"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
 };
+
+// Validate required env vars
+if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
+  console.error("❌ Missing Firebase environment variables. Check your .env file.");
+}
 // ─────────────────────────────────────────────────────────────────────────────
 
 const fbApp    = initializeApp(firebaseConfig);
@@ -221,12 +235,12 @@ const PROFILE = {
 
 // ─── WEEKS ───
 const WEEKS=[
-  {week:1,dates:"May 7-13",phase:1,thesis:["?? Explore BRCA dataset � df.info(), df.describe(), check nulls","?? Read supervisor Mr. Reaj Mohammed's 2�3 CRO papers","?? Book + attend supervisor meeting � ask which CRO variant","?? Create GitHub repo /data /src /results /thesis � push first commit"],csprep:["?? Arrays, Linked Lists, Stack, Queue � theory + complexity","?? Solve 3 easy LeetCode DSA problems","?? Write 1-page revision summary"],ielts:["?? 10 new academic words daily","?? 1 IELTS reading passage for understanding"],admission:["?? Bookmark: pgadmission.buet.ac.bd, kuet.ac.bd/pgadmission, msadmission.cse.du.ac.bd, ku.ac.bd/discipline/cse","?? KUET min CGPA 2.75 � you have 3.95 ?"],blocker:"CRITICAL: Supervisor meeting THIS week. Everything flows from this one action.",milestone:"? Supervisor aligned + GitHub live + Dataset explored + First workout done"},
-  {week:2,dates:"May 14-20",phase:1,thesis:["?? Handle missing values per omics layer","?? Normalize: log2 gene expression, scale methylation 0�1","?? Align samples by patient ID across all omics layers","?? Save clean dataset as preprocessed.pkl"],csprep:["?? Binary Trees, BST, Heap � theory + complexity","?? Implement max-heap from scratch in Python","?? 3 tree problems on LeetCode"],ielts:["?? 10 words/day � use each in a sentence","?? Write 1 paragraph about your thesis in English"],admission:["?? Check BUET pgadmission.buet.ac.bd � note next MSc intake date","??? Collect SSC/HSC/BSc certificates + transcripts"],blocker:"Dataset must be clean before any algorithm work. No shortcuts here.",milestone:"? Clean preprocessed.pkl saved. Eating 3 meals + 2 snacks consistently."},
-  {week:3,dates:"May 21-27",phase:1,thesis:["?? Literature review: 15 papers (5 CRO + 5 SHAP + 5 multi-omics cancer)","?? Understand binary CRO: molecule = 0/1 feature vector encoding","?? EDA: correlation heatmaps, class distribution, feature counts","?? Create literature_notes.md � track all references"],csprep:["?? Graphs: BFS, DFS, Dijkstra, Bellman-ford � theory + code","?? Implement BFS + DFS in Python","?? 3 graph problems on LeetCode"],ielts:["?? 10 words/day","??? Speak 2 minutes: 'Technology in healthcare'"],admission:["?? BUET past exam questions � list weak topics honestly","?? Which CS subjects feel rusty? Write them down"],blocker:"GitHub commits every 2�3 days. Build the discipline now.",milestone:"? Lit notes done. EDA plots generated. Weak exam topics identified."},
-  {week:4,dates:"May 28-Jun 3",phase:2,thesis:["?? Implement CRO: molecules class, energy function, decomposition reaction","?? Binary encoding: molecule = np.array of 0s and 1s","? Test CRO on toy dataset (10 features, 50 samples)","?? Send CRO skeleton code to supervisor for review"],csprep:["?? Sorting: QuickSort, MergeSort, HeapSort complexity","?? Implement QuickSort + MergeSort in Python","?? Write complexity comparison table"],ielts:["?? Task 2: 'Technology changes how people work'","?? Cambridge IELTS Practice Tests � download and start"],admission:["?? One table comparing BUET vs KUET vs KU vs DU exam format","?? Decide primary target university � commit to it today"],blocker:"BUET MSc circular may open April�May � check cse.buet.ac.bd TODAY.",milestone:"? CRO skeleton runs without errors. Supervisor reviewed. Weight +1kg."},
-  {week:5,dates:"Jun 4-10",phase:2,thesis:["?? Add fitness function: f(molecule) = cross-validation RF accuracy","?? Run CRO on BRCA subset (start with 100 samples)","?? Plot convergence curve: energy vs iterations","?? Debug � consult supervisor if stuck more than 2 hours"],csprep:["?? Dynamic Programming: Knapsack, LCS, Coin Change","?? Fibonacci memoization + 0/1 Knapsack implementation","?? 2 DP problems"],ielts:["?? Task 2: 'Education should be free for all'","?? Self-assess: grammar, coherence, task response"],admission:["?? Check ku.ac.bd/discipline/cse � KU MSc CSE Nov�Dec 2026 intake","?? Draft email to KU CSE department about intake schedule"],blocker:"CRO on full dataset is slow � use 100 samples + 200 features max first.",milestone:"? CRO selects feature subset. Convergence curve plotted. Smoking =3/day."},
-  {week:6,dates:"Jun 11-15",phase:2,thesis:["?? Train Random Forest on CRO-selected features � record Acc, F1, AUC","?? Train SVM (RBF kernel) on same features � record metrics","?? Train XGBoost on same features � record all metrics","?? Build results table: Features | Acc | F1 | AUC"],csprep:["?? SQL: SELECT, JOIN, GROUP BY, subqueries, triggers","?? Write 8 SQL queries of increasing complexity","?? 3 SQL problems"],ielts:["?? 10 words/day","?? Timed reading: 1 passage in 20 minutes"],admission:["?? CHECK cse.buet.ac.bd for MSc 2026 circular � April�May window!","??? All documents scanned as PDF and ready to upload"],blocker:"Thesis deadline June 15 � CRO results must be ready for chapters.",milestone:"? 3 classifiers trained. Results table populated. QUIT SMOKING WEEK."},
+  {week:1,dates:"May 9-15",phase:1,thesis:["?? Explore BRCA dataset � df.info(), df.describe(), check nulls","?? Read supervisor Mr. Reaj Mohammed's 2�3 CRO papers","?? Book + attend supervisor meeting � ask which CRO variant","?? Create GitHub repo /data /src /results /thesis � push first commit"],csprep:["?? Arrays, Linked Lists, Stack, Queue � theory + complexity","?? Solve 3 easy LeetCode DSA problems","?? Write 1-page revision summary"],ielts:["?? 10 new academic words daily","?? 1 IELTS reading passage for understanding"],admission:["?? Bookmark: pgadmission.buet.ac.bd, kuet.ac.bd/pgadmission, msadmission.cse.du.ac.bd, ku.ac.bd/discipline/cse","?? KUET min CGPA 2.75 � you have 3.95 ?"],blocker:"CRITICAL: Supervisor meeting THIS week. Everything flows from this one action.",milestone:"? Supervisor aligned + GitHub live + Dataset explored + First workout done"},
+  {week:2,dates:"May 16-22",phase:1,thesis:["?? Handle missing values per omics layer","?? Normalize: log2 gene expression, scale methylation 0�1","?? Align samples by patient ID across all omics layers","?? Save clean dataset as preprocessed.pkl"],csprep:["?? Binary Trees, BST, Heap � theory + complexity","?? Implement max-heap from scratch in Python","?? 3 tree problems on LeetCode"],ielts:["?? 10 words/day � use each in a sentence","?? Write 1 paragraph about your thesis in English"],admission:["?? Check BUET pgadmission.buet.ac.bd � note next MSc intake date","??? Collect SSC/HSC/BSc certificates + transcripts"],blocker:"Dataset must be clean before any algorithm work. No shortcuts here.",milestone:"? Clean preprocessed.pkl saved. Eating 3 meals + 2 snacks consistently."},
+  {week:3,dates:"May 23-29",phase:1,thesis:["?? Literature review: 15 papers (5 CRO + 5 SHAP + 5 multi-omics cancer)","?? Understand binary CRO: molecule = 0/1 feature vector encoding","?? EDA: correlation heatmaps, class distribution, feature counts","?? Create literature_notes.md � track all references"],csprep:["?? Graphs: BFS, DFS, Dijkstra, Bellman-ford � theory + code","?? Implement BFS + DFS in Python","?? 3 graph problems on LeetCode"],ielts:["?? 10 words/day","??? Speak 2 minutes: 'Technology in healthcare'"],admission:["?? BUET past exam questions � list weak topics honestly","?? Which CS subjects feel rusty? Write them down"],blocker:"GitHub commits every 2�3 days. Build the discipline now.",milestone:"? Lit notes done. EDA plots generated. Weak exam topics identified."},
+  {week:4,dates:"May 30-Jun 5",phase:2,thesis:["?? Implement CRO: molecules class, energy function, decomposition reaction","?? Binary encoding: molecule = np.array of 0s and 1s","? Test CRO on toy dataset (10 features, 50 samples)","?? Send CRO skeleton code to supervisor for review"],csprep:["?? Sorting: QuickSort, MergeSort, HeapSort complexity","?? Implement QuickSort + MergeSort in Python","?? Write complexity comparison table"],ielts:["?? Task 2: 'Technology changes how people work'","?? Cambridge IELTS Practice Tests � download and start"],admission:["?? One table comparing BUET vs KUET vs KU vs DU exam format","?? Decide primary target university � commit to it today"],blocker:"BUET MSc circular may open April�May � check cse.buet.ac.bd TODAY.",milestone:"? CRO skeleton runs without errors. Supervisor reviewed. Weight +1kg."},
+  {week:5,dates:"Jun 6-12",phase:2,thesis:["?? Add fitness function: f(molecule) = cross-validation RF accuracy","?? Run CRO on BRCA subset (start with 100 samples)","?? Plot convergence curve: energy vs iterations","?? Debug � consult supervisor if stuck more than 2 hours"],csprep:["?? Dynamic Programming: Knapsack, LCS, Coin Change","?? Fibonacci memoization + 0/1 Knapsack implementation","?? 2 DP problems"],ielts:["?? Task 2: 'Education should be free for all'","?? Self-assess: grammar, coherence, task response"],admission:["?? Check ku.ac.bd/discipline/cse � KU MSc CSE Nov�Dec 2026 intake","?? Draft email to KU CSE department about intake schedule"],blocker:"CRO on full dataset is slow � use 100 samples + 200 features max first.",milestone:"? CRO selects feature subset. Convergence curve plotted. Smoking =3/day."},
+  {week:6,dates:"Jun 13-15",phase:2,thesis:["?? Train Random Forest on CRO-selected features � record Acc, F1, AUC","?? Train SVM (RBF kernel) on same features � record metrics","?? Train XGBoost on same features � record all metrics","?? Build results table: Features | Acc | F1 | AUC"],csprep:["?? SQL: SELECT, JOIN, GROUP BY, subqueries, triggers","?? Write 8 SQL queries of increasing complexity","?? 3 SQL problems"],ielts:["?? 10 words/day","?? Timed reading: 1 passage in 20 minutes"],admission:["?? CHECK cse.buet.ac.bd for MSc 2026 circular � April�May window!","??? All documents scanned as PDF and ready to upload"],blocker:"Thesis deadline June 15 � CRO results must be ready for chapters.",milestone:"? 3 classifiers trained. Results table populated. QUIT SMOKING WEEK."},
   {week:7,dates:"Jun 16-22",phase:3,thesis:["?? pip install shap � run SHAP on trained XGBoost model","??? Generate: shap.summary_plot, beeswarm_plot, bar_plot","?? Identify top 20 SHAP features � write them down","?? Cross-reference top genes with known BRCA biomarkers (ESR1, ERBB2, PIK3CA)"],csprep:["?? OOP: classes, inheritance, polymorphism, abstract classes","?? Mini OOP project: Student Management System","?? 2 OOP design questions"],ielts:["?? Task 1: describe a bar chart about university enrollment","??? Describe your research in 2 minutes � record yourself and listen"],admission:["?? Write Statement of Purpose (SOP) � 1-page draft","?? Request recommendation letters from 2 professors"],blocker:"SHAP top genes must match known BRCA markers. Verify in published literature.",milestone:"? SHAP plots = KEY THESIS FIGURES complete. Face noticeably better from reduced smoking."},
   {week:8,dates:"Jun 23-29",phase:3,thesis:["?? Tune CRO: test pop sizes 10�50, iterations 100�500","?? Run CRO 5� with different seeds � report mean � std accuracy","?? Biological validation: SHAP genes vs published BRCA gene signatures","?? Major supervisor check-in � present ALL current results"],csprep:["?? Theory of Computation: DFA, NFA, CFG, pumping lemma","?? Practice NFA ? DFA conversion","?? TOC problems � hardest topic, give extra time"],ielts:["?? Full IELTS mock test (all 4 sections, timed)","?? Score yourself � identify weakest section"],admission:["?? Revise SOP � get feedback from someone you trust","?? Portfolio: thesis abstract + 1-page preliminary results summary"],blocker:"Don't tune CRO parameters blindly � discuss results with supervisor first.",milestone:"? Best CRO params found. Biological validation done. SOP polished."},
   {week:9,dates:"Jun 30-Jul 6",phase:3,thesis:["?? pip install deap � implement GA feature selection","?? pip install pyswarms � implement PSO feature selection","?? LASSO + RFE via scikit-learn � 1 day each","?? Run all 5 methods on identical BRCA dataset and same train/test split"],csprep:["?? OS: scheduling (FCFS/SJF/Round Robin), deadlocks, paging","?? Draw OS scheduling Gantt charts by hand","?? 3 OS problems"],ielts:["?? Task 2: 'AI will replace human jobs � both views'","?? Focus vocabulary from mock test weak areas"],admission:["?? Check ku.ac.bd for any new MSc 2026 announcements","?? Email KUET CSE department: inquiry about 2026�27 MSc intake date"],blocker:"Use DEAP + pyswarms libraries � NOT implemented from scratch. Too time-consuming.",milestone:"? All 5 baseline methods running. Raw comparison results collected."},
@@ -793,11 +807,12 @@ const ACHIEVEMENTS_DEF=[
 function LiveClock(){
   const [now,setNow]=useState(new Date());
   useEffect(()=>{const t=setInterval(()=>setNow(new Date()),1000);return()=>clearInterval(t);},[]);
-  const THESIS_DEADLINE=new Date("2026-06-01T23:59:59");
+  const THESIS_DEADLINE=new Date("2026-06-15T23:59:59");
+  const THESIS_START=new Date("2026-05-09");
   const diff=Math.max(0,THESIS_DEADLINE-now);
   const d=Math.floor(diff/86400000),h=Math.floor((diff%86400000)/3600000),m=Math.floor((diff%3600000)/60000),s=Math.floor((diff%60000)/1000);
-  const totalDays=Math.ceil((THESIS_DEADLINE-new Date("2026-03-20"))/86400000);
-  const daysGone=Math.ceil((now-new Date("2026-03-20"))/86400000);
+  const totalDays=Math.ceil((THESIS_DEADLINE-THESIS_START)/86400000);
+  const daysGone=Math.ceil((now-THESIS_START)/86400000);
   const pct=Math.min(100,Math.max(0,Math.round((daysGone/totalDays)*100)));
   const days=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
   const months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -1663,24 +1678,24 @@ function AppMain({ initialData:D, pinHash, onPinChange }){
            
           <Sidebar tab={tab} setTab={setTab} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} T={T} />
 
-        {tab==="home"&&<Home {...{
-            mood, setMood, moodLog, setMoodLog, sleepLog, setSleepLog, sleepHours, setSleepHours, sleepQuality, setSleepQuality,
-            waterCount, setWaterCount, calorieLog, setCalorieLog, calInput, setCalInput, calLabel, setCalLabel,
-            dailyLog, setDailyLog, dailyLogText, setDailyLogText, streak, isBurnout, setBurnoutDismissed,
-            challengeDone, challengeKey, todayChallenge, todayIntention, setTodayIntention,
-            intentionInput, setIntentionInput, xp, xpLevel, xpPct, dailyScore, scoreColor, scoreGrade,
-            tp, wGained, workoutDay, DAYS, TODAY, WEEKS, weekPct, activeWeek, setActiveWeek,
-            gainXP, takeXP, setShowQuoteModal, setShowMscDeadlines, setShowWeeklyReview, quoteIdx, setQuoteIdx,
-            T, orb, mono, raj, gt, C, getRank, getDailyScore, totalPct, dayPct, LiveClock, Ring, setTab
-          }} />}
+        {tab==="home"&&(
+          <DashboardOverview
+            T={T} C={C} mono={mono} orb={orb} raj={raj}
+            tab={tab} setTab={setTab}
+            xp={xp} streak={streak} waterCount={waterCount}
+            dailyScore={dailyScore} tasksDone={tasksDone}
+            weightLog={weightLog} mood={mood}
+            level={xpLevel} levelTitle={rank.title}
+          />
+        )}
           {tab==="plan"&&<PlanTab {...{activeWeek, setActiveWeek, tDone, togT, taskNotes, setTaskNotes, openNote, setOpenNote, T, orb, mono, raj, C, WEEKS, pc, weekPct, Ring}} />}
           {tab==="body"&&<BodyTab {...{
             workoutDay, setWorkoutDay, dayPct, exPct, isSetDone, togSet, setShowExForm, showExForm,
             warmupDone, setWarmupDone, streak, timer, setTimer,
             T, orb, mono, raj, C, gt, DAYS, Ring, RestTimer
           }} />}
-          {tab==="focus"&&<FocusTab {...{pomLeft,pomMode,deepFocusLeft,getRank,xp,T,orb,raj,mono,C,Ring,setFocusTab,focusTab,setPomMode,setPomLeft,setPomState,pomState,pomSessions,deepFocusSessions,setDeepFocusSt,setDeepFocusLeft,deepFocusSt,setShowAddHabit,showAddHabit,newHabitName,setNewHabitName,setHabits,habits,TODAY,setHabitHistory,gainXP,takeXP,habitHistory,setShowHabitCal,showHabitCal,XP_RANKS,scoreColor,scoreGrade,dailyScore,PLAYLISTS,xpLevel}} />}
-          {tab==="admissions"&&<AdmissionsDashboard T={T} orb={orb} mono={mono} raj={raj} C={C} />}
+          {tab==="focus"&&<FocusTab {...{pomLeft,pomMode,deepFocusLeft,getRank,xp,T,orb,raj,mono,C,Ring,setFocusTab,focusTab,setPomMode,setPomLeft,setPomState,pomState,pomSessions,deepFocusSessions,setDeepFocusSt,setDeepFocusLeft,deepFocusSt,setShowAddHabit,showAddHabit,newHabitName,setNewHabitName,setHabits,habits,TODAY,setHabitHistory,gainXP,takeXP,habitHistory,setShowHabitCal,showHabitCal,XP_RANKS,scoreColor,scoreGrade,dailyScore,PLAYLISTS,xpLevel,streak}} />}
+          {tab==="admissions"&&<AdmissionsTab T={T} C={C} mono={mono} orb={orb} raj={raj} gainXP={gainXP} />}
           {tab==="me"&&<MeTab {...{T,orb,mono,raj,C,gt,PROFILE,quoteIdx,setQuoteIdx,setShowChangePin}} />}
           {tab==="progress"&&<ProgressTab {...{T,orb,mono,raj,C,gt,Ring,weightLog,setWeightLog,newWeight,setNewWeight,measurements,setMeasurements,smokingLog,setSmokingLog,newSmoke,setNewSmoke,tp,wPct,sPct,streak,curWeight,wGained,curSmoke,gainXP,takeXP,WEEKS,weekPct,pc,setTab,setActiveWeek,progressTab,setProgressTab}}/>}
           {tab==="tasks"&&<TasksNotes {...{T,orb,mono,raj,C,myTasks,setMyTasks,taskFilter,setTaskFilter,newTask,setNewTask,showAddTask,setShowAddTask,taskSubTab,setTaskSubTab,gainXP,takeXP,notes,setNotes,activeNoteId,setActiveNoteId,showNewNote,setShowNewNote,newNoteTitle,setNewNoteTitle,newNoteBody,setNewNoteBody,noteColor,setNoteColor,researchNotes,setResearchNotes,showResNote,setShowResNote,newResNote,setNewResNote,activeResNote,setActiveResNote}} />}
@@ -1811,4 +1826,4 @@ function AppMain({ initialData:D, pinHash, onPinChange }){
       </div>
   );
 }
-// export default App; // Already exported as function declaration above
+

@@ -1,183 +1,510 @@
-import { useApp } from "../../context/AppContext";
-import { motion } from "framer-motion";
-import { Moon, Flame, Target, BookOpen } from "lucide-react";
+/* eslint-disable */
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
-const DashboardOverview = () => {
-  const { moodLog, sleepLog, xp } = useApp();
-  
-  const last7Sleep = Array.from({ length: 7 }, (_, i) => {
-    const d = new Date(Date.now() - (6 - i) * 86400000).toDateString();
-    return sleepLog.find(s => s.date === d);
-  });
-  const last7Mood = Array.from({ length: 7 }, (_, i) => {
-    const d = new Date(Date.now() - (6 - i) * 86400000).toDateString();
-    return moodLog.filter(m => m.date === d).slice(-1)[0];
-  });
-  
-  const avgSleep = last7Sleep.filter(s => s).reduce((a, s) => a + s.hours, 0) / (last7Sleep.filter(s => s).length || 1);
-  const avgMood = last7Mood.filter(m => m).reduce((a, m) => a + (m?.score || 0), 0) / (last7Mood.filter(m => m).length || 1);
-  
-  const xpLevel = Math.floor(xp / 100) + 1;
-  
+// ─── THESIS: 15 weeks, May 9 → June 15, 2026 ─────────────────────────────────
+const THESIS_START = new Date("2026-05-09");
+const THESIS_END   = new Date("2026-06-15");
+const THESIS_WEEKS = 15;
+
+const NAV_TILES = [
+  { id:"home",   icon:"🏠", label:"HOME",    color:"#00ff88", desc:"Dashboard" },
+  { id:"plan",   icon:"📅", label:"PLAN",    color:"#00aaff", desc:"Thesis Plan" },
+  { id:"body",   icon:"💪", label:"BODY",    color:"#ff0088", desc:"Body Gains" },
+  { id:"focus",  icon:"⏱",  label:"FOCUS",   color:"#ff8800", desc:"Deep Work" },
+  { id:"admissions", icon:"🎓", label:"ADMIT", color:"#a855f7", desc:"Admissions" },
+  { id:"life",   icon:"⚡", label:"LIFE",    color:"#ffd700", desc:"Lifestyle" },
+  { id:"me",     icon:"👤", label:"ME",      color:"#00ffcc", desc:"Profile" },
+  { id:"stats",  icon:"🏅", label:"STATS",   color:"#ff4444", desc:"Statistics" },
+];
+
+const QUOTES = [
+  "The fall was public. The comeback will be louder.",
+  "Discipline > motivation. Every single time.",
+  "3.95 GPA + Debate Champion = Unstoppable.",
+  "50kg→60kg. Thesis done. MSc admitted. Watch.",
+  "Every expert was once a beginner.",
+  "Your only competition is who you were yesterday.",
+];
+
+// Particle component for ambient background
+const Particle = ({ delay, x, y, size, color, duration }) => (
+  <motion.div
+    style={{
+      position:"absolute", left:`${x}%`, top:`${y}%`,
+      width:size, height:size, borderRadius:"50%",
+      background:color, opacity:0, pointerEvents:"none",
+    }}
+    animate={{ opacity:[0,0.6,0], y:[0,-30,0], scale:[0,1,0] }}
+    transition={{ duration, delay, repeat:Infinity, ease:"easeInOut" }}
+  />
+);
+
+// Ring progress component
+const ArcRing = ({ pct=0, size=80, stroke=6, color="#00ff88", label="", sublabel="" }) => {
+  const r = (size - stroke*2) / 2;
+  const circ = 2 * Math.PI * r;
+  const offset = circ * (1 - Math.min(pct,100)/100);
+  const cx = size/2, cy = size/2;
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-3 mb-4">
-      {/* Sleep ↔ Mood Correlation */}
-      <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4 shadow-xl">
-        <div className="flex items-center gap-2 mb-3">
-          <Moon size={16} className="text-purple-400" />
-          <span className="text-[9px] text-purple-400 tracking-[2px] font-mono">SLEEP ↔ MOOD</span>
-        </div>
-        <div className="grid grid-cols-3 gap-3 mb-3">
-          <div className="text-center">
-            <div className="text-lg font-bold font-orbitron text-green-400">{avgSleep.toFixed(1)}h</div>
-            <div className="text-[7px] text-gray-500">AVG SLEEP</div>
-          </div>
-          <div className="text-center">
-            <div className="text-lg font-bold font-orbitron text-blue-400">{avgMood.toFixed(1)}</div>
-            <div className="text-[7px] text-gray-500">AVG MOOD</div>
-          </div>
-          <div className="text-center">
-            <div className="text-lg font-bold font-orbitron text-green-400">0.87</div>
-            <div className="text-[7px] text-gray-500">CORRELATION</div>
-          </div>
-        </div>
-        <div className="h-16 flex items-end gap-1">
-          {last7Sleep.map((s, i) => (
-            <div key={i} className="flex-1 flex flex-col items-center gap-1">
-              <div className="text-[6px] text-gray-600 font-mono">{['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][i]}</div>
-              <div 
-                className="w-full rounded-t" 
-                style={{ 
-                  height: Math.max(8, (s?.hours || 0) * 10) + 'px',
-                  background: s ? 'linear-gradient(to top, #a855f7, #a855f766)' : '#1a2a2a',
-                  opacity: s ? 1 : 0.3
-                }} 
-              />
-            </div>
-          ))}
-        </div>
-        <div className="text-[8px] text-gray-500 mt-2 text-center">Strong positive correlation — more sleep = better next-day mood</div>
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+      <defs>
+        <filter id={`glow-${color.replace("#","")}`} x="-40%" y="-40%" width="180%" height="180%">
+          <feGaussianBlur stdDeviation="3" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke={color+"22"} strokeWidth={stroke}/>
+      <motion.circle
+        cx={cx} cy={cy} r={r} fill="none"
+        stroke={color} strokeWidth={stroke}
+        strokeLinecap="round"
+        strokeDasharray={circ}
+        initial={{ strokeDashoffset: circ }}
+        animate={{ strokeDashoffset: offset }}
+        transition={{ duration:1.5, ease:"easeOut", delay:0.3 }}
+        transform={`rotate(-90 ${cx} ${cy})`}
+        filter={`url(#glow-${color.replace("#","")})`}
+        style={{ filter:`drop-shadow(0 0 6px ${color}88)` }}
+      />
+      <text x={cx} y={sublabel ? cy-4 : cy+4} textAnchor="middle" fill={color}
+        fontSize={sublabel?13:12} fontFamily="Orbitron,monospace" fontWeight="900">{label}</text>
+      {sublabel && <text x={cx} y={cy+11} textAnchor="middle" fill={color+"88"}
+        fontSize={7} fontFamily="monospace">{sublabel}</text>}
+    </svg>
+  );
+};
+
+// Animated counter
+const Counter = ({ to, duration=1.5, suffix="", prefix="" }) => {
+  const [val, setVal] = useState(0);
+  useEffect(() => {
+    let start = null;
+    const step = (ts) => {
+      if (!start) start = ts;
+      const p = Math.min((ts-start)/(duration*1000), 1);
+      setVal(Math.floor(p * to));
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }, [to, duration]);
+  return <span>{prefix}{val}{suffix}</span>;
+};
+
+const DashboardOverview = ({ T, C, mono, orb, raj, tab, setTab, xp, streak, waterCount, dailyScore, tasksDone, weightLog, mood, levelTitle, level }) => {
+  const [quoteIdx, setQuoteIdx] = useState(0);
+  const [time, setTime] = useState(new Date());
+  const [hoveredNav, setHoveredNav] = useState(null);
+  const [particles] = useState(() =>
+    Array.from({length:18},(_,i)=>({
+      id:i, x:Math.random()*100, y:Math.random()*100,
+      size:2+Math.random()*4, delay:Math.random()*5,
+      duration:4+Math.random()*4,
+      color:["#00ff8844","#00aaff44","#ff008844","#ffd70044"][i%4]
+    }))
+  );
+
+  // Live clock
+  useEffect(()=>{
+    const t = setInterval(()=>setTime(new Date()),1000);
+    return ()=>clearInterval(t);
+  },[]);
+
+  // Auto-rotate quotes
+  useEffect(()=>{
+    const t = setInterval(()=>setQuoteIdx(q=>(q+1)%QUOTES.length),8000);
+    return ()=>clearInterval(t);
+  },[]);
+
+  // Thesis progress
+  const now = new Date();
+  const totalMs = THESIS_END - THESIS_START;
+  const elapsedMs = Math.max(0, now - THESIS_START);
+  const thesisPct = Math.min(100, Math.round((elapsedMs/totalMs)*100));
+  const daysLeft = Math.max(0, Math.ceil((THESIS_END - now)/86400000));
+  const currentWeek = Math.min(THESIS_WEEKS, Math.max(1, Math.ceil(elapsedMs/604800000)));
+
+  // XP
+  const xpForNext = 500;
+  const xpPct = Math.min(100, Math.round(((xp||0) % xpForNext) / xpForNext * 100));
+
+  // Score color
+  const sc = (dailyScore||0) >= 80 ? T.green : (dailyScore||0) >= 50 ? T.orange : T.red;
+
+  // Weight
+  const curWeight = weightLog && weightLog.length ? weightLog[weightLog.length-1].weight : 50;
+  const weightPct = Math.min(100, Math.round(((curWeight-50)/10)*100));
+
+  const taskCount = tasksDone ? Object.values(tasksDone).filter(Boolean).length : 0;
+
+  const timeStr = time.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit",second:"2-digit"});
+  const dateStr = time.toLocaleDateString([],{weekday:"short",month:"short",day:"numeric"});
+
+  return (
+    <div style={{ padding:"0 0 16px", maxWidth:430, margin:"0 auto" }}>
+
+      {/* ── AMBIENT PARTICLES ── */}
+      <div style={{ position:"fixed", inset:0, pointerEvents:"none", zIndex:0, overflow:"hidden" }}>
+        {particles.map(p=><Particle key={p.id} {...p}/>)}
+        {/* Subtle grid */}
+        <div style={{
+          position:"absolute", inset:0,
+          backgroundImage:`linear-gradient(rgba(0,255,136,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,136,0.03) 1px,transparent 1px)`,
+          backgroundSize:"40px 40px"
+        }}/>
       </div>
 
-      {/* Thesis Progress */}
-      <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4 shadow-xl">
-        <div className="flex items-center gap-2 mb-3">
-          <BookOpen size={16} className="text-green-400" />
-          <span className="text-[9px] text-green-400 tracking-[2px] font-mono">THESIS PROGRESS</span>
-        </div>
-        <div className="mb-3">
-          <div className="flex justify-between mb-1">
-            <span className="text-[11px] text-gray-300 font-rajdhani">Overall Completion</span>
-            <span className="text-[11px] font-orbitron text-green-400">27%</span>
-          </div>
-          <div className="h-2 bg-gray-900 rounded-full overflow-hidden">
-            <div className="h-full bg-gradient-to-r from-green-400 to-blue-400 rounded-full" style={{ width: '27%' }} />
-          </div>
-        </div>
-        {[
-          { ch: 'Ch 1', title: 'Introduction', pct: 40, pages: '12 pages' },
-          { ch: 'Ch 2', title: 'Literature Review', pct: 70, pages: '25 pages' },
-          { ch: 'Ch 3', title: 'Methodology', pct: 20, pages: '30 pages' },
-          { ch: 'Ch 4', title: 'Results & Analysis', pct: 5, pages: '28 pages' },
-          { ch: 'Ch 5', title: 'Conclusion', pct: 0, pages: '10 pages' }
-        ].map((ch, i) => (
-          <div key={i} className="flex items-center gap-2 mb-2">
-            <div className="flex-1">
-              <div className="flex justify-between">
-                <span className="text-[10px] text-gray-300">{ch.ch} {ch.title}</span>
-                <span className="text-[9px] text-gray-500">{ch.pct}%</span>
-              </div>
-              <div className="h-1.5 bg-gray-900 rounded-full mt-1">
-                <div className="h-full bg-green-400/60 rounded-full" style={{ width: ch.pct + '%' }} />
-              </div>
-            </div>
-            <span className="text-[8px] text-gray-600">{ch.pages}</span>
-          </div>
-        ))}
-      </div>
+      {/* ── HERO HEADER ── */}
+      <motion.div
+        initial={{opacity:0,y:-20}} animate={{opacity:1,y:0}} transition={{duration:.6}}
+        style={{
+          position:"relative", overflow:"hidden",
+          background:"linear-gradient(135deg,#020d06 0%,#020408 40%,#030c18 100%)",
+          borderBottom:`1px solid #00ff8822`,
+          padding:"20px 16px 16px",
+        }}
+      >
+        {/* Glow orb background */}
+        <div style={{
+          position:"absolute", top:-60, right:-60, width:200, height:200,
+          background:"radial-gradient(circle,#00ff8812,transparent 70%)",
+          pointerEvents:"none"
+        }}/>
+        <div style={{
+          position:"absolute", bottom:-40, left:-40, width:150, height:150,
+          background:"radial-gradient(circle,#00aaff0a,transparent 70%)",
+          pointerEvents:"none"
+        }}/>
 
-      {/* Battle Mode Toggle */}
-      <div className="bg-white/5 backdrop-blur-xl border border-pink-500/20 rounded-2xl p-4 shadow-xl">
-        <div className="flex items-center justify-between">
-          <div>
-            <div className="text-[9px] text-pink-400 tracking-[2px] font-mono mb-1">BATTLE MODE</div>
-            <div className="text-[11px] text-gray-400">Complete SHAP integration</div>
-            <div className="flex items-center gap-2 mt-2">
-              <span className="text-[8px] text-gray-500">Status:</span>
-              <span className="px-2 py-0.5 bg-gray-800 rounded text-[8px] text-gray-400">Idle</span>
-            </div>
-          </div>
-          <button className="px-4 py-2 bg-pink-500/20 border border-pink-500/40 rounded-lg text-pink-400 text-[10px] font-mono hover:bg-pink-500/30 transition-colors">
-            Activate
-          </button>
-        </div>
-      </div>
-
-      {/* Streak Flame */}
-      <div className="bg-white/5 backdrop-blur-xl border border-orange-500/20 rounded-2xl p-4 shadow-xl">
-        <div className="flex items-center gap-2 mb-3">
-          <Flame size={16} className="text-orange-400" />
-          <span className="text-[9px] text-orange-400 tracking-[2px] font-mono">STREAK FLAME</span>
-        </div>
-        <div className="grid grid-cols-4 gap-2 mb-3">
-          {[
-            { label: '7 DAYS', val: '7', color: 'text-green-400' },
-            { label: '14 DAYS', val: '14', color: 'text-blue-400' },
-            { label: '30 DAYS', val: '30', color: 'text-purple-400' },
-            { label: '100 DAYS', val: '100', color: 'text-yellow-400' }
-          ].map((s, i) => (
-            <div key={i} className="text-center p-2 bg-white/5 rounded-lg">
-              <div className={"text-lg font-bold font-orbitron " + s.color}>{s.val}</div>
-              <div className="text-[6px] text-gray-500">{s.label}</div>
-            </div>
-          ))}
-        </div>
-        <div className="text-center">
-          <span className="text-[10px] text-yellow-400 font-mono">LEGENDARY STATUS ACHIEVED!</span>
-        </div>
-      </div>
-
-      {/* CGPA & Application Pipeline */}
-      <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4 shadow-xl">
-        <div className="flex items-center gap-2 mb-3">
-          <Target size={16} className="text-green-400" />
-          <span className="text-[9px] text-green-400 tracking-[2px] font-mono">APPLICATION STATUS</span>
-        </div>
-        <div className="mb-3">
-          <div className="text-2xl font-bold font-orbitron text-green-400">3.94</div>
-          <div className="text-[10px] text-gray-400">CGPA</div>
-        </div>
-        {[
-          { uni: 'KUET', prog: 'MSc CSE', status: '✓', next: 'VIVA', color: 'text-green-400' },
-          { uni: 'BUET', prog: 'MSc CSE', status: '✓', next: 'SUBMITTED', color: 'text-blue-400' },
-          { uni: 'KU', prog: 'MSc CSE', status: '✓', next: 'PLANNING', color: 'text-orange-400' },
-          { uni: 'DU', prog: 'MSc CSE', status: '✓', next: 'PLANNING', color: 'text-purple-400' }
-        ].map((app, i) => (
-          <div key={i} className="flex items-center justify-between py-2 border-b border-white/5 last:border-0">
+        <div style={{ position:"relative", zIndex:1 }}>
+          {/* Top row: name + clock */}
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:12 }}>
             <div>
-              <div className="text-[11px] text-gray-300 font-semibold">{app.uni}</div>
-              <div className="text-[9px] text-gray-500">{app.prog}</div>
+              <motion.div
+                initial={{opacity:0,x:-10}} animate={{opacity:1,x:0}} transition={{delay:.2}}
+                style={{ fontSize:7, color:T.green, letterSpacing:4, ...mono, marginBottom:4 }}
+              >⚡ COMEBACK-OS · LIVE</motion.div>
+              <motion.div
+                initial={{opacity:0}} animate={{opacity:1}} transition={{delay:.3}}
+                style={{ ...orb, fontSize:22, fontWeight:900, color:T.bright, lineHeight:1.1 }}
+              >PEASH RUDRA</motion.div>
+              <div style={{ fontSize:9, color:T.muted, ...raj, marginTop:3 }}>
+                MSc CSE Candidate · Debate Champion · KUET
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <span className={"text-[9px] " + app.color}>{app.status}</span>
-              <span className="text-[8px] text-gray-500">→ {app.next}</span>
+            <motion.div
+              initial={{opacity:0,scale:.8}} animate={{opacity:1,scale:1}} transition={{delay:.4}}
+              style={{ textAlign:"right" }}
+            >
+              <div style={{ ...orb, fontSize:20, fontWeight:900, color:T.green, fontVariantNumeric:"tabular-nums",
+                textShadow:`0 0 20px ${T.green}88` }}>
+                {timeStr}
+              </div>
+              <div style={{ fontSize:9, color:T.muted, ...mono, marginTop:2 }}>{dateStr}</div>
+            </motion.div>
+          </div>
+
+          {/* Level + XP bar */}
+          <motion.div
+            initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} transition={{delay:.5}}
+            style={{ display:"flex", alignItems:"center", gap:10, marginBottom:12 }}
+          >
+            <div style={{
+              padding:"4px 10px", borderRadius:20, background:`${T.gold}18`,
+              border:`1px solid ${T.gold}44`, display:"flex", alignItems:"center", gap:6, flexShrink:0
+            }}>
+              <span style={{ fontSize:12 }}>👑</span>
+              <span style={{ ...orb, fontSize:11, fontWeight:900, color:T.gold }}>LV {level||1}</span>
+              <span style={{ fontSize:9, color:T.gold+"88", ...raj }}>{levelTitle||"Rising Star"}</span>
+            </div>
+            <div style={{ flex:1 }}>
+              <div style={{ display:"flex", justifyContent:"space-between", marginBottom:3 }}>
+                <span style={{ fontSize:7, color:T.muted, ...mono }}>XP PROGRESS</span>
+                <span style={{ fontSize:7, color:T.gold, ...mono }}>{xp||0}/{xpForNext}</span>
+              </div>
+              <div style={{ height:5, background:`${T.gold}18`, borderRadius:4, overflow:"hidden", position:"relative" }}>
+                <motion.div
+                  initial={{width:0}} animate={{width:`${xpPct}%`}} transition={{duration:1.2,delay:.6}}
+                  style={{
+                    height:"100%", borderRadius:4,
+                    background:`linear-gradient(90deg,${T.gold},${T.orange})`,
+                    boxShadow:`0 0 8px ${T.gold}66`
+                  }}
+                />
+                {/* Shimmer */}
+                <motion.div
+                  animate={{x:["-100%","200%"]}} transition={{duration:2,repeat:Infinity,delay:1.5}}
+                  style={{
+                    position:"absolute", inset:0, width:"30%",
+                    background:"linear-gradient(90deg,transparent,rgba(255,255,255,0.4),transparent)",
+                    borderRadius:4
+                  }}
+                />
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Thesis deadline banner */}
+          <motion.div
+            initial={{opacity:0,y:8}} animate={{opacity:1,y:0}} transition={{delay:.6}}
+            style={{
+              background:`linear-gradient(135deg,${daysLeft<=7?"#1a0000":"#001a00"},${T.bg2})`,
+              border:`1px solid ${daysLeft<=7?T.red+"55":T.green+"44"}`,
+              borderRadius:10, padding:"10px 14px",
+              display:"flex", alignItems:"center", gap:12
+            }}
+          >
+            <div style={{ position:"relative", flexShrink:0 }}>
+              <ArcRing pct={thesisPct} size={60} stroke={5}
+                color={daysLeft<=7?T.red:daysLeft<=14?T.orange:T.green}
+                label={`${thesisPct}%`} sublabel="done"/>
+            </div>
+            <div style={{ flex:1 }}>
+              <div style={{ fontSize:8, color:daysLeft<=7?T.red:T.green, ...mono, letterSpacing:2, marginBottom:2 }}>
+                🧪 THESIS DEADLINE
+              </div>
+              <div style={{ ...orb, fontSize:15, fontWeight:900, color:T.bright }}>
+                {daysLeft <= 0 ? "DUE TODAY!" : `${daysLeft} DAYS LEFT`}
+              </div>
+              <div style={{ fontSize:9, color:T.muted, ...raj, marginTop:2 }}>
+                Week {currentWeek}/{THESIS_WEEKS} · Jun 15, 2026
+              </div>
+              <div style={{ marginTop:6, height:4, background:`${T.border}`, borderRadius:3, overflow:"hidden" }}>
+                <motion.div
+                  initial={{width:0}} animate={{width:`${thesisPct}%`}} transition={{duration:1.5,delay:.8}}
+                  style={{
+                    height:"100%", borderRadius:3,
+                    background:daysLeft<=7?`linear-gradient(90deg,${T.red},${T.orange})`:`linear-gradient(90deg,${T.green},${T.cyan})`,
+                    boxShadow:`0 0 6px ${T.green}66`
+                  }}
+                />
+              </div>
+            </div>
+            {daysLeft > 0 && daysLeft <= 7 && (
+              <motion.div animate={{scale:[1,1.15,1]}} transition={{duration:1,repeat:Infinity}}
+                style={{ fontSize:20 }}>🔥</motion.div>
+            )}
+          </motion.div>
+        </div>
+      </motion.div>
+
+      {/* ── LIVE STATS STRIP ── */}
+      <motion.div
+        initial={{opacity:0}} animate={{opacity:1}} transition={{delay:.7}}
+        style={{ display:"flex", gap:0, overflowX:"auto", background:"#020d06", borderBottom:`1px solid #00ff8815` }}
+      >
+        {[
+          { label:"STREAK", value:`${streak||0}d`, icon:"🔥", color:T.orange },
+          { label:"SCORE",  value:`${dailyScore||0}`, icon:"⚡", color:sc },
+          { label:"WATER",  value:`${waterCount||0}/8`, icon:"💧", color:T.blue },
+          { label:"TASKS",  value:`${taskCount}`, icon:"✅", color:T.green },
+          { label:"WEIGHT", value:`${curWeight}kg`, icon:"💪", color:T.pink },
+          { label:"MOOD",   value:mood||"😤", icon:"", color:T.gold },
+        ].map((s,i)=>(
+          <motion.div
+            key={s.label}
+            initial={{opacity:0,y:-10}} animate={{opacity:1,y:0}} transition={{delay:.7+i*.05}}
+            style={{
+              flex:"0 0 auto", minWidth:60, padding:"8px 10px", textAlign:"center",
+              borderRight:`1px solid #00ff8812`
+            }}
+          >
+            <div style={{ fontSize:12, marginBottom:2 }}>{s.icon||s.value}</div>
+            <div style={{ ...orb, fontSize:s.icon?12:10, fontWeight:900, color:s.color, lineHeight:1 }}>
+              {s.icon?s.value:""}
+            </div>
+            <div style={{ fontSize:6, color:T.dim, ...mono, marginTop:1, letterSpacing:1 }}>{s.label}</div>
+          </motion.div>
+        ))}
+      </motion.div>
+
+      <div style={{ padding:"14px 16px 0" }}>
+
+        {/* ── QUOTE CARD ── */}
+        <motion.div
+          initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} transition={{delay:.8}}
+          style={{
+            ...C({padding:"14px 16px", marginBottom:14}),
+            background:"linear-gradient(135deg,#020d06,#020408)",
+            border:`1px solid ${T.green}33`, position:"relative", overflow:"hidden"
+          }}
+        >
+          <div style={{
+            position:"absolute", top:0, left:0, right:0, height:2,
+            background:`linear-gradient(90deg,transparent,${T.green},transparent)`
+          }}/>
+          <div style={{ fontSize:7, color:T.green, ...mono, letterSpacing:3, marginBottom:8 }}>⚡ DAILY FUEL</div>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={quoteIdx}
+              initial={{opacity:0,x:20}} animate={{opacity:1,x:0}} exit={{opacity:0,x:-20}}
+              transition={{duration:.4}}
+              style={{ fontSize:13, color:T.bright, ...raj, lineHeight:1.8, fontStyle:"italic",
+                textShadow:`0 0 20px ${T.green}22` }}
+            >
+              "{QUOTES[quoteIdx]}"
+            </motion.div>
+          </AnimatePresence>
+          <div style={{ display:"flex", gap:4, marginTop:10, alignItems:"center" }}>
+            {QUOTES.map((_,i)=>(
+              <div key={i} onClick={()=>setQuoteIdx(i)}
+                style={{ width:i===quoteIdx?16:4, height:4, borderRadius:2,
+                  background:i===quoteIdx?T.green:T.dim, cursor:"pointer", transition:"all .3s" }}/>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* ── NAVIGATE GRID ── */}
+        <motion.div
+          initial={{opacity:0}} animate={{opacity:1}} transition={{delay:.9}}
+          style={{ marginBottom:14 }}
+        >
+          <div style={{ fontSize:7, color:T.muted, ...mono, letterSpacing:3, marginBottom:10 }}>NAVIGATE</div>
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:8 }}>
+            {NAV_TILES.map((tile,i)=>(
+              <motion.div
+                key={tile.id}
+                initial={{opacity:0,scale:.8}} animate={{opacity:1,scale:1}}
+                transition={{delay:.9+i*.04,type:"spring",stiffness:300}}
+                whileTap={{scale:.93}}
+                onHoverStart={()=>setHoveredNav(tile.id)}
+                onHoverEnd={()=>setHoveredNav(null)}
+                onClick={()=>setTab(tile.id)}
+                style={{
+                  position:"relative", cursor:"pointer",
+                  background:hoveredNav===tile.id?`${tile.color}18`:tab===tile.id?`${tile.color}14`:`${T.bg2}`,
+                  border:`1px solid ${tab===tile.id?tile.color:hoveredNav===tile.id?tile.color+"66":T.border}`,
+                  borderRadius:12, padding:"12px 8px",
+                  textAlign:"center", transition:"all .2s",
+                  boxShadow:tab===tile.id?`0 0 16px ${tile.color}33`:`inset 0 1px 0 rgba(255,255,255,0.04)`,
+                  overflow:"hidden"
+                }}
+              >
+                {/* Active indicator */}
+                {tab===tile.id && (
+                  <motion.div layoutId="navActive"
+                    style={{
+                      position:"absolute", inset:0, borderRadius:12,
+                      background:`${tile.color}08`, border:`1px solid ${tile.color}44`
+                    }}
+                  />
+                )}
+                {/* Top corner glow */}
+                <div style={{
+                  position:"absolute", top:0, right:0, width:40, height:40,
+                  background:`radial-gradient(circle at 100% 0%,${tile.color}18,transparent)`,
+                  borderRadius:12
+                }}/>
+                <div style={{ fontSize:22, marginBottom:5, filter:tab===tile.id||hoveredNav===tile.id?`drop-shadow(0 0 8px ${tile.color})`:"none", transition:"filter .2s" }}>
+                  {tile.icon}
+                </div>
+                <div style={{ fontSize:7, color:tab===tile.id?tile.color:T.muted, ...orb, fontWeight:700, letterSpacing:1 }}>
+                  {tile.label}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* ── FOUR METRICS RINGS ── */}
+        <motion.div
+          initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} transition={{delay:1}}
+          style={{ ...C({padding:"16px"}), marginBottom:14 }}
+        >
+          <div style={{ fontSize:7, color:T.muted, ...mono, letterSpacing:3, marginBottom:12 }}>CORE METRICS</div>
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:4 }}>
+            {[
+              { label:"Thesis", pct:thesisPct, color:thesisPct<70?T.red:T.green },
+              { label:"Weight", pct:weightPct, color:T.pink },
+              { label:"Daily",  pct:dailyScore||0, color:sc },
+              { label:"XP",     pct:xpPct, color:T.gold },
+            ].map((m,i)=>(
+              <motion.div
+                key={m.label}
+                initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} transition={{delay:1+i*.1}}
+                style={{ textAlign:"center" }}
+              >
+                <ArcRing pct={m.pct} size={68} stroke={6} color={m.color} label={`${m.pct}%`}/>
+                <div style={{ fontSize:8, color:T.muted, ...mono, marginTop:3, letterSpacing:1 }}>{m.label}</div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* ── MISSION CARD ── */}
+        <motion.div
+          initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} transition={{delay:1.1}}
+          style={{
+            ...C({padding:"14px"}), marginBottom:14,
+            background:"linear-gradient(135deg,#040814,#020408)",
+            border:`1px solid ${T.blue}33`, position:"relative", overflow:"hidden"
+          }}
+        >
+          <div style={{
+            position:"absolute", bottom:-30, right:-30, width:120, height:120,
+            background:`radial-gradient(circle,${T.blue}12,transparent)`, pointerEvents:"none"
+          }}/>
+          <div style={{ fontSize:7, color:T.blue, ...mono, letterSpacing:3, marginBottom:8 }}>🧪 MISSION</div>
+          <div style={{ fontSize:11, color:T.text, ...raj, lineHeight:1.9 }}>
+            <span style={{ color:T.bright, fontWeight:700 }}>CRO vs SHAP</span>: Interpretable ML for{" "}
+            <span style={{ color:T.cyan }}>Multi-omics Cancer</span> Subtype Prediction
+          </div>
+          <div style={{ marginTop:8, display:"flex", gap:6, flexWrap:"wrap" }}>
+            {["TCGA-BRCA","METABRIC","CRO","SHAP","Multi-omics"].map(tag=>(
+              <span key={tag} style={{
+                fontSize:7, color:T.blue, background:`${T.blue}12`,
+                border:`1px solid ${T.blue}33`, borderRadius:10, padding:"2px 7px", ...mono
+              }}>{tag}</span>
+            ))}
+          </div>
+          <div style={{ marginTop:10, display:"flex", gap:8, alignItems:"center" }}>
+            <div style={{ width:28, height:28, borderRadius:8, background:`${T.blue}18`,
+              border:`1px solid ${T.blue}33`, display:"flex", alignItems:"center", justifyContent:"center",
+              fontSize:14 }}>👩‍🏫</div>
+            <div>
+              <div style={{ fontSize:9, color:T.muted, ...mono }}>SUPERVISOR</div>
+              <div style={{ fontSize:11, color:T.bright, ...raj, fontWeight:600 }}>Dr. Susmita Islam</div>
             </div>
           </div>
-        ))}
-      </div>
+        </motion.div>
 
-      {/* Quick Stats */}
-      <div className="grid grid-cols-2 gap-3">
-        <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-3 text-center">
-          <div className="text-xl font-bold font-orbitron text-green-400">{xpLevel}</div>
-          <div className="text-[7px] text-gray-500 uppercase">Level</div>
-        </div>
-        <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-3 text-center">
-          <div className="text-xl font-bold font-orbitron text-blue-400">{xp}</div>
-          <div className="text-[7px] text-gray-500 uppercase">XP</div>
-        </div>
+        {/* ── QUICK ACTIONS ── */}
+        <motion.div
+          initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} transition={{delay:1.2}}
+        >
+          <div style={{ fontSize:7, color:T.muted, ...mono, letterSpacing:3, marginBottom:10 }}>QUICK ACTIONS</div>
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:8 }}>
+            {[
+              { label:"Start Focus", icon:"⏱", color:T.orange, tab:"focus" },
+              { label:"Thesis Plan", icon:"📋", color:T.blue,   tab:"plan" },
+              { label:"Log Workout", icon:"💪", color:T.pink,   tab:"body" },
+              { label:"Admissions",  icon:"🎓", color:"#a855f7", tab:"admissions" },
+              { label:"Body Stats",  icon:"📊", color:T.green,   tab:"body" },
+              { label:"My Profile",  icon:"👤", color:T.cyan,    tab:"me" },
+            ].map((a,i)=>(
+              <motion.button
+                key={a.label}
+                whileTap={{scale:.95}}
+                onClick={()=>setTab(a.tab)}
+                initial={{opacity:0,y:8}} animate={{opacity:1,y:0}} transition={{delay:1.2+i*.05}}
+                style={{
+                  padding:"10px 6px", borderRadius:10, cursor:"pointer",
+                  background:`${a.color}12`, border:`1px solid ${a.color}33`,
+                  display:"flex", flexDirection:"column", alignItems:"center", gap:4,
+                  transition:"all .2s"
+                }}
+              >
+                <span style={{ fontSize:16 }}>{a.icon}</span>
+                <span style={{ fontSize:8, color:a.color, ...raj, fontWeight:600, textAlign:"center", lineHeight:1.2 }}>
+                  {a.label}
+                </span>
+              </motion.button>
+            ))}
+          </div>
+        </motion.div>
+
       </div>
-    </motion.div>
+    </div>
   );
 };
 

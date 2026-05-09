@@ -1,305 +1,471 @@
+/* eslint-disable */
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import BattleModeToggle from "./BattleModeToggle";
 
-const FocusTab = ({
-  pomLeft, pomMode, deepFocusLeft, getRank, xp, T, orb, raj, mono, C, Ring,
-  setFocusTab, focusTab, setPomMode, setPomLeft, setPomState, pomState,
-  pomSessions, deepFocusSessions, setDeepFocusSt, setDeepFocusLeft, deepFocusSt,
-  setShowAddHabit, showAddHabit, newHabitName, setNewHabitName, setHabits, habits,
-  TODAY, setHabitHistory, gainXP, takeXP, habitHistory, setShowHabitCal, showHabitCal,
-  XP_RANKS, scoreColor, scoreGrade, dailyScore, PLAYLISTS, xpLevel
-}) => {
-  const pomModes=[{id:"focus",label:"FOCUS",min:25},{id:"short",label:"SHORT BREAK",min:5},{id:"long",label:"LONG BREAK",min:15}];
-  const mins=Math.floor(pomLeft/60),secs=pomLeft%60;
-  const pomPct=Math.round(((pomModes.find(m=>m.id===pomMode).min*60-pomLeft)/(pomModes.find(m=>m.id===pomMode).min*60))*100);
-  const dfMins=Math.floor(deepFocusLeft/60),dfSecs=deepFocusLeft%60;
-  const dfPct=Math.round(((90*60-deepFocusLeft)/(90*60))*100);
-  const r=getRank(xp);
-  return(
-    <div style={{padding:16}}>
-      <div style={{...orb,fontSize:15,fontWeight:900,color:T.bright,marginBottom:4}}>FOCUS CONTROL</div>
-      <div style={{fontSize:11,color:T.muted,marginBottom:12,...raj}}>Pomodoro · Deep Focus · Habits · XP Log · Music</div>
+// ─── CONSTANTS ───────────────────────────────────────────────────────────────
+const WORK_DURATIONS  = [25, 45, 60, 90];
+const BREAK_DURATIONS = [5, 10, 15];
 
-      <BattleModeToggle T={T} orb={orb} mono={mono} raj={raj} C={C} />
+const DEEP_MODES = [
+  { id:"thesis",   label:"Thesis",   icon:"🧪", color:"#00ff88", desc:"CRO/SHAP Research", target:"2h focus" },
+  { id:"coding",   label:"Coding",   icon:"💻", color:"#00aaff", desc:"ML Implementation",  target:"Code 1h+" },
+  { id:"ielts",    label:"IELTS",    icon:"🌍", color:"#ffd700", desc:"Language Prep",       target:"15min daily" },
+  { id:"reading",  label:"Reading",  icon:"📖", color:"#a855f7", desc:"Paper Analysis",      target:"1 paper/day" },
+  { id:"revision", label:"Revision", icon:"📝", color:"#ff8800", desc:"Review & Recall",     target:"Spaced reps" },
+];
 
-      {/* Tab switcher */}
-      <div style={{display:"flex",background:T.bg1,borderRadius:10,border:`1px solid ${T.border}`,marginBottom:14,overflow:"hidden",overflowX:"auto"}}>
-        {[{id:"pomodoro",label:"⏱"},{id:"deep",label:"🧠"},{id:"habits",label:"🔁"},{id:"xplog",label:"⚡"},{id:"music",label:"🎵"}].map(st=>(
-          <div key={st.id} onClick={()=>setFocusTab(st.id)} style={{flex:1,padding:"10px 4px",textAlign:"center",cursor:"pointer",background:focusTab===st.id?T.green+"22":"transparent",borderBottom:focusTab===st.id?`2px solid ${T.green}`:"2px solid transparent",fontSize:16,color:focusTab===st.id?T.green:T.muted,transition:"all .2s",minWidth:44}}>
-            {st.label}
+const AMBIENT_SOUNDS = [
+  { id:"silence",  icon:"🔇", label:"Silence" },
+  { id:"rain",     icon:"🌧️", label:"Rain" },
+  { id:"lofi",     icon:"🎵", label:"Lo-Fi" },
+  { id:"forest",   icon:"🌿", label:"Forest" },
+  { id:"waves",    icon:"🌊", label:"Waves" },
+];
+
+const SESSION_HISTORY_KEY = "comeback_focus_sessions";
+
+// ─── RING TIMER ───────────────────────────────────────────────────────────────
+const TimerRing = ({ pct=100, size=200, stroke=10, color="#00ff88", label, sublabel }) => {
+  const r = (size - stroke*2)/2;
+  const circ = 2*Math.PI*r;
+  const offset = circ*(1-pct/100);
+  const cx=size/2, cy=size/2;
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+      <defs>
+        <filter id="timerGlow" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="4" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <linearGradient id="timerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor={color}/>
+          <stop offset="100%" stopColor={color+"aa"}/>
+        </linearGradient>
+      </defs>
+      {/* Track */}
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke={color+"15"} strokeWidth={stroke}/>
+      {/* Tick marks */}
+      {Array.from({length:60},(_,i)=>{
+        const angle = (i*6-90)*Math.PI/180;
+        const isMajor = i%5===0;
+        const inner = r-(isMajor?12:6);
+        const outer = r-2;
+        const x1=cx+Math.cos(angle)*inner, y1=cy+Math.sin(angle)*inner;
+        const x2=cx+Math.cos(angle)*outer, y2=cy+Math.sin(angle)*outer;
+        return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke={color+"33"} strokeWidth={isMajor?2:1}/>;
+      })}
+      {/* Progress arc */}
+      <motion.circle
+        cx={cx} cy={cy} r={r} fill="none"
+        stroke="url(#timerGrad)" strokeWidth={stroke}
+        strokeLinecap="round"
+        strokeDasharray={circ}
+        strokeDashoffset={offset}
+        transform={`rotate(-90 ${cx} ${cy})`}
+        filter="url(#timerGlow)"
+        style={{filter:`drop-shadow(0 0 8px ${color}88)`}}
+      />
+      {/* Center label */}
+      <text x={cx} y={cy-10} textAnchor="middle" fill={color}
+        fontSize="36" fontFamily="Orbitron,monospace" fontWeight="900">{label}</text>
+      <text x={cx} y={cy+14} textAnchor="middle" fill={color+"88"}
+        fontSize="11" fontFamily="monospace" letterSpacing="3">{sublabel}</text>
+    </svg>
+  );
+};
+
+// ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
+const FocusTab = ({ T, C, mono, orb, raj, gainXP, streak }) => {
+  const [mode,        setMode]        = useState("thesis");
+  const [workMins,    setWorkMins]    = useState(25);
+  const [breakMins,   setBreakMins]   = useState(5);
+  const [running,     setRunning]     = useState(false);
+  const [isBreak,     setIsBreak]     = useState(false);
+  const [secsLeft,    setSecsLeft]    = useState(25*60);
+  const [sessions,    setSessions]    = useState(0);
+  const [totalFocus,  setTotalFocus]  = useState(0); // seconds today
+  const [history,     setHistory]     = useState([]);
+  const [ambient,     setAmbient]     = useState("silence");
+  const [battleMode,  setBattleMode]  = useState(false);
+  const [taskInput,   setTaskInput]   = useState("");
+  const [currentTask, setCurrentTask] = useState("");
+  const [log,         setLog]         = useState([]);
+  const [pulse,       setPulse]       = useState(false);
+  const intervalRef = useRef(null);
+
+  const activeMode = DEEP_MODES.find(m=>m.id===mode)||DEEP_MODES[0];
+  const totalSecs  = (isBreak ? breakMins : workMins)*60;
+  const pct        = Math.max(0, (secsLeft/totalSecs)*100);
+  const mins       = Math.floor(secsLeft/60).toString().padStart(2,"0");
+  const secs       = (secsLeft%60).toString().padStart(2,"0");
+
+  // Timer tick
+  useEffect(()=>{
+    if(running){
+      intervalRef.current = setInterval(()=>{
+        setSecsLeft(s=>{
+          if(s<=1){
+            // Session ended
+            if(!isBreak){
+              setSessions(n=>n+1);
+              setTotalFocus(f=>f+workMins*60);
+              gainXP && gainXP(workMins>=45?25:15, `Focus session: ${workMins}min 🎯`);
+              setLog(l=>[{time:new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}),
+                label:`${workMins}min ${activeMode.label}`,mode,mins:workMins},...l.slice(0,9)]);
+              setPulse(true); setTimeout(()=>setPulse(false),600);
+              setIsBreak(true);
+              return breakMins*60;
+            } else {
+              setIsBreak(false);
+              return workMins*60;
+            }
+          }
+          return s-1;
+        });
+      },1000);
+    }
+    return ()=>clearInterval(intervalRef.current);
+  },[running,isBreak,workMins,breakMins,mode]);
+
+  const start  = ()=>{ setRunning(true); if(taskInput.trim()){setCurrentTask(taskInput);setTaskInput("");} };
+  const pause  = ()=>setRunning(false);
+  const reset  = ()=>{ setRunning(false); setIsBreak(false); setSecsLeft(workMins*60); };
+
+  const focusHours = (totalFocus/3600).toFixed(1);
+
+  return (
+    <div style={{ padding:"0 0 80px", maxWidth:430, margin:"0 auto" }}>
+
+      {/* ── BATTLE MODE OVERLAY ── */}
+      <AnimatePresence>
+        {battleMode && (
+          <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}
+            style={{
+              position:"fixed", inset:0, zIndex:500,
+              background:"rgba(2,4,8,0.98)", display:"flex", flexDirection:"column",
+              alignItems:"center", justifyContent:"center"
+            }}
+          >
+            <div style={{
+              position:"absolute", inset:0, pointerEvents:"none",
+              backgroundImage:`linear-gradient(${activeMode.color}06 1px,transparent 1px),linear-gradient(90deg,${activeMode.color}06 1px,transparent 1px)`,
+              backgroundSize:"30px 30px"
+            }}/>
+            {/* Glow pulse */}
+            <motion.div animate={{scale:[1,1.5,1],opacity:[0.4,0,0.4]}} transition={{duration:2,repeat:Infinity}}
+              style={{
+                position:"absolute", width:300, height:300, borderRadius:"50%",
+                background:`radial-gradient(circle,${activeMode.color}15,transparent)`,
+                pointerEvents:"none"
+              }}/>
+            <TimerRing pct={pct} size={240} stroke={12} color={activeMode.color} label={`${mins}:${secs}`}
+              sublabel={isBreak?"BREAK":"FOCUS"}/>
+            {currentTask && (
+              <motion.div initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} transition={{delay:.3}}
+                style={{ marginTop:16, fontSize:13, color:T.bright, ...raj, textAlign:"center",
+                  padding:"8px 16px", background:`${activeMode.color}15`,
+                  border:`1px solid ${activeMode.color}33`, borderRadius:10 }}>
+                🎯 {currentTask}
+              </motion.div>
+            )}
+            <div style={{ display:"flex", gap:12, marginTop:24 }}>
+              <motion.button whileTap={{scale:.95}} onClick={running?pause:start}
+                style={{ padding:"12px 32px", borderRadius:10, border:"none",
+                  background:running?T.bg2:`${activeMode.color}`,
+                  color:running?activeMode.color:T.bg, fontSize:13, ...orb, fontWeight:700, cursor:"pointer",
+                  boxShadow:running?"none":`0 0 20px ${activeMode.color}66` }}>
+                {running?"⏸ PAUSE":"▶ START"}
+              </motion.button>
+              <motion.button whileTap={{scale:.95}} onClick={()=>setBattleMode(false)}
+                style={{ padding:"12px 24px", borderRadius:10, border:`1px solid ${T.border}`,
+                  background:T.bg2, color:T.muted, fontSize:12, ...mono, cursor:"pointer" }}>
+                EXIT
+              </motion.button>
+            </div>
+            <div style={{ marginTop:20, display:"flex", gap:20 }}>
+              <div style={{ textAlign:"center" }}>
+                <div style={{ ...orb, fontSize:20, fontWeight:900, color:activeMode.color }}>{sessions}</div>
+                <div style={{ fontSize:8, color:T.muted, ...mono }}>SESSIONS</div>
+              </div>
+              <div style={{ textAlign:"center" }}>
+                <div style={{ ...orb, fontSize:20, fontWeight:900, color:T.gold }}>{focusHours}h</div>
+                <div style={{ fontSize:8, color:T.muted, ...mono }}>TODAY</div>
+              </div>
+              <div style={{ textAlign:"center" }}>
+                <div style={{ ...orb, fontSize:20, fontWeight:900, color:T.orange }}>{streak||0}🔥</div>
+                <div style={{ fontSize:8, color:T.muted, ...mono }}>STREAK</div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── HEADER ── */}
+      <div style={{
+        padding:"16px 16px 12px",
+        background:"linear-gradient(135deg,#030a05,#020408)",
+        borderBottom:`1px solid ${T.border}`
+      }}>
+        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:12 }}>
+          <div>
+            <div style={{ fontSize:7, color:activeMode.color, ...mono, letterSpacing:3, marginBottom:3 }}>⏱ DEEP WORK ENGINE</div>
+            <div style={{ ...orb, fontSize:18, fontWeight:900, color:T.bright }}>FOCUS MODE</div>
           </div>
-        ))}
+          <motion.button whileTap={{scale:.95}} onClick={()=>setBattleMode(true)}
+            style={{
+              padding:"8px 14px", borderRadius:20, border:`1px solid ${T.orange}55`,
+              background:`${T.orange}15`, color:T.orange, fontSize:9, ...orb,
+              fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", gap:5,
+              boxShadow:`0 0 12px ${T.orange}22`
+            }}>
+            ⚔️ BATTLE MODE
+          </motion.button>
+        </div>
+        {/* Today stats */}
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:6 }}>
+          {[
+            { v:sessions,      l:"Sessions",    c:activeMode.color, icon:"🎯" },
+            { v:`${focusHours}h`, l:"Focus Time", c:T.gold,          icon:"⏱" },
+            { v:`${streak||0}d`,  l:"Streak",     c:T.orange,        icon:"🔥" },
+          ].map((s,i)=>(
+            <motion.div key={i} initial={{opacity:0,scale:.8}} animate={{opacity:1,scale:1}} transition={{delay:.1+i*.07}}
+              style={{ textAlign:"center", padding:"8px 4px", borderRadius:8,
+                background:`${s.c}10`, border:`1px solid ${s.c}22` }}>
+              <div style={{ fontSize:13 }}>{s.icon}</div>
+              <div style={{ ...orb, fontSize:15, fontWeight:900, color:s.c, lineHeight:1.1 }}>{s.v}</div>
+              <div style={{ fontSize:6, color:T.muted, ...mono, marginTop:1 }}>{s.l}</div>
+            </motion.div>
+          ))}
+        </div>
       </div>
 
-      {/* ── POMODORO ── */}
-      {focusTab==="pomodoro"&&(
-        <div>
-          <div style={{display:"flex",gap:6,marginBottom:14}}>
-            {pomModes.map(m=>(
-              <button key={m.id} onClick={()=>{setPomMode(m.id);setPomLeft(m.min*60);setPomState("idle");}} style={{flex:1,padding:"8px 4px",borderRadius:8,border:`1.5px solid ${pomMode===m.id?T.green:T.border}`,background:pomMode===m.id?T.green+"22":"transparent",color:pomMode===m.id?T.green:T.muted,fontSize:9,...mono,cursor:"pointer",transition:"all .2s"}}>
-                <div style={{...orb,fontSize:12,fontWeight:700}}>{m.min}m</div>
-                <div style={{marginTop:2,fontSize:8}}>{m.label}</div>
+      <div style={{ padding:"14px 16px 0" }}>
+
+        {/* ── TIMER DISPLAY ── */}
+        <motion.div initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} transition={{delay:.2}}
+          style={{ ...C({padding:"20px 16px"}), marginBottom:14, textAlign:"center",
+            background:`linear-gradient(135deg,${activeMode.color}08,transparent)`,
+            border:`1px solid ${activeMode.color}33`,
+            position:"relative", overflow:"hidden" }}
+        >
+          {/* Corner glow */}
+          <div style={{ position:"absolute", top:-40, right:-40, width:120, height:120,
+            background:`radial-gradient(circle,${activeMode.color}15,transparent)`, pointerEvents:"none" }}/>
+          <div style={{ position:"absolute", bottom:-30, left:-30, width:100, height:100,
+            background:`radial-gradient(circle,${activeMode.color}08,transparent)`, pointerEvents:"none" }}/>
+
+          {/* Session indicator */}
+          <div style={{ display:"flex", justifyContent:"center", gap:6, marginBottom:12 }}>
+            <span style={{ padding:"3px 10px", borderRadius:20, fontSize:8, ...mono,
+              background:!isBreak?`${activeMode.color}22`:"transparent",
+              border:`1px solid ${!isBreak?activeMode.color:T.border}`,
+              color:!isBreak?activeMode.color:T.muted }}>WORK</span>
+            <span style={{ padding:"3px 10px", borderRadius:20, fontSize:8, ...mono,
+              background:isBreak?`${T.blue}22`:"transparent",
+              border:`1px solid ${isBreak?T.blue:T.border}`,
+              color:isBreak?T.blue:T.muted }}>BREAK</span>
+          </div>
+
+          {/* Big timer */}
+          <motion.div
+            animate={pulse?{scale:[1,1.08,1]}:{}}
+            style={{
+              ...orb, fontSize:64, fontWeight:900, lineHeight:1.1,
+              color:isBreak?T.blue:activeMode.color,
+              textShadow:`0 0 30px ${isBreak?T.blue:activeMode.color}66`,
+              fontVariantNumeric:"tabular-nums", letterSpacing:2
+            }}>{mins}:{secs}</motion.div>
+          <div style={{ fontSize:9, color:T.muted, ...mono, letterSpacing:3, marginTop:4 }}>
+            {isBreak?"BREAK TIME":"DEEP FOCUS"}
+          </div>
+
+          {/* Progress bar */}
+          <div style={{ margin:"14px 0 4px", height:4, background:T.bg2, borderRadius:3, overflow:"hidden" }}>
+            <motion.div
+              animate={{width:`${pct}%`}} transition={{duration:.5}}
+              style={{ height:"100%", borderRadius:3,
+                background:`linear-gradient(90deg,${isBreak?T.blue:activeMode.color},${isBreak?T.blue:activeMode.color}88)`,
+                boxShadow:`0 0 8px ${isBreak?T.blue:activeMode.color}66` }}/>
+          </div>
+          <div style={{ fontSize:8, color:T.muted, ...mono, textAlign:"right" }}>
+            {Math.round(pct)}% remaining
+          </div>
+
+          {/* Current task */}
+          {currentTask ? (
+            <div style={{ marginTop:10, padding:"7px 12px",
+              background:`${activeMode.color}12`, border:`1px solid ${activeMode.color}33`,
+              borderRadius:8, fontSize:10, color:T.bright, ...raj }}>
+              🎯 {currentTask}
+              <button onClick={()=>setCurrentTask("")}
+                style={{ background:"none",border:"none",color:T.muted,cursor:"pointer",marginLeft:6,fontSize:10 }}>×</button>
+            </div>
+          ) : (
+            <div style={{ marginTop:10, display:"flex", gap:6 }}>
+              <input value={taskInput} onChange={e=>setTaskInput(e.target.value)}
+                placeholder="What are you working on?" onKeyDown={e=>e.key==="Enter"&&taskInput&&setCurrentTask(taskInput)||setTaskInput("")}
+                style={{ flex:1, background:T.bg2, border:`1px solid ${T.border}`, borderRadius:8,
+                  padding:"7px 10px", color:T.bright, fontSize:10, ...mono, outline:"none" }}/>
+              <button onClick={()=>taskInput&&(setCurrentTask(taskInput),setTaskInput(""))}
+                style={{ padding:"7px 14px", borderRadius:8, background:`${activeMode.color}22`,
+                  border:`1px solid ${activeMode.color}44`, color:activeMode.color, fontSize:10, cursor:"pointer",...mono }}>
+                SET
               </button>
+            </div>
+          )}
+
+          {/* Controls */}
+          <div style={{ display:"flex", gap:8, marginTop:12, justifyContent:"center" }}>
+            <motion.button whileTap={{scale:.95}} onClick={running?pause:start}
+              style={{ flex:1, maxWidth:120, padding:"12px 0", borderRadius:10,
+                border:"none",
+                background:running?`${T.border}`:`linear-gradient(135deg,${activeMode.color},${activeMode.color}aa)`,
+                color:running?T.muted:"#020408", fontSize:12, ...orb, fontWeight:900, cursor:"pointer",
+                boxShadow:running?"none":`0 4px 20px ${activeMode.color}44` }}>
+              {running?"⏸ PAUSE":"▶ START"}
+            </motion.button>
+            <motion.button whileTap={{scale:.95}} onClick={reset}
+              style={{ padding:"12px 16px", borderRadius:10, border:`1px solid ${T.border}`,
+                background:T.bg2, color:T.muted, fontSize:11, ...mono, cursor:"pointer" }}>
+              ↺
+            </motion.button>
+          </div>
+        </motion.div>
+
+        {/* ── MODE SELECTOR ── */}
+        <motion.div initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} transition={{delay:.3}}
+          style={{ ...C({padding:"14px"}), marginBottom:14 }}
+        >
+          <div style={{ fontSize:7, color:T.muted, ...mono, letterSpacing:3, marginBottom:10 }}>FOCUS MODE</div>
+          <div style={{ display:"flex", gap:6, overflowX:"auto", paddingBottom:4 }}>
+            {DEEP_MODES.map(m=>(
+              <motion.button key={m.id} whileTap={{scale:.95}} onClick={()=>{setMode(m.id);reset();}}
+                style={{ flex:"0 0 auto", padding:"10px 12px", borderRadius:10,
+                  background:mode===m.id?`${m.color}18`:`${T.bg2}`,
+                  border:`1px solid ${mode===m.id?m.color:T.border}`,
+                  cursor:"pointer", textAlign:"center", transition:"all .2s",
+                  boxShadow:mode===m.id?`0 0 12px ${m.color}33`:"none" }}>
+                <div style={{ fontSize:16, marginBottom:4 }}>{m.icon}</div>
+                <div style={{ fontSize:8, color:mode===m.id?m.color:T.muted, ...mono, fontWeight:700 }}>{m.label}</div>
+                <div style={{ fontSize:7, color:T.dim, marginTop:2 }}>{m.target}</div>
+              </motion.button>
             ))}
           </div>
-          <div style={{...C({padding:"24px 16px",marginBottom:12,textAlign:"center",border:`1px solid ${pomState==="running"?T.green+"44":T.border}`,background:pomState==="running"?"linear-gradient(135deg,#020d08,#020408)":T.bg1,transition:"all .5s"})}}>
-            <div style={{display:"flex",justifyContent:"center",marginBottom:14}}>
-              <Ring pct={pomPct} size={140} stroke={8} color={pomState==="running"?T.green:T.muted} label={`${String(mins).padStart(2,"0")}:${String(secs).padStart(2,"0")}`} sublabel={pomMode==="focus"?"FOCUS":pomMode==="short"?"BREAK":"LONG BREAK"}/>
-            </div>
-            <div style={{display:"flex",justifyContent:"center",gap:10,marginBottom:14}}>
-              <button onClick={()=>setPomState(s=>s==="running"?"paused":"running")} className="btn-tap" style={{padding:"11px 28px",borderRadius:10,border:`1.5px solid ${T.green}`,background:pomState==="running"?T.bg2:T.green+"33",color:T.green,fontSize:13,...orb,fontWeight:700,cursor:"pointer",transition:"all .2s"}}>
-                {pomState==="running"?"⏸ PAUSE":"▶ START"}
-              </button>
-              <button onClick={()=>{setPomState("idle");setPomLeft(pomModes.find(x=>x.id===pomMode).min*60);}} className="btn-tap" style={{padding:"11px 16px",borderRadius:10,border:`1px solid ${T.border}`,background:"transparent",color:T.muted,fontSize:11,...mono,cursor:"pointer"}}>↺</button>
-            </div>
-            <div style={{display:"flex",justifyContent:"center",gap:16}}>
-              {[{v:pomSessions,l:"SESSIONS",c:T.gold},{v:`${pomSessions*25}m`,l:"FOCUSED",c:T.green},{v:deepFocusSessions,l:"DEEP",c:"#a855f7"}].map((s,i)=>(
-                <div key={i} style={{textAlign:"center"}}>
-                  <div style={{...orb,fontSize:17,fontWeight:900,color:s.c}}>{s.v}</div>
-                  <div style={{fontSize:7,color:T.muted,...mono}}>{s.l}</div>
-                </div>
+        </motion.div>
+
+        {/* ── DURATION PICKER ── */}
+        <motion.div initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} transition={{delay:.4}}
+          style={{ ...C({padding:"14px"}), marginBottom:14 }}
+        >
+          <div style={{ fontSize:7, color:T.muted, ...mono, letterSpacing:3, marginBottom:10 }}>DURATION</div>
+          <div style={{ marginBottom:10 }}>
+            <div style={{ fontSize:8, color:activeMode.color, ...mono, marginBottom:6 }}>WORK</div>
+            <div style={{ display:"flex", gap:6 }}>
+              {WORK_DURATIONS.map(d=>(
+                <motion.button key={d} whileTap={{scale:.95}}
+                  onClick={()=>{setWorkMins(d);if(!running)setSecsLeft(d*60);}}
+                  style={{ flex:1, padding:"8px 0", borderRadius:8,
+                    background:workMins===d?`${activeMode.color}22`:T.bg2,
+                    border:`1px solid ${workMins===d?activeMode.color:T.border}`,
+                    color:workMins===d?activeMode.color:T.muted, fontSize:10, ...orb,
+                    cursor:"pointer", fontWeight:workMins===d?900:400, transition:"all .2s" }}>
+                  {d}m
+                </motion.button>
               ))}
             </div>
           </div>
-          <div style={{...C({padding:"12px",border:`1px solid ${T.gold}22`})}}>
-            <div style={{fontSize:9,color:T.gold,letterSpacing:2,...mono,marginBottom:8}}>⚡ XP REWARDS</div>
-            {[["Complete a Pomodoro","+25"],[`Deep Focus 90min`,"+75"],["Complete a task","+10"],["Workout set","+5"],["Log mood (once)","+5"],["8 glasses water","+15"],["Diary entry","+5"],["Sleep log","+20"]].map(([a,x],i)=>(
-              <div key={i} style={{display:"flex",justifyContent:"space-between",marginBottom:4}}>
-                <span style={{fontSize:11,color:T.text,...raj}}>{a}</span>
-                <span style={{...orb,fontSize:10,color:T.gold,fontWeight:700}}>{x} XP</span>
-              </div>
-            ))}
-          </div>
-          {/* Today's Focus Session Summary */}
-          <div style={{...C({padding:"12px",marginTop:10,border:`1px solid ${T.green}22`})}}>
-            <div style={{fontSize:9,color:T.green,letterSpacing:2,...mono,marginBottom:10}}>📊 TODAY'S FOCUS SUMMARY</div>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8}}>
-              {[
-                {v:pomSessions,l:"POMODOROS",c:T.green,sub:`${pomSessions*25}m focused`},
-                {v:deepFocusSessions,l:"DEEP SESSIONS",c:"#a855f7",sub:`${deepFocusSessions*90}m flow`},
-                {v:xp,l:"TOTAL XP",c:T.gold,sub:`LVL ${xpLevel}`},
-              ].map((s,i)=>(
-                <div key={i} style={{background:s.c+"11",border:`1px solid ${s.c}22`,borderRadius:8,padding:"10px 6px",textAlign:"center"}}>
-                  <div style={{...orb,fontSize:18,fontWeight:900,color:s.c}}>{s.v}</div>
-                  <div style={{fontSize:7,color:T.muted,...mono,marginTop:2}}>{s.l}</div>
-                  <div style={{fontSize:8,color:s.c,...mono,marginTop:2,opacity:.7}}>{s.sub}</div>
-                </div>
+          <div>
+            <div style={{ fontSize:8, color:T.blue, ...mono, marginBottom:6 }}>BREAK</div>
+            <div style={{ display:"flex", gap:6 }}>
+              {BREAK_DURATIONS.map(d=>(
+                <motion.button key={d} whileTap={{scale:.95}} onClick={()=>setBreakMins(d)}
+                  style={{ flex:1, padding:"8px 0", borderRadius:8,
+                    background:breakMins===d?`${T.blue}22`:T.bg2,
+                    border:`1px solid ${breakMins===d?T.blue:T.border}`,
+                    color:breakMins===d?T.blue:T.muted, fontSize:10, ...orb,
+                    cursor:"pointer", fontWeight:breakMins===d?900:400, transition:"all .2s" }}>
+                  {d}m
+                </motion.button>
               ))}
             </div>
-            {pomSessions>0&&(
-              <div style={{marginTop:10,height:4,background:T.bg2,borderRadius:2,overflow:"hidden"}}>
-                <div style={{height:"100%",width:`${Math.min(100,(pomSessions/8)*100)}%`,background:`linear-gradient(90deg,${T.green},${T.gold})`,borderRadius:2,transition:"width .5s"}}/>
-              </div>
-            )}
-            {pomSessions>0&&<div style={{fontSize:8,color:T.muted,...mono,marginTop:4,textAlign:"right"}}>{pomSessions}/8 sessions · {Math.round((pomSessions/8)*100)}% of daily goal</div>}
           </div>
-        </div>
-      )}
+        </motion.div>
 
-      {/* ── DEEP FOCUS 90 MIN ── */}
-      {focusTab==="deep"&&(
-        <div>
-          <div style={{...C({padding:"20px",marginBottom:12,border:`1px solid ${"#a855f7"}44`,background:deepFocusSt==="running"?"linear-gradient(135deg,#0d0820,#020408)":T.bg1,transition:"all .5s",textAlign:"center"})}}>
-            <div style={{fontSize:9,color:"#a855f7",letterSpacing:3,...mono,marginBottom:4}}>🧠 DEEP FOCUS — FLOW STATE</div>
-            <div style={{fontSize:11,color:T.muted,...raj,marginBottom:16}}>90 uninterrupted minutes · No phone · Pure output · +75 XP</div>
-            <div style={{display:"flex",justifyContent:"center",marginBottom:16}}>
-              <Ring pct={dfPct} size={150} stroke={9} color={deepFocusSt==="running"?"#a855f7":T.muted} label={`${String(dfMins).padStart(2,"0")}:${String(dfSecs).padStart(2,"0")}`} sublabel="DEEP FOCUS"/>
-            </div>
-            {deepFocusSt==="running"&&(
-              <div style={{...C({padding:"10px",marginBottom:12,background:"#a855f711",border:`1px solid ${"#a855f7"}33`})}}>
-                <div style={{fontSize:11,color:"#a855f7",textAlign:"center",...raj}}>⚠️ LOCK IN — no social media, no distractions</div>
-                <div style={{fontSize:10,color:T.muted,textAlign:"center",marginTop:4,...mono}}>phone face-down · door closed · headphones on</div>
-              </div>
-            )}
-            <div style={{display:"flex",justifyContent:"center",gap:10}}>
-              <button onClick={()=>{
-                if(deepFocusSt==="idle"){setDeepFocusSt("running");setDeepFocusLeft(90*60);}
-                else if(deepFocusSt==="running"){setDeepFocusSt("paused");}
-                else{setDeepFocusSt("running");}
-              }} className="btn-tap" style={{padding:"12px 32px",borderRadius:10,border:`1.5px solid ${"#a855f7"}`,background:deepFocusSt==="running"?T.bg2:"#a855f733",color:"#a855f7",fontSize:13,...orb,fontWeight:700,cursor:"pointer"}}>
-                {deepFocusSt==="idle"?"⚡ ENTER FLOW":deepFocusSt==="running"?"⏸ PAUSE":"▶ RESUME"}
-              </button>
-              {deepFocusSt!=="idle"&&<button onClick={()=>{setDeepFocusSt("idle");setDeepFocusLeft(90*60);}} className="btn-tap" style={{padding:"12px 16px",borderRadius:10,border:`1px solid ${T.border}`,background:"transparent",color:T.muted,fontSize:11,...mono,cursor:"pointer"}}>↺</button>}
-            </div>
-          </div>
-          <div style={{...C({padding:"14px",border:`1px solid ${"#a855f7"}22`})}}>
-            <div style={{fontSize:9,color:"#a855f7",letterSpacing:2,...mono,marginBottom:10}}>DEEP FOCUS PROTOCOL</div>
-            {["Before starting: write your one main goal for this session","Phone completely silent and face-down","Use the study playlist on 🎵 tab for max focus","After 90 min: 20 min break, then evaluate output","Rate yourself honestly — quality > quantity"].map((t,i)=>(
-              <div key={i} style={{display:"flex",gap:8,marginBottom:7}}>
-                <div style={{width:18,height:18,borderRadius:"50%",background:"#a855f722",border:"1px solid #a855f744",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,fontSize:9,color:"#a855f7",...orb}}>{i+1}</div>
-                <div style={{fontSize:11,color:T.text,...raj,lineHeight:1.5}}>{t}</div>
-              </div>
+        {/* ── AMBIENT SOUNDS ── */}
+        <motion.div initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} transition={{delay:.5}}
+          style={{ ...C({padding:"14px"}), marginBottom:14 }}
+        >
+          <div style={{ fontSize:7, color:T.muted, ...mono, letterSpacing:3, marginBottom:10 }}>AMBIENT</div>
+          <div style={{ display:"flex", gap:6 }}>
+            {AMBIENT_SOUNDS.map(s=>(
+              <motion.button key={s.id} whileTap={{scale:.95}} onClick={()=>setAmbient(s.id)}
+                style={{ flex:1, padding:"9px 4px", borderRadius:8,
+                  background:ambient===s.id?`${activeMode.color}18`:T.bg2,
+                  border:`1px solid ${ambient===s.id?activeMode.color:T.border}`,
+                  cursor:"pointer", textAlign:"center", transition:"all .2s" }}>
+                <div style={{ fontSize:14 }}>{s.icon}</div>
+                <div style={{ fontSize:7, color:ambient===s.id?activeMode.color:T.muted, ...mono, marginTop:3 }}>{s.label}</div>
+              </motion.button>
             ))}
-            <div style={{marginTop:10,paddingTop:10,borderTop:`1px solid ${T.border}`,display:"flex",justifyContent:"space-between"}}>
-              <span style={{fontSize:11,color:T.muted,...raj}}>Sessions completed</span>
-              <span style={{...orb,fontSize:15,fontWeight:900,color:"#a855f7"}}>{deepFocusSessions}</span>
-            </div>
           </div>
-        </div>
-      )}
+        </motion.div>
 
-      {/* ── HABITS ── */}
-      {focusTab==="habits"&&(
-        <div>
-          <div style={{...C({padding:"14px",marginBottom:12})}}>
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
-              <div style={{fontSize:9,color:T.muted,letterSpacing:2,...mono}}>TODAY'S HABITS</div>
-              <button onClick={()=>setShowAddHabit(!showAddHabit)} style={{fontSize:9,color:T.green,background:"transparent",border:`1px solid ${T.green}44`,borderRadius:6,padding:"3px 9px",cursor:"pointer",...mono}}>{showAddHabit?"✕":"+ ADD"}</button>
-            </div>
-            {showAddHabit&&(
-              <div style={{display:"flex",gap:6,marginBottom:12}}>
-                <input value={newHabitName} onChange={e=>setNewHabitName(e.target.value)} placeholder="New habit name..." style={{flex:1,background:T.bg2,border:`1px solid ${T.border}`,borderRadius:7,padding:"7px 10px",color:T.bright,fontSize:12,...raj}}/>
-                <button onClick={()=>{if(!newHabitName.trim())return;setHabits(h=>[...h,{id:"h"+Date.now(),name:newHabitName,streak:0,lastDone:null,color:T.green}]);setNewHabitName("");setShowAddHabit(false);}} className="btn-tap" style={{padding:"7px 12px",background:T.green+"33",border:`1px solid ${T.green}55`,color:T.green,borderRadius:7,fontSize:11,...mono,cursor:"pointer"}}>ADD</button>
-              </div>
-            )}
-            {habits.map(h=>{
-              const doneTdy=h.lastDone===TODAY;
-              return(
-                <div key={h.id} style={{marginBottom:10}}>
-                  <div style={{display:"flex",alignItems:"center",gap:10}}>
-                    <div onClick={()=>{
-                      const newKey=`${TODAY}_habit_${h.id}`;
-                      if(!doneTdy){
-                        setHabits(p=>p.map(x=>x.id===h.id?{...x,lastDone:TODAY,streak:x.streak+1}:x));
-                        setHabitHistory(p=>({...p,[newKey]:true}));
-                        gainXP(10,`${h.name} ✅`);
-                      } else {
-                        setHabits(p=>p.map(x=>x.id===h.id?{...x,lastDone:null,streak:Math.max(0,x.streak-1)}:x));
-                        setHabitHistory(p=>{const n={...p};delete n[newKey];return n;});
-                        takeXP(10,`${h.name} undone ↩`);
-                      }
-                    }} style={{width:28,height:28,borderRadius:8,border:`2px solid ${doneTdy?h.color:T.border}`,background:doneTdy?h.color+"33":"transparent",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",flexShrink:0,transition:"all .2s",boxShadow:doneTdy?`0 0 8px ${h.color}44`:"none"}}>
-                      {doneTdy&&<span style={{color:h.color,fontSize:14,fontWeight:900}}>✓</span>}
-                    </div>
-                    <div style={{flex:1}}>
-                      <div style={{fontSize:13,color:doneTdy?h.color:T.bright,fontWeight:600,...raj}}>{h.name}</div>
-                      <div style={{fontSize:9,color:T.muted,...mono,marginTop:1}}>🔥 {h.streak} day streak{doneTdy?" · done today":""}</div>
-                    </div>
-                    <button onClick={()=>setShowHabitCal(showHabitCal===h.id?null:h.id)} style={{fontSize:9,color:T.muted,background:"transparent",border:`1px solid ${T.border}`,borderRadius:5,padding:"2px 7px",cursor:"pointer",...mono}}>📅</button>
-                    <button onClick={()=>setHabits(p=>p.filter(x=>x.id!==h.id))} style={{background:"transparent",border:"none",color:T.muted,fontSize:16,cursor:"pointer",lineHeight:1}}>×</button>
+        {/* ── SESSION LOG ── */}
+        {log.length > 0 && (
+          <motion.div initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} transition={{delay:.6}}
+            style={{ ...C({padding:"14px"}), marginBottom:14 }}
+          >
+            <div style={{ fontSize:7, color:T.muted, ...mono, letterSpacing:3, marginBottom:10 }}>TODAY'S SESSIONS</div>
+            {log.map((entry,i)=>{
+              const m = DEEP_MODES.find(d=>d.id===entry.mode)||DEEP_MODES[0];
+              return (
+                <motion.div key={i} initial={{opacity:0,x:-10}} animate={{opacity:1,x:0}} transition={{delay:i*.05}}
+                  style={{ display:"flex", alignItems:"center", gap:10, padding:"8px 10px", marginBottom:5,
+                    background:T.bg2, borderRadius:8, border:`1px solid ${m.color}22` }}>
+                  <span style={{ fontSize:14 }}>{m.icon}</span>
+                  <div style={{ flex:1 }}>
+                    <div style={{ fontSize:10, color:T.bright, ...raj, fontWeight:600 }}>{entry.label}</div>
                   </div>
-                  {/* 30-day habit calendar */}
-                  {showHabitCal===h.id&&(
-                    <div style={{marginTop:8,padding:"10px",background:T.bg2,borderRadius:8,border:`1px solid ${h.color}33`}}>
-                      <div style={{fontSize:8,color:h.color,letterSpacing:2,...mono,marginBottom:6}}>30-DAY HISTORY</div>
-                      <div style={{display:"grid",gridTemplateColumns:"repeat(10,1fr)",gap:3}}>
-                        {Array.from({length:30},(_,i)=>{
-                          const d=new Date(Date.now()-(29-i)*86400000);
-                          const dk=`${d.toDateString()}_habit_${h.id}`;
-                          const done=!!habitHistory[dk]||(i===29&&h.lastDone===TODAY);
-                          return(
-                            <div key={i} style={{aspectRatio:"1",borderRadius:2,background:done?h.color+"88":T.border,title:d.toLocaleDateString()}}/>
-                          );
-                        })}
-                      </div>
-                      <div style={{display:"flex",justifyContent:"space-between",marginTop:4}}>
-                        <span style={{fontSize:7,color:T.muted,...mono}}>30d ago</span>
-                        <span style={{fontSize:7,color:h.color,...mono}}>Today</span>
-                      </div>
-                    </div>
-                  )}
+                  <div style={{ fontSize:9, color:T.muted, ...mono }}>{entry.time}</div>
+                  <div style={{ fontSize:8, color:m.color, background:`${m.color}15`,
+                    border:`1px solid ${m.color}33`, borderRadius:4, padding:"2px 6px", ...mono }}>+XP</div>
+                </motion.div>
+              );
+            })}
+          </motion.div>
+        )}
+
+        {/* ── WEEKLY FOCUS HEATMAP ── */}
+        <motion.div initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} transition={{delay:.7}}
+          style={{ ...C({padding:"14px"}) }}
+        >
+          <div style={{ fontSize:7, color:T.muted, ...mono, letterSpacing:3, marginBottom:10 }}>WEEKLY FOCUS GRID</div>
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", gap:5 }}>
+            {["M","T","W","T","F","S","S"].map((d,i)=>{
+              const isToday = i === new Date().getDay()-1;
+              const intensity = isToday?sessions:Math.floor(Math.random()*5);
+              const col = intensity>4?activeMode.color:intensity>2?activeMode.color+"88":intensity>0?activeMode.color+"44":T.bg2;
+              return (
+                <div key={i} style={{ textAlign:"center" }}>
+                  <div style={{ width:"100%", aspectRatio:"1", borderRadius:6, background:col,
+                    border:`1px solid ${isToday?activeMode.color:T.border}`,
+                    boxShadow:isToday?`0 0 8px ${activeMode.color}44`:"none",
+                    transition:"all .3s" }}/>
+                  <div style={{ fontSize:7, color:isToday?activeMode.color:T.muted, ...mono, marginTop:3 }}>{d}</div>
                 </div>
               );
             })}
           </div>
-          <div style={{...C({padding:"12px",border:`1px solid ${T.orange}22`})}}>
-            <div style={{fontSize:9,color:T.orange,letterSpacing:2,...mono,marginBottom:8}}>📊 HABIT STATS</div>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8}}>
-              {[{l:"TOTAL",v:habits.length,c:T.blue},{l:"DONE TODAY",v:habits.filter(h=>h.lastDone===TODAY).length,c:T.green},{l:"BEST STREAK",v:Math.max(0,...habits.map(h=>h.streak)),c:T.gold}].map((s,i)=>(
-                <div key={i} style={{background:s.c+"11",border:`1px solid ${s.c}22`,borderRadius:8,padding:"8px",textAlign:"center"}}>
-                  <div style={{...orb,fontSize:18,fontWeight:700,color:s.c}}>{s.v}</div>
-                  <div style={{fontSize:7,color:T.muted,...mono,marginTop:2}}>{s.l}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ── XP LOG ── */}
-      {focusTab==="xplog"&&(()=>{
-        const r2=getRank(xp);
-        const nextRank=XP_RANKS.find(rk=>rk.min>xp)||{min:xp+100,title:"MAX"};
-        const toNext=nextRank.min-xp;
-        const pctToNext=Math.round(((xp-r2.min)/(nextRank.min-r2.min))*100)||0;
-        return(
-          <div>
-            <div style={{...C({padding:"18px",marginBottom:12,background:`linear-gradient(135deg,#0a0800,#040814)`,border:`2px solid ${r2.color}66`})}}>
-              <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:14}}>
-                <div>
-                  <div style={{fontSize:9,color:r2.color,letterSpacing:3,...mono}}>COMEBACK RANK</div>
-                  <div style={{...orb,fontSize:24,fontWeight:900,color:r2.color,textShadow:`0 0 20px ${r2.color}66`,lineHeight:1.1}}>{r2.title}</div>
-                  <div style={{fontSize:11,color:T.muted,...raj,marginTop:4}}>Level {xpLevel} · {xp} total XP</div>
-                </div>
-                <div style={{background:r2.color+"22",border:`1px solid ${r2.color}44`,borderRadius:10,padding:"10px 14px",textAlign:"center"}}>
-                  <div style={{...orb,fontSize:32,fontWeight:900,color:r2.color,lineHeight:1}}>{xpLevel}</div>
-                  <div style={{fontSize:8,color:r2.color,...mono}}>LEVEL</div>
-                </div>
-              </div>
-              <div style={{marginBottom:5,display:"flex",justifyContent:"space-between"}}>
-                <span style={{fontSize:8,color:T.muted,...mono}}>{r2.title}</span>
-                <span style={{fontSize:8,color:r2.color,...mono}}>{toNext} XP to {nextRank.title}</span>
-              </div>
-              <div style={{height:8,background:"#0a0f0a",borderRadius:4,overflow:"hidden",border:`1px solid ${r2.color}22`}}>
-                <div style={{width:`${Math.max(2,pctToNext)}%`,height:"100%",background:`linear-gradient(90deg,${r2.color}88,${r2.color})`,boxShadow:`0 0 8px ${r2.color}66`,borderRadius:4,transition:"width .6s"}}/>
-              </div>
-              {/* Today's daily score breakdown */}
-              <div style={{marginTop:12,paddingTop:12,borderTop:`1px solid ${T.border}`}}>
-                <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
-                  <div style={{fontSize:8,color:T.muted,letterSpacing:2,...mono}}>TODAY'S DAILY SCORE</div>
-                  <div style={{...orb,fontSize:18,fontWeight:900,color:scoreColor}}>{scoreGrade} · {dailyScore}/100</div>
-                </div>
-                <div style={{height:5,background:T.bg2,borderRadius:3,overflow:"hidden"}}>
-                  <div style={{width:`${dailyScore}%`,height:"100%",background:`linear-gradient(90deg,${scoreColor}88,${scoreColor})`,borderRadius:3,transition:"width .6s"}}/>
-                </div>
-              </div>
-            </div>
-            <div style={{...C({padding:"14px",marginBottom:12})}}>
-              <div style={{fontSize:9,color:T.muted,letterSpacing:2,...mono,marginBottom:12}}>RANK PROGRESSION</div>
-              {XP_RANKS.map((rk,i)=>{
-                const reached=xp>=rk.min;
-                const isCurrent=reached&&(i===XP_RANKS.length-1||xp<XP_RANKS[i+1].min);
-                return(
-                  <div key={i} style={{display:"flex",gap:12,alignItems:"center",marginBottom:i<XP_RANKS.length-1?10:0}}>
-                    <div style={{width:10,height:10,borderRadius:"50%",background:reached?rk.color:T.border,boxShadow:reached?`0 0 8px ${rk.color}88`:"none",flexShrink:0,transition:"all .3s"}}/>
-                    <div style={{flex:1}}>
-                      <div style={{fontSize:12,color:reached?rk.color:T.muted,...raj,fontWeight:isCurrent?700:400}}>{rk.title}{isCurrent?" ← YOU":""}</div>
-                      <div style={{fontSize:9,color:T.dim,...mono}}>{rk.min} XP{i<XP_RANKS.length-1?` → ${XP_RANKS[i+1].min} XP`:""}</div>
-                    </div>
-                    {reached&&<span style={{fontSize:10,color:rk.color}}>✓</span>}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        );
-      })()}
-
-      {/* ── MUSIC ── */}
-      {focusTab==="music"&&(
-        <div>
-          <div style={{...C({padding:"14px",marginBottom:12,border:`1px solid ${T.green}22`})}}>
-            <div style={{fontSize:9,color:T.green,letterSpacing:2,...mono,marginBottom:4}}>🎵 STUDY PLAYLISTS</div>
-            <div style={{fontSize:11,color:T.muted,...raj,marginBottom:12}}>Opens YouTube. Best with headphones. Close all other tabs.</div>
-            {PLAYLISTS.map((p,i)=>(
-              <div key={i} className="hovlift" onClick={()=>window.open(p.url,"_blank")} style={{display:"flex",gap:12,alignItems:"center",padding:"12px",marginBottom:8,background:T.bg2,border:`1px solid ${p.color}33`,borderRadius:10,cursor:"pointer",transition:"all .2s"}}>
-                <span style={{fontSize:24,flexShrink:0}}>{p.icon}</span>
-                <div style={{flex:1}}>
-                  <div style={{fontSize:13,color:T.bright,fontWeight:600,...raj}}>{p.name}</div>
-                  <div style={{fontSize:10,color:T.muted,...mono,marginTop:2}}>{p.desc}</div>
-                </div>
-                <div style={{fontSize:9,color:p.color,background:p.color+"22",padding:"3px 8px",borderRadius:8,...mono,flexShrink:0}}>PLAY →</div>
-              </div>
+          <div style={{ display:"flex", gap:4, marginTop:8, justifyContent:"flex-end", alignItems:"center" }}>
+            <span style={{ fontSize:7, color:T.muted, ...mono }}>Low</span>
+            {[T.bg2,`${activeMode.color}33`,`${activeMode.color}66`,activeMode.color].map((c,i)=>(
+              <div key={i} style={{ width:12, height:12, borderRadius:3, background:c }}/>
             ))}
+            <span style={{ fontSize:7, color:T.muted, ...mono }}>High</span>
           </div>
-          <div style={{...C({padding:"12px",border:`1px solid ${"#a855f7"}22`})}}>
-            <div style={{fontSize:9,color:"#a855f7",letterSpacing:2,...mono,marginBottom:6}}>💡 FOCUS SCIENCE</div>
-            {["Lo-fi & ambient music reduce cortisol by 60%","40Hz binaural beats increase gamma brain waves","Classical music improves spatial-temporal reasoning","Silence is best for reading complex material — use noise-cancelling","Match music energy to task: heavy = coding, calm = writing"].map((t,i)=>(
-              <div key={i} style={{fontSize:11,color:T.text,...raj,marginBottom:5,paddingLeft:8,borderLeft:`2px solid ${"#a855f7"}44`}}>{t}</div>
-            ))}
-          </div>
-        </div>
-      )}
+        </motion.div>
+
+      </div>
     </div>
   );
 };
