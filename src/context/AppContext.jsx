@@ -8,12 +8,12 @@ let USER_DOC = null;
 
 try {
   const firebaseConfig = {
-    apiKey: process.env.REACT_APP_FIREBASE_API_KEY || "AIzaSyA18GxWg2WNCj4tcj31PsanrtCeBE8ZDVw",
-    authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN || "comeback-os.firebaseapp.com",
-    projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID || "comeback-os",
-    storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET || "comeback-os.firebasestorage.app",
-    messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID || "536594041438",
-    appId: process.env.REACT_APP_FIREBASE_APP_ID || "1:536594041438:web:39f3763fe00631215b82cf"
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyA18GxWg2WNCj4tcj31PsanrtCeBE8ZDVw",
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "comeback-os.firebaseapp.com",
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "comeback-os",
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "comeback-os.firebasestorage.app",
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "536594041438",
+    appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:536594041438:web:39f3763fe00631215b82cf"
   };
   
   const fbApp = initializeApp(firebaseConfig);

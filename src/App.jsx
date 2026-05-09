@@ -30,7 +30,7 @@ const FocusTab = lazy(() => import("./components/features/FocusTab"));
 const MeTab = lazy(() => import("./components/features/MeTab"));
 const ProgressTab = lazy(() => import("./components/features/ProgressTab"));
 const PlanTab = lazy(() => import("./components/features/PlanTab"));
-const { AppProvider } = lazy(() => import("./context/AppContext"));
+import { AppProvider } from "./context/AppContext";
 
 // Fallback for lazy loading
 const PageLoader = () => (
@@ -42,12 +42,12 @@ const PageLoader = () => (
 // ─── FIREBASE CONFIG ─────────────────────────────────────────────────────────
 // Values loaded from environment variables for security
 const firebaseConfig = {
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
 // Validate required env vars
@@ -61,16 +61,28 @@ const db       = getFirestore(fbApp);
 const USER_DOC = doc(db, "users", "rudra");
 
 async function loadState() {
-  // Firebase first (source of truth across all devices)
+  // Try localStorage first for instant load
+  try { 
+    const s = localStorage.getItem("comeback_os"); 
+    if (s) return JSON.parse(s); 
+  } catch {}
+  
+  // Firebase with 3s timeout (source of truth for cloud sync)
   try {
-    const snap = await getDoc(USER_DOC);
+    const snap = await Promise.race([
+      getDoc(USER_DOC),
+      new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 3000))
+    ]);
     if (snap.exists()) {
       const d = snap.data();
       try { localStorage.setItem("comeback_os", JSON.stringify(d)); } catch {}
       return d;
     }
-  } catch {}
-  // Offline fallback
+  } catch (e) {
+    // Firebase failed or timed out, use localStorage
+  }
+  
+  // Final fallback
   try { const s = localStorage.getItem("comeback_os"); if (s) return JSON.parse(s); } catch {}
   return null;
 }
@@ -1003,15 +1015,27 @@ export default function App(){
   const [tab, setTab] = useState("home");
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const [loadedData, setLoadedData] = useState(null);  // null = still loading
+  const [loadedData, setLoadedData] = useState({});  // Start with empty object immediately
   const [pinHash,    setPinHash]    = useState(null);
   const [unlocked,   setUnlocked]   = useState(false);
 
   useEffect(()=>{
+    // Try to load from localStorage immediately (fast path)
+    try {
+      const cached = localStorage.getItem("comeback_os");
+      if (cached) {
+        const d = JSON.parse(cached);
+        setLoadedData(d);
+        setPinHash(d.pinHash || null);
+      }
+    } catch {}
+
+    // Also try Firebase in background (async, non-blocking)
     loadState().then(data=>{
-      const d = data || {};
-      setLoadedData(d);
-      setPinHash(d.pinHash || null);
+      if (data) {
+        setLoadedData(data);
+        setPinHash(data.pinHash || null);
+      }
     });
   },[]);
 

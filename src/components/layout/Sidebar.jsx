@@ -20,6 +20,20 @@ const navItems = [
 ];
 
 const Sidebar = ({ tab, setTab, sidebarOpen, setSidebarOpen, T }) => {
+  const colorMap = {
+    "primary": T.green,
+    "secondary": T.blue,
+    "accent": T.orange,
+    "warning": T.orange,
+    "gold": T.gold,
+    "purple-500": T.pink,
+    "amber-500": T.orange,
+    "emerald-500": T.green,
+    "cyan-500": T.cyan,
+    "pink-500": T.pink,
+    "purple-400": T.pink,
+  };
+
   return (
     <>
       <AnimatePresence>
@@ -29,38 +43,93 @@ const Sidebar = ({ tab, setTab, sidebarOpen, setSidebarOpen, T }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setSidebarOpen(false)}
-            className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
+            style={{
+              position: "fixed",
+              inset: 0,
+              zIndex: 40,
+              background: "rgba(0,0,0,0.5)",
+              backdropFilter: "blur(4px)",
+            }}
           />
         )}
       </AnimatePresence>
 
       <motion.div
-        animate={{ width: sidebarOpen ? 60 : 0 }}
+        animate={{ width: sidebarOpen ? 240 : 0 }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className="fixed top-0 left-0 bottom-0 z-50 overflow-hidden"
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          bottom: 0,
+          zIndex: 50,
+          overflow: "hidden",
+        }}
       >
-        <div className="w-60 h-full bg-bg-card/95 backdrop-blur-xl border-r border-border flex flex-col">
-          <div className="p-4 border-b border-border">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="text-2xl">💎</span>
+        <div style={{
+          width: 240,
+          height: "100%",
+          background: `${T.bg2}/95`,
+          backdropFilter: "blur(12px)",
+          borderRight: `1px solid ${T.border}`,
+          display: "flex",
+          flexDirection: "column",
+        }}>
+          <div style={{
+            padding: 16,
+            borderBottom: `1px solid ${T.border}`,
+          }}>
+            <div style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}>
+              <div style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+              }}>
+                <span style={{fontSize: 24}}>💎</span>
                 <div>
-                  <div className="font-bold text-primary text-sm font-display">COMEBACK</div>
-                  <div className="text-xs text-text-muted font-mono">v1.0 • ELITE</div>
+                  <div style={{
+                    fontWeight: "bold",
+                    color: T.green,
+                    fontSize: 12,
+                    fontFamily: "'Orbitron',monospace",
+                  }}>COMEBACK</div>
+                  <div style={{
+                    fontSize: 10,
+                    color: T.muted,
+                    fontFamily: "'Share Tech Mono',monospace",
+                  }}>v1.0 • ELITE</div>
                 </div>
               </div>
               <button
                 onClick={() => setSidebarOpen(false)}
-                className="p-1.5 rounded-lg hover:bg-bg-surface transition-colors"
+                style={{
+                  padding: 6,
+                  borderRadius: 8,
+                  background: "transparent",
+                  border: "none",
+                  cursor: "pointer",
+                  color: T.muted,
+                  display: "flex",
+                  alignItems: "center",
+                }}
               >
-                <X size={16} className="text-text-muted" />
+                <X size={16} />
               </button>
             </div>
           </div>
 
-          <nav className="flex-1 p-2 overflow-y-auto">
+          <nav style={{
+            flex: 1,
+            padding: 8,
+            overflowY: "auto",
+          }}>
             {navItems.map((item, i) => {
               const isActive = tab === item.id;
+              const itemColor = colorMap[item.color] || T.green;
               const Icon = item.icon;
               return (
                 <motion.div
@@ -69,23 +138,38 @@ const Sidebar = ({ tab, setTab, sidebarOpen, setSidebarOpen, T }) => {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.03 }}
                   onClick={() => { setTab(item.id); setSidebarOpen(false); }}
-                  className={`relative flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-200 mb-1 group ${
-                    isActive 
-                      ? `bg-${item.color}/10 border-l-3 border-${item.color}` 
-                      : "hover:bg-bg-surface border-l-3 border-transparent"
-                  }`}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                    padding: "10px 12px",
+                    borderRadius: 8,
+                    cursor: "pointer",
+                    transition: "all 200ms",
+                    marginBottom: 4,
+                    background: isActive ? `${itemColor}10` : "transparent",
+                    borderLeft: `3px solid ${isActive ? itemColor : "transparent"}`,
+                    color: isActive ? itemColor : T.muted,
+                  }}
                 >
-                  <Icon 
-                    size={18} 
-                    className={`transition-colors ${isActive ? `text-${item.color}` : "text-text-muted group-hover:text-text-secondary"}`} 
-                  />
-                  <span className={`font-medium transition-colors ${isActive ? `text-${item.color}` : "text-text-muted group-hover:text-text-secondary"}`}>
+                  <Icon size={18} style={{color: isActive ? itemColor : T.muted}} />
+                  <span style={{
+                    fontWeight: 500,
+                    fontSize: 13,
+                    color: isActive ? itemColor : T.muted,
+                  }}>
                     {item.label}
                   </span>
                   {isActive && (
                     <motion.div
                       layoutId="activeIndicator"
-                      className={`absolute right-2 w-2 h-2 rounded-full bg-${item.color}`}
+                      style={{
+                        marginLeft: "auto",
+                        width: 8,
+                        height: 8,
+                        borderRadius: "50%",
+                        background: itemColor,
+                      }}
                     />
                   )}
                 </motion.div>
@@ -93,10 +177,15 @@ const Sidebar = ({ tab, setTab, sidebarOpen, setSidebarOpen, T }) => {
             })}
           </nav>
 
-          <div className="p-3 border-t border-border">
-            <div className="text-center text-xs text-text-muted font-mono">
-              © 2026 Peash Rudra • Comeback-OS
-            </div>
+          <div style={{
+            padding: 12,
+            borderTop: `1px solid ${T.border}`,
+            textAlign: "center",
+            fontSize: 10,
+            color: T.muted,
+            fontFamily: "'Share Tech Mono',monospace",
+          }}>
+            © 2026 Peash Rudra • Comeback-OS
           </div>
         </div>
       </motion.div>
@@ -104,13 +193,29 @@ const Sidebar = ({ tab, setTab, sidebarOpen, setSidebarOpen, T }) => {
       <motion.button
         whileTap={{ scale: 0.95 }}
         onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="fixed top-3 z-[600] w-9 h-9 rounded-lg bg-bg-card/90 backdrop-blur-xl border border-border flex items-center justify-center transition-all duration-300"
-        style={{ left: sidebarOpen ? 260 : 12 }}
+        style={{
+          position: "fixed",
+          top: 12,
+          left: sidebarOpen ? 260 : 12,
+          zIndex: 600,
+          width: 36,
+          height: 36,
+          borderRadius: 8,
+          background: `${T.bg2}/90`,
+          backdropFilter: "blur(12px)",
+          border: `1px solid ${T.border}`,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+          transition: "all 300ms",
+          color: T.green,
+        }}
       >
         {sidebarOpen ? (
-          <ChevronLeft size={16} className="text-primary" />
+          <ChevronLeft size={16} />
         ) : (
-          <ChevronRight size={16} className="text-primary" />
+          <ChevronRight size={16} />
         )}
       </motion.button>
     </>
