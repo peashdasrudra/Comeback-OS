@@ -11,6 +11,7 @@ const Plan = lazy(() => import("./components/features/Plan"));
 const Body = lazy(() => import("./components/features/Body"));
 const BodyTab = lazy(() => import("./components/features/BodyTab"));
 import PageTransition from "./components/layout/PageTransition";
+import QuickLog from "./components/layout/QuickLog";
 const Sidebar = lazy(() => import("./components/layout/Sidebar"));
 const SleepMoodCorrelator = lazy(() => import("./components/features/SleepMoodCorrelator"));
 const ThesisProgressRings = lazy(() => import("./components/features/ThesisProgressRings"));
@@ -1241,7 +1242,6 @@ function AppMain({ initialData:D, pinHash, onPinChange }){
   const [showWeeklyReview,setShowWeeklyReview] = useState(false);
   const [weekReflect,setWeekReflect]       = useState({win:"",improve:"",focus:""});
   const [weekReviews,setWeekReviews]       = useState(D.weekReviews||{});
-  const [showQuickLog,setShowQuickLog]     = useState(false);
   const [challengeDone,setChallengeDone]   = useState(D.challengeDone||{});
   const [showHabitCal,setShowHabitCal]     = useState(null);
   const [habitHistory,setHabitHistory]     = useState(D.habitHistory||{});
@@ -1812,22 +1812,7 @@ function AppMain({ initialData:D, pinHash, onPinChange }){
           </div>
         )}
 
-        {/* ── QUICK LOG FAB ── */}
-        {showQuickLog&&(
-          <div style={{position:"fixed",inset:0,zIndex:1900,background:"rgba(0,0,0,0.7)"}} onClick={()=>setShowQuickLog(false)}>
-            <div style={{position:"fixed",bottom:78,right:16,display:"flex",flexDirection:"column",gap:8,animation:"fab .3s ease"}} onClick={e=>e.stopPropagation()}>
-              {[
-                {label:"💧 +1 Water",action:()=>{if(waterCount<8){const nx=waterCount+1;setWaterCount(nx);if(nx===8)gainXP(15,"Hydrated! 💧","hydration",true);}}},
-                {label:"😤 Log Mood",action:()=>{setShowMoodModal(true);setShowQuickLog(false);}},
-                {label:"📓 War Log",action:()=>{const t=prompt("Quick log entry:");if(t?.trim()){setDailyLog(p=>[{id:Date.now(),text:t,time:new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}),date:TODAY},...p]);gainXP(5,"Entry logged 📓");}}},
-                {label:"⚖️ Weight",action:()=>{setTab("progress");setShowQuickLog(false);}},
-                {label:"🍽️ Log Meal",action:()=>{setShowFoodModal(true);setShowQuickLog(false);}},
-              ].map((a,i)=>(
-                <button key={i} onClick={()=>{a.action();setShowQuickLog(false);}} className="btn-tap" style={{padding:"9px 16px",background:T.bg1,border:`1px solid ${T.border}`,borderRadius:20,color:T.bright,fontSize:12,...raj,cursor:"pointer",whiteSpace:"nowrap",boxShadow:"0 4px 20px rgba(0,0,0,0.5)",textAlign:"left"}}>{a.label}</button>
-              ))}
-            </div>
-          </div>
-        )}
+
 
         {/* ── MOOD MODAL ── */}
         {showMoodModal && (
@@ -1880,7 +1865,12 @@ function AppMain({ initialData:D, pinHash, onPinChange }){
         )}
 
         {/* FAB button */}
-        <button onClick={()=>setShowQuickLog(q=>!q)} className="btn-tap" style={{position:"fixed",bottom:78,right:16,width:50,height:50,borderRadius:"50%",background:`linear-gradient(135deg,${T.green},${T.blue})`,border:"none",color:"#020408",fontSize:22,cursor:"pointer",zIndex:showQuickLog?1901:150,boxShadow:`0 4px 24px ${T.green}55, 0 0 40px ${T.green}22`,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:900,transition:"all .3s cubic-bezier(.34,1.56,.64,1)",transform:showQuickLog?"rotate(45deg) scale(1.1)":"rotate(0) scale(1)"}}>+</button>
+        <QuickLog
+          T={T} raj={raj} mono={mono}
+          waterCount={waterCount} setWaterCount={setWaterCount}
+          gainXP={gainXP} setDailyLog={setDailyLog} TODAY={TODAY}
+          setTab={setTab} setShowMoodModal={setShowMoodModal} setShowFoodModal={setShowFoodModal}
+        />
 
         {/* ── BOTTOM NAV ── */}
         <div style={{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:430,zIndex:100}}>
