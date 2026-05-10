@@ -76,14 +76,32 @@ const TIMELINE_EVENTS = [
   { date:"Apr 2027",     label:"DU Application Opens", color:"#a855f7", urgent:false, icon:"🏫" },
 ];
 
+const COST_DATA = [
+  { uni:"KUET", tuition:"৳3k/yr", rent:"৳0", food:"৳3k/mo", travel:"৳500/mo", yearly:"৳45k", color:"#00ff88", icon:"🏛️", note:"Home city — zero relocation cost" },
+  { uni:"KU",   tuition:"৳2k/yr", rent:"৳0", food:"৳3k/mo", travel:"৳800/mo", yearly:"৳48k", color:"#ff8800", icon:"🎓", note:"Home city — minimal extra cost" },
+  { uni:"BUET", tuition:"৳4k/yr", rent:"৳8k/mo", food:"৳5k/mo", travel:"৳2k/mo", yearly:"৳184k", color:"#00aaff", icon:"⚙️", note:"Dhaka living is 4x Khulna" },
+  { uni:"DU",   tuition:"৳5k/yr", rent:"৳10k/mo",food:"৳5k/mo", travel:"৳2k/mo", yearly:"৳209k", color:"#a855f7", icon:"🏫", note:"Most expensive option" },
+];
+
+const PROFESSORS = [
+  { name:"Dr. Mohammad Shamsul Arefin", uni:"KUET", dept:"CSE", research:"ML, Data Mining", email:"sarefin@cse.kuet.ac.bd", status:"not_sent", color:"#00ff88" },
+  { name:"Dr. K.M. Azharul Hasan", uni:"KUET", dept:"CSE", research:"Bioinformatics, ML", email:"azharul@cse.kuet.ac.bd", status:"not_sent", color:"#00ff88" },
+  { name:"Dr. Muhammad Masroor Ali", uni:"BUET", dept:"CSE", research:"ML, Pattern Recognition", email:"masroorali@cse.buet.ac.bd", status:"not_sent", color:"#00aaff" },
+  { name:"Dr. Md. Monirul Islam", uni:"BUET", dept:"CSE", research:"Neural Networks, Optimization", email:"monirul@cse.buet.ac.bd", status:"not_sent", color:"#00aaff" },
+  { name:"Prof. Dr. Md. Rezaul Karim", uni:"KU", dept:"CSE", research:"AI, Data Science", email:"mrkarim@ku.ac.bd", status:"not_sent", color:"#ff8800" },
+  { name:"Dr. Md. Abdur Razzaque", uni:"DU", dept:"CSE", research:"ML, IoT", email:"razzaque@cse.du.ac.bd", status:"not_sent", color:"#a855f7" },
+];
+
 // ─── SUB-TABS ────────────────────────────────────────────────────────────────
 const SUB_TABS = [
   { id:"overview",   icon:"📊", label:"Overview" },
-  { id:"unis",       icon:"🏛️", label:"Universities" },
+  { id:"unis",       icon:"🏛️", label:"Unis" },
   { id:"documents",  icon:"📂", label:"Docs" },
-  { id:"exam",       icon:"📝", label:"Exam Prep" },
+  { id:"exam",       icon:"📝", label:"Exam" },
   { id:"timeline",   icon:"📅", label:"Timeline" },
   { id:"sop",        icon:"✍️", label:"SOP" },
+  { id:"costs",      icon:"💰", label:"Costs" },
+  { id:"outreach",   icon:"📧", label:"Profs" },
 ];
 
 // Animated counter
@@ -117,6 +135,7 @@ const AdmissionsTab = ({ T, C, mono, orb, raj, gainXP }) => {
   const [docChecks, setDocChecks] = useState({});
   const [sopKey,    setSopKey]    = useState("kuet");
   const [copied,    setCopied]    = useState(false);
+  const [profStatus, setProfStatus] = useState({});
 
   const uni = UNIS.find(u=>u.id===activeUni);
   const docPct = Math.round((Object.values(docChecks).filter(Boolean).length/DOCUMENTS.length)*100);
@@ -558,6 +577,115 @@ I seek admission to DU's MSc CSE program to challenge myself at the highest leve
                   fontSize:11, ...orb, fontWeight:700, cursor:"pointer", transition:"all .2s" }}>
                 {copied?"✅ COPIED TO CLIPBOARD":"📋 COPY SOP"}
               </motion.button>
+            </motion.div>
+          )}
+
+          {/* ══ COSTS ══ */}
+          {subTab==="costs" && (
+            <motion.div key="costs" initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} exit={{opacity:0}}>
+              <div style={{ fontSize:8, color:T.muted, ...mono, letterSpacing:3, marginBottom:12 }}>💰 FINANCIAL COMPARISON</div>
+
+              {/* Summary cards */}
+              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:14 }}>
+                {COST_DATA.map((c,i)=>(
+                  <motion.div key={c.uni} initial={{opacity:0,scale:.9}} animate={{opacity:1,scale:1}} transition={{delay:i*.06}}
+                    style={{ ...C({padding:"12px"}), border:`1px solid ${c.color}33`,
+                      background:`linear-gradient(135deg,${c.color}08,transparent)` }}>
+                    <div style={{ display:"flex", gap:6, alignItems:"center", marginBottom:8 }}>
+                      <span style={{ fontSize:18 }}>{c.icon}</span>
+                      <div style={{ ...orb, fontSize:14, fontWeight:900, color:T.bright }}>{c.uni}</div>
+                    </div>
+                    <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:4, marginBottom:8 }}>
+                      {[
+                        {l:"Tuition",v:c.tuition},{l:"Rent",v:c.rent},
+                        {l:"Food",v:c.food},{l:"Travel",v:c.travel},
+                      ].map((s,j)=>(
+                        <div key={j} style={{ padding:"4px 6px", borderRadius:6, background:T.bg2, textAlign:"center" }}>
+                          <div style={{ fontSize:9, color:c.color, ...raj, fontWeight:600 }}>{s.v}</div>
+                          <div style={{ fontSize:6, color:T.muted, ...mono }}>{s.l}</div>
+                        </div>
+                      ))}
+                    </div>
+                    <div style={{ padding:"6px 8px", borderRadius:6, background:`${c.color}12`, border:`1px solid ${c.color}33`, textAlign:"center" }}>
+                      <div style={{ fontSize:7, color:T.muted, ...mono }}>YEARLY TOTAL</div>
+                      <div style={{ ...orb, fontSize:16, fontWeight:900, color:c.color }}>{c.yearly}</div>
+                    </div>
+                    <div style={{ fontSize:8, color:T.muted, ...raj, marginTop:6, fontStyle:"italic" }}>💬 {c.note}</div>
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Savings highlight */}
+              <div style={{ ...C({padding:"14px"}), border:`2px solid ${T.green}44`,
+                background:"linear-gradient(135deg,#001a00,#020408)" }}>
+                <div style={{ fontSize:8, color:T.green, ...mono, letterSpacing:3, marginBottom:8 }}>🏠 KHULNA SAVINGS</div>
+                <div style={{ display:"flex", gap:10, alignItems:"center" }}>
+                  <div style={{ ...orb, fontSize:28, fontWeight:900, color:T.green }}>৳139k+</div>
+                  <div style={{ fontSize:11, color:T.text, ...raj, lineHeight:1.7 }}>
+                    Saved per year vs Dhaka.<br/>
+                    <span style={{ color:T.gold, fontWeight:700 }}>That's 2+ years of KUET tuition.</span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {/* ══ PROFESSOR OUTREACH ══ */}
+          {subTab==="outreach" && (
+            <motion.div key="outreach" initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} exit={{opacity:0}}>
+              <div style={{ fontSize:8, color:T.muted, ...mono, letterSpacing:3, marginBottom:6 }}>📧 PROFESSOR OUTREACH CRM</div>
+              <div style={{ fontSize:9, color:T.muted, ...raj, marginBottom:14, lineHeight:1.7 }}>
+                Track your cold emails to potential supervisors. Tap to update status.
+              </div>
+
+              {PROFESSORS.map((p,i)=>{
+                const st = profStatus[p.email] || "not_sent";
+                const stColor = st==="replied"?T.green:st==="sent"?T.blue:st==="followed_up"?T.orange:T.muted;
+                const stLabel = st==="replied"?"REPLIED ✅":st==="sent"?"SENT 📤":st==="followed_up"?"FOLLOWED UP 🔄":"NOT SENT";
+                return (
+                  <motion.div key={p.email} initial={{opacity:0,x:-10}} animate={{opacity:1,x:0}} transition={{delay:i*.05}}
+                    style={{ ...C({padding:"12px",marginBottom:8}), border:`1px solid ${p.color}22` }}>
+                    <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:6 }}>
+                      <div>
+                        <div style={{ fontSize:11, color:T.bright, ...raj, fontWeight:700 }}>{p.name}</div>
+                        <div style={{ fontSize:8, color:p.color, ...mono, marginTop:2 }}>{p.uni} · {p.dept} · {p.research}</div>
+                        <div style={{ fontSize:8, color:T.muted, ...mono, marginTop:2 }}>{p.email}</div>
+                      </div>
+                    </div>
+                    <div style={{ display:"flex", gap:4, marginTop:6 }}>
+                      {["not_sent","sent","followed_up","replied"].map(s=>{
+                        const sc = s==="replied"?T.green:s==="sent"?T.blue:s==="followed_up"?T.orange:T.muted;
+                        const sl = s==="replied"?"Replied":s==="sent"?"Sent":s==="followed_up"?"Follow-up":"Pending";
+                        return (
+                          <button key={s} onClick={()=>{
+                            setProfStatus(prev=>({...prev,[p.email]:s}));
+                            if(s==="sent") gainXP && gainXP(10,"Email sent 📧");
+                            if(s==="replied") gainXP && gainXP(25,"Prof replied! 🎉");
+                          }}
+                            style={{ flex:1, padding:"5px 4px", borderRadius:6, cursor:"pointer",
+                              background:st===s?`${sc}22`:T.bg2,
+                              border:`1px solid ${st===s?sc:T.border}`,
+                              color:st===s?sc:T.dim, fontSize:7, ...mono, fontWeight:st===s?700:400 }}>
+                            {sl}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </motion.div>
+                );
+              })}
+
+              {/* Email template */}
+              <div style={{ ...C({padding:"14px",marginTop:6}), border:`1px solid ${T.blue}33` }}>
+                <div style={{ fontSize:8, color:T.blue, ...mono, letterSpacing:2, marginBottom:8 }}>📝 EMAIL TEMPLATE</div>
+                <div style={{ fontSize:9, color:T.text, ...raj, lineHeight:1.9, whiteSpace:"pre-wrap" }}>{`Subject: Prospective MSc Student — CRO + SHAP for Multi-omics Cancer Research\n\nDear Professor [Name],\n\nI am Peash Rudra, a BSc CSE graduate from NUBTK (3.95/4.00 GPA) and National Debate Champion 2024. My thesis, supervised by Md. Riaz Mahmud, applies Chemical Reaction Optimization with SHAP-based interpretability for multi-omics breast cancer subtype prediction.\n\nI am interested in pursuing MSc research under your supervision at [University]. Your work on [specific research area] aligns closely with my thesis direction.\n\nI have attached my CV and a 1-page research summary for your review.\n\nThank you for your time and consideration.\n\nBest regards,\nPeash Das Rudra`}</div>
+                <button onClick={()=>{
+                  navigator.clipboard?.writeText(`Subject: Prospective MSc Student — CRO + SHAP for Multi-omics Cancer Research\n\nDear Professor [Name],\n\nI am Peash Rudra, a BSc CSE graduate from NUBTK (3.95/4.00 GPA) and National Debate Champion 2024. My thesis, supervised by Md. Riaz Mahmud, applies Chemical Reaction Optimization with SHAP-based interpretability for multi-omics breast cancer subtype prediction.\n\nI am interested in pursuing MSc research under your supervision at [University]. Your work on [specific research area] aligns closely with my thesis direction.\n\nI have attached my CV and a 1-page research summary for your review.\n\nThank you for your time and consideration.\n\nBest regards,\nPeash Das Rudra`);
+                  gainXP && gainXP(5,"Template copied 📋");
+                }} className="btn-tap" style={{ width:"100%", marginTop:10, padding:"10px", borderRadius:8,
+                  background:`${T.blue}22`, border:`1px solid ${T.blue}55`, color:T.blue,
+                  ...orb, fontWeight:700, fontSize:11, cursor:"pointer" }}>📋 COPY TEMPLATE</button>
+              </div>
             </motion.div>
           )}
 
