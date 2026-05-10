@@ -47,8 +47,12 @@ const Sidebar = ({ tab, setTab, sidebarOpen, setSidebarOpen, T }) => {
   }, [sidebarOpen]);
 
   const handleNav = (id) => {
-    setTab(id);
     setSidebarOpen(false);
+    // Delay setting tab slightly to prevent Framer Motion layoutId
+    // animation from interfering with the sidebar's exit animation.
+    setTimeout(() => {
+      setTab(id);
+    }, 150);
   };
 
   return (
