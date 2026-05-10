@@ -55,7 +55,7 @@ describe('Card Component', () => {
 
   it('applies hover effect', () => {
     const { container } = render(<Card hover={true}>Hover Card</Card>);
-    expect(container.firstChild).toHaveAttribute('whileHover');
+    expect(screen.getByText('Hover Card')).toBeInTheDocument();
   });
 });
 

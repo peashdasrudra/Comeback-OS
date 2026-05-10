@@ -1,0 +1,1 @@
+import{j as i,A as t,m as a}from"./index-B3BFKEBj.js";const e=({children:e})=>i.jsx(t,{mode:"wait",children:i.jsx(a.div,{initial:{opacity:0,y:20,filter:"blur(10px)"},animate:{opacity:1,y:0,filter:"blur(0px)"},exit:{opacity:0,y:-20,filter:"blur(10px)"},transition:{duration:.4,ease:"easeInOut"},children:e})});export{e as default};

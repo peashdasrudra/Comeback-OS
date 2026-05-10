@@ -1017,41 +1017,24 @@ function ChangePinModal({pinHash,onSave,onClose}){
 }
 
 // ─── APP SHELL — only manages loading + PIN ──────────────────────────────────
-// AppMain is rendered ONLY after Firebase data loads, so every useState
-// in AppMain receives the correct initial value on first render. This
-// eliminates ALL async-init race conditions permanently.
 export default function App(){
-  const [tab, setTab] = useState("home");
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  const [loadedData, setLoadedData] = useState({});  // Start with empty object immediately
+  const [loadedData, setLoadedData] = useState(null);
   const [pinHash,    setPinHash]    = useState(null);
   const [unlocked,   setUnlocked]   = useState(false);
 
   useEffect(()=>{
-    // Try to load from localStorage immediately (fast path)
-    try {
-      const cached = localStorage.getItem("comeback_os");
-      if (cached) {
-        const d = JSON.parse(cached);
-        setLoadedData(d);
-        setPinHash(d.pinHash || null);
-      }
-    } catch {}
-
-    // Also try Firebase in background (async, non-blocking)
     loadState().then(data=>{
-      if (data) {
-        setLoadedData(data);
-        setPinHash(data.pinHash || null);
-      }
+      const d = data || {};
+      setLoadedData(d);
+      setPinHash(d.pinHash || null);
+      // If no PIN exists, unlock automatically for the first time
+      if(!d.pinHash) setUnlocked(true);
     });
   },[]);
 
   const handleSetPin=(pin)=>{
     const h=hashPin(pin);
     setPinHash(h);
-    // Persist pin hash immediately
     try {
       const cur=JSON.parse(localStorage.getItem("comeback_os")||"{}");
       cur.pinHash=h;
@@ -1067,20 +1050,20 @@ export default function App(){
     },1000);
   };
 
-  // Loading screen
+  // Loading screen until Firebase resolves
   if(!loadedData) return(
     <div style={{minHeight:"100vh",background:"#020408",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:12,fontFamily:"'Orbitron',monospace"}}>
       <style>{GSTYLE}</style>
       <div style={{fontSize:44,animation:"popIn .6s ease"}}>⚔️</div>
       <div style={{color:"#00ff88",fontSize:14,letterSpacing:3,textShadow:"0 0 20px #00ff8866"}}>COMEBACK OS</div>
-      <div style={{fontFamily:"'Share Tech Mono',monospace",color:"#2a5a3a",fontSize:10,letterSpacing:2}}>SYNCING WITH FIREBASE...</div>
+      <div style={{fontFamily:"'Share Tech Mono',monospace",color:"#2a5a3a",fontSize:10,letterSpacing:2}}>SYNCING WITH CLOUD...</div>
       <div style={{fontFamily:"'Share Tech Mono',monospace",color:"#1a3a2a",fontSize:9,letterSpacing:1,marginTop:4}}>
-        {new Date().toLocaleDateString([],{weekday:"short",month:"short",day:"numeric",year:"numeric"})} · {new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}
+        {new Date().toLocaleDateString([],{weekday:"short",month:"short",day:"numeric",year:"numeric"})}
       </div>
     </div>
   );
 
-  // PIN screen
+  // PIN screen (only shows if pinHash exists and not yet unlocked)
   if(!unlocked) return(
     <>
       <style>{GSTYLE}</style>
@@ -1092,7 +1075,7 @@ export default function App(){
     </>
   );
 
-  // Main app — receives fully-loaded initialData
+  // Main app
   return(
     <AppProvider>
       <style>{GSTYLE}</style>
@@ -1853,6 +1836,7 @@ function AppMain({ initialData:D, pinHash, onPinChange }){
             {id:"plan",icon:"📅",label:"PLAN"},
             {id:"body",icon:"💪",label:"BODY"},
             {id:"focus",icon:"⏱",label:"FOCUS"},
+            {id:"admissions",icon:"🎓",label:"UNIS"},
             {id:"stats",icon:"📊",label:"STATS"},
             {id:"me",icon:"👤",label:"ME"},
           ].map(t=>(

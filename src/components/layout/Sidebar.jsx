@@ -18,6 +18,8 @@ const navItems = [
   { id: "me", icon: User, label: "Profile", emoji: "👤", color: "purple-400" },
 ];
 
+import { useEffect } from "react";
+
 const Sidebar = ({ tab, setTab, sidebarOpen, setSidebarOpen, T }) => {
   const colorMap = {
     "primary": T.green,
@@ -32,6 +34,17 @@ const Sidebar = ({ tab, setTab, sidebarOpen, setSidebarOpen, T }) => {
     "pink-500": T.pink,
     "purple-400": T.pink,
   };
+
+  useEffect(() => {
+    if (sidebarOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [sidebarOpen]);
 
   const handleNav = (id) => {
     setTab(id);
