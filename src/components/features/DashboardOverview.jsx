@@ -91,7 +91,7 @@ const Counter = ({ to, duration=1.5, suffix="", prefix="" }) => {
   return <span>{prefix}{val}{suffix}</span>;
 };
 
-const DashboardOverview = ({ T, C, mono, orb, raj, tab, setTab, xp, streak, waterCount, dailyScore, tasksDone, weightLog, mood, levelTitle, level }) => {
+const DashboardOverview = ({ T, C, mono, orb, raj, tab, setTab, xp, streak, waterCount, dailyScore, tasksDone, weightLog, mood, calorieLog, levelTitle, level }) => {
   const [quoteIdx, setQuoteIdx] = useState(0);
   const [time, setTime] = useState(new Date());
   const [hoveredNav, setHoveredNav] = useState(null);
@@ -139,6 +139,8 @@ const DashboardOverview = ({ T, C, mono, orb, raj, tab, setTab, xp, streak, wate
 
   const timeStr = time.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit",second:"2-digit"});
   const dateStr = time.toLocaleDateString([],{weekday:"short",month:"short",day:"numeric"});
+
+  const totalCals = calorieLog ? calorieLog.reduce((acc, c) => acc + c.cals, 0) : 0;
 
   return (
     <div style={{ padding:"0 0 16px", maxWidth:430, margin:"0 auto" }}>
@@ -293,6 +295,7 @@ const DashboardOverview = ({ T, C, mono, orb, raj, tab, setTab, xp, streak, wate
           { label:"STREAK", value:`${streak||0}d`, icon:"🔥", color:T.orange },
           { label:"SCORE",  value:`${dailyScore||0}`, icon:"⚡", color:sc },
           { label:"WATER",  value:`${waterCount||0}/8`, icon:"💧", color:T.blue },
+          { label:"FOOD",   value:`${totalCals}`, icon:"🍽️", color:T.orange },
           { label:"TASKS",  value:`${taskCount}`, icon:"✅", color:T.green },
           { label:"WEIGHT", value:`${curWeight}kg`, icon:"💪", color:T.pink },
           { label:"MOOD",   value:mood||"😤", icon:"", color:T.gold },

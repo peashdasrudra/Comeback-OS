@@ -1253,6 +1253,8 @@ function AppMain({ initialData:D, pinHash, onPinChange }){
   const [showQuoteModal,setShowQuoteModal]=useState(false);
   const [focusIntention,setFocusIntention]=useState(D.focusIntention||"");
   const [todayIntention,setTodayIntention]=useState(D.todayIntention||{text:"",date:""});
+  const [showMoodModal,setShowMoodModal]=useState(false);
+  const [showFoodModal,setShowFoodModal]=useState(false);
   const [intentionInput,setIntentionInput]=useState("");
 
   // ── XP SYSTEM ──────────────────────────────────────────────────────────────
@@ -1707,6 +1709,7 @@ function AppMain({ initialData:D, pinHash, onPinChange }){
               xp={xp} streak={streak} waterCount={waterCount}
               dailyScore={dailyScore} tasksDone={tasksDone}
               weightLog={weightLog} mood={mood}
+              calorieLog={calorieLog}
               level={xpLevel} levelTitle={rank.title}
             />
           )}
@@ -1815,16 +1818,67 @@ function AppMain({ initialData:D, pinHash, onPinChange }){
             <div style={{position:"fixed",bottom:78,right:16,display:"flex",flexDirection:"column",gap:8,animation:"fab .3s ease"}} onClick={e=>e.stopPropagation()}>
               {[
                 {label:"💧 +1 Water",action:()=>{if(waterCount<8){const nx=waterCount+1;setWaterCount(nx);if(nx===8)gainXP(15,"Hydrated! 💧","hydration",true);}}},
-                {label:"😤 Log Mood",action:()=>{setTab("home");setShowQuickLog(false);}},
+                {label:"😤 Log Mood",action:()=>{setShowMoodModal(true);setShowQuickLog(false);}},
                 {label:"📓 War Log",action:()=>{const t=prompt("Quick log entry:");if(t?.trim()){setDailyLog(p=>[{id:Date.now(),text:t,time:new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}),date:TODAY},...p]);gainXP(5,"Entry logged 📓");}}},
                 {label:"⚖️ Weight",action:()=>{setTab("progress");setShowQuickLog(false);}},
-                {label:"🍽️ Log Meal",action:()=>{setTab("home");setShowQuickLog(false);}},
+                {label:"🍽️ Log Meal",action:()=>{setShowFoodModal(true);setShowQuickLog(false);}},
               ].map((a,i)=>(
                 <button key={i} onClick={()=>{a.action();setShowQuickLog(false);}} className="btn-tap" style={{padding:"9px 16px",background:T.bg1,border:`1px solid ${T.border}`,borderRadius:20,color:T.bright,fontSize:12,...raj,cursor:"pointer",whiteSpace:"nowrap",boxShadow:"0 4px 20px rgba(0,0,0,0.5)",textAlign:"left"}}>{a.label}</button>
               ))}
             </div>
           </div>
         )}
+
+        {/* ── MOOD MODAL ── */}
+        {showMoodModal && (
+          <div style={{position:"fixed",inset:0,zIndex:3000,background:"rgba(0,0,0,0.85)",display:"flex",alignItems:"center",justifyContent:"center"}} onClick={()=>setShowMoodModal(false)}>
+            <div style={{background:T.bg1,border:`1px solid ${T.gold}44`,borderRadius:16,padding:24,width:"90%",maxWidth:340,animation:"popIn .3s ease"}} onClick={e=>e.stopPropagation()}>
+              <div style={{...orb,fontSize:16,color:T.gold,marginBottom:12,textAlign:"center"}}>HOW ARE YOU FEELING?</div>
+              <div style={{display:"flex",justifyContent:"space-between",marginBottom:20}}>
+                {["🔥","😤","🧠","😴","💀"].map(m=>(
+                  <button key={m} onClick={()=>{
+                    setMood(m);
+                    setMoodLog(p=>[...p,{date:TODAY,mood:m,time:new Date().toLocaleTimeString()}]);
+                    gainXP(10, "Mood logged");
+                    setShowMoodModal(false);
+                  }} style={{fontSize:32,background:"transparent",border:"none",cursor:"pointer",transition:"transform .2s"}} className="btn-tap">{m}</button>
+                ))}
+              </div>
+              <button onClick={()=>setShowMoodModal(false)} style={{width:"100%",padding:"10px",background:"transparent",border:`1px solid ${T.border}`,color:T.muted,borderRadius:8,...mono,fontSize:12,cursor:"pointer"}}>CANCEL</button>
+            </div>
+          </div>
+        )}
+
+        {/* ── FOOD MODAL ── */}
+        {showFoodModal && (
+          <div style={{position:"fixed",inset:0,zIndex:3000,background:"rgba(0,0,0,0.85)",display:"flex",alignItems:"center",justifyContent:"center"}} onClick={()=>setShowFoodModal(false)}>
+            <div style={{background:T.bg1,border:`1px solid ${T.orange}44`,borderRadius:16,padding:24,width:"90%",maxWidth:340,animation:"popIn .3s ease"}} onClick={e=>e.stopPropagation()}>
+              <div style={{...orb,fontSize:16,color:T.orange,marginBottom:16,textAlign:"center"}}>LOG MEAL</div>
+              
+              <div style={{marginBottom:12}}>
+                <label style={{fontSize:10,color:T.dim,...mono}}>MEAL NAME / LABEL</label>
+                <input value={calLabel} onChange={e=>setCalLabel(e.target.value)} placeholder="e.g. Chicken & Rice" style={{width:"100%",background:T.bg2,border:`1px solid ${T.border}`,borderRadius:8,padding:"10px 12px",color:T.bright,fontSize:14,...raj,marginTop:4,boxSizing:"border-box"}}/>
+              </div>
+
+              <div style={{marginBottom:16}}>
+                <label style={{fontSize:10,color:T.dim,...mono}}>CALORIES (KCAL)</label>
+                <input type="number" value={calInput} onChange={e=>setCalInput(e.target.value)} placeholder="e.g. 500" style={{width:"100%",background:T.bg2,border:`1px solid ${T.border}`,borderRadius:8,padding:"10px 12px",color:T.bright,fontSize:16,...orb,marginTop:4,boxSizing:"border-box"}}/>
+              </div>
+
+              <button onClick={()=>{
+                if(calInput && calLabel) {
+                  setCalorieLog(p=>[...p,{id:Date.now(),label:calLabel,cals:parseInt(calInput),time:new Date().toLocaleTimeString()}]);
+                  gainXP(15, "Meal logged");
+                  setCalInput("");
+                  setCalLabel("");
+                  setShowFoodModal(false);
+                }
+              }} style={{width:"100%",padding:"12px",background:T.orange+"22",border:`1px solid ${T.orange}55`,color:T.orange,borderRadius:8,...orb,fontWeight:700,fontSize:12,cursor:"pointer",marginBottom:8}}>SAVE MEAL</button>
+              <button onClick={()=>setShowFoodModal(false)} style={{width:"100%",padding:"10px",background:"transparent",border:`1px solid ${T.border}`,color:T.muted,borderRadius:8,...mono,fontSize:12,cursor:"pointer"}}>CANCEL</button>
+            </div>
+          </div>
+        )}
+
         {/* FAB button */}
         <button onClick={()=>setShowQuickLog(q=>!q)} className="btn-tap" style={{position:"fixed",bottom:78,right:16,width:50,height:50,borderRadius:"50%",background:`linear-gradient(135deg,${T.green},${T.blue})`,border:"none",color:"#020408",fontSize:22,cursor:"pointer",zIndex:showQuickLog?1901:150,boxShadow:`0 4px 24px ${T.green}55, 0 0 40px ${T.green}22`,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:900,transition:"all .3s cubic-bezier(.34,1.56,.64,1)",transform:showQuickLog?"rotate(45deg) scale(1.1)":"rotate(0) scale(1)"}}>+</button>
 
