@@ -47,12 +47,8 @@ const Sidebar = ({ tab, setTab, sidebarOpen, setSidebarOpen, T }) => {
   }, [sidebarOpen]);
 
   const handleNav = (id) => {
+    setTab(id);
     setSidebarOpen(false);
-    // Delay setting tab slightly to prevent Framer Motion layoutId
-    // animation from interfering with the sidebar's exit animation.
-    setTimeout(() => {
-      setTab(id);
-    }, 150);
   };
 
   return (
@@ -85,7 +81,7 @@ const Sidebar = ({ tab, setTab, sidebarOpen, setSidebarOpen, T }) => {
             initial={{ x: -260, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -260, opacity: 0 }}
-            transition={{ type: "spring", stiffness: 400, damping: 35 }}
+            transition={{ type: "spring", stiffness: 350, damping: 30 }}
             style={{
               position: "fixed",
               top: 0,
@@ -221,7 +217,9 @@ const Sidebar = ({ tab, setTab, sidebarOpen, setSidebarOpen, T }) => {
                     </span>
                     {isActive && (
                       <motion.div
-                        layoutId="sidebarActive"
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ type: "spring", stiffness: 400, damping: 20 }}
                         style={{
                           marginLeft: "auto",
                           width: 6,

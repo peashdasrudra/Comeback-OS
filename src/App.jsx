@@ -10,7 +10,7 @@ const DashboardOverview = lazy(() => import("./components/features/DashboardOver
 const Plan = lazy(() => import("./components/features/Plan"));
 const Body = lazy(() => import("./components/features/Body"));
 const BodyTab = lazy(() => import("./components/features/BodyTab"));
-const PageTransition = lazy(() => import("./components/layout/PageTransition"));
+import PageTransition from "./components/layout/PageTransition";
 const Sidebar = lazy(() => import("./components/layout/Sidebar"));
 const SleepMoodCorrelator = lazy(() => import("./components/features/SleepMoodCorrelator"));
 const ThesisProgressRings = lazy(() => import("./components/features/ThesisProgressRings"));
@@ -1699,16 +1699,17 @@ function AppMain({ initialData:D, pinHash, onPinChange }){
            
           <Sidebar tab={tab} setTab={setTab} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} T={T} />
 
-        {tab==="home"&&(
-          <DashboardOverview
-            T={T} C={C} mono={mono} orb={orb} raj={raj}
-            tab={tab} setTab={setTab}
-            xp={xp} streak={streak} waterCount={waterCount}
-            dailyScore={dailyScore} tasksDone={tasksDone}
-            weightLog={weightLog} mood={mood}
-            level={xpLevel} levelTitle={rank.title}
-          />
-        )}
+        <PageTransition tabKey={tab}>
+          {tab==="home"&&(
+            <DashboardOverview
+              T={T} C={C} mono={mono} orb={orb} raj={raj}
+              tab={tab} setTab={setTab}
+              xp={xp} streak={streak} waterCount={waterCount}
+              dailyScore={dailyScore} tasksDone={tasksDone}
+              weightLog={weightLog} mood={mood}
+              level={xpLevel} levelTitle={rank.title}
+            />
+          )}
           {tab==="plan"&&<PlanTab {...{activeWeek, setActiveWeek, tDone, togT, taskNotes, setTaskNotes, openNote, setOpenNote, T, orb, mono, raj, C, WEEKS, pc, weekPct, Ring}} />}
           {tab==="body"&&<BodyTab {...{
             workoutDay, setWorkoutDay, dayPct, exPct, isSetDone, togSet, setShowExForm, showExForm,
@@ -1723,6 +1724,7 @@ function AppMain({ initialData:D, pinHash, onPinChange }){
           {tab==="goals"&&<Goals {...{goalsTab,setGoalsTab,goalsSubTab,setGoalsSubTab,admTab,setAdmTab,admCheckDone,setAdmCheckDone,profEmailDone,setProfEmailDone,expandedExam,setExpandedExam,activePath,setActivePath,activeUni,setActiveUni,PATHS,UNIS,RUDRA_ANALYSIS,SCHOLARSHIP_PROGRAMS,KUET_PROFS,T,orb,mono,raj,gt,C}} />}
           {tab==="stats"&&<StatsTab {...{achievements,ACHIEVEMENTS_DEF,getRank,xp,XP_RANKS,habits,TODAY,T,tp,wPct,sPct,streak,tasksDone,sets,setStatsTab,statsTab,selTier,setSelTier,orb,mono,raj,C,xpLevel,WEEKS,weekPct,pc,setTab,setActiveWeek,pomSessions,weightLog,dailyLog,wGained,curWeight}}/>}
           {tab==="life"&&<Life {...{lifeTab,setLifeTab,ieltsVocab,setIeltsVocab,ieltsMocks,setIeltsMocks,ieltsNewWord,setIeltsNewWord,ieltsTab,setIeltsTab,showIeltsWord,setShowIeltsWord,vocabFlip,setVocabFlip,showIeltsMock,setShowIeltsMock,ieltsNewMock,setIeltsNewMock,musicLog,setMusicLog,musicForm,setMusicForm,showMusicForm,setShowMusicForm,freelanceLog,setFreelanceLog,freelanceForm,setFreelanceForm,showFLForm,setShowFLForm,freelanceGoal,setFreelanceGoal,profCRM,setProfCRM,profForm,setProfForm,showProfForm,setShowProfForm,paperLog,setPaperLog,paperForm,setPaperForm,showPaperForm,setShowPaperForm,smokingLog,smokeGoalDate,setSmokeGoalDate,gainXP,T,orb,mono,raj,C}} />}
+        </PageTransition>
         </div>
 
         {/* ── QUOTE MODAL ── */}

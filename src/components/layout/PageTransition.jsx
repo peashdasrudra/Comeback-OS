@@ -1,13 +1,14 @@
 import { motion, AnimatePresence } from "framer-motion";
 
-const PageTransition = ({ children }) => {
+const PageTransition = ({ children, tabKey }) => {
   return (
     <AnimatePresence mode="wait">
       <motion.div
-        initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
+        key={tabKey}
+        initial={{ opacity: 0, y: 15, filter: "blur(4px)" }}
         animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-        exit={{ opacity: 0, y: -20, filter: "blur(10px)" }}
-        transition={{ duration: 0.4, ease: "easeInOut" }}
+        exit={{ opacity: 0, y: -15, filter: "blur(4px)" }}
+        transition={{ duration: 0.25, ease: "easeInOut" }}
       >
         {children}
       </motion.div>
