@@ -1255,6 +1255,8 @@ function AppMain({ initialData:D, pinHash, onPinChange }){
   const [todayIntention,setTodayIntention]=useState(D.todayIntention||{text:"",date:""});
   const [showMoodModal,setShowMoodModal]=useState(false);
   const [showFoodModal,setShowFoodModal]=useState(false);
+  const [showWarLogModal,setShowWarLogModal]=useState(false);
+  const [warLogInput,setWarLogInput]=useState("");
   const [intentionInput,setIntentionInput]=useState("");
 
   // ── XP SYSTEM ──────────────────────────────────────────────────────────────
@@ -1864,12 +1866,35 @@ function AppMain({ initialData:D, pinHash, onPinChange }){
           </div>
         )}
 
+        {/* ── WAR LOG MODAL ── */}
+        {showWarLogModal && (
+          <div style={{position:"fixed",inset:0,zIndex:3000,background:"rgba(0,0,0,0.85)",display:"flex",alignItems:"center",justifyContent:"center"}} onClick={()=>setShowWarLogModal(false)}>
+            <div style={{background:T.bg1,border:`1px solid ${T.green}44`,borderRadius:16,padding:24,width:"90%",maxWidth:340,animation:"popIn .3s ease"}} onClick={e=>e.stopPropagation()}>
+              <div style={{...orb,fontSize:16,color:T.green,marginBottom:16,textAlign:"center"}}>📓 WAR LOG</div>
+              
+              <div style={{marginBottom:16}}>
+                <textarea value={warLogInput} onChange={e=>setWarLogInput(e.target.value)} placeholder="What's on your mind? Ideas, blockers, wins..." style={{width:"100%",height:100,background:T.bg2,border:`1px solid ${T.border}`,borderRadius:8,padding:"10px 12px",color:T.bright,fontSize:14,...raj,resize:"none",boxSizing:"border-box"}}/>
+              </div>
+
+              <button onClick={()=>{
+                if(warLogInput.trim()) {
+                  setDailyLog(p=>[{id:Date.now(),text:warLogInput.trim(),time:new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}),date:TODAY},...p]);
+                  gainXP(5, "Entry logged 📓");
+                  setWarLogInput("");
+                  setShowWarLogModal(false);
+                }
+              }} style={{width:"100%",padding:"12px",background:T.green+"22",border:`1px solid ${T.green}55`,color:T.green,borderRadius:8,...orb,fontWeight:700,fontSize:12,cursor:"pointer",marginBottom:8}}>SAVE ENTRY</button>
+              <button onClick={()=>setShowWarLogModal(false)} style={{width:"100%",padding:"10px",background:"transparent",border:`1px solid ${T.border}`,color:T.muted,borderRadius:8,...mono,fontSize:12,cursor:"pointer"}}>CANCEL</button>
+            </div>
+          </div>
+        )}
+
         {/* FAB button */}
         <QuickLog
           T={T} raj={raj} mono={mono}
           waterCount={waterCount} setWaterCount={setWaterCount}
-          gainXP={gainXP} setDailyLog={setDailyLog} TODAY={TODAY}
-          setTab={setTab} setShowMoodModal={setShowMoodModal} setShowFoodModal={setShowFoodModal}
+          gainXP={gainXP} TODAY={TODAY}
+          setTab={setTab} setShowMoodModal={setShowMoodModal} setShowFoodModal={setShowFoodModal} setShowWarLogModal={setShowWarLogModal}
         />
 
         {/* ── BOTTOM NAV ── */}

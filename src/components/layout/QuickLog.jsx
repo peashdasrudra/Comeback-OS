@@ -5,8 +5,8 @@ import { Plus, Droplets, Smile, BookOpen, Scale, Utensils } from "lucide-react";
 export default function QuickLog({
   T, raj, mono,
   waterCount, setWaterCount,
-  gainXP, setDailyLog, TODAY,
-  setTab, setShowMoodModal, setShowFoodModal
+  gainXP, TODAY,
+  setTab, setShowMoodModal, setShowFoodModal, setShowWarLogModal
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -17,11 +17,10 @@ export default function QuickLog({
       color: "rgba(56, 189, 248, 0.15)",
       borderColor: "rgba(56, 189, 248, 0.4)",
       action: () => {
-        if (waterCount < 8) {
-          const nx = waterCount + 1;
-          setWaterCount(nx);
-          if (nx === 8) gainXP(15, "Hydrated! 💧", "hydration", true);
-        }
+        const nx = waterCount + 1;
+        setWaterCount(nx);
+        if (nx === 8) gainXP(15, "Hydrated! 💧", "hydration", true);
+        else gainXP(1, "+1 Water 💧", null);
       },
     },
     {
@@ -36,21 +35,7 @@ export default function QuickLog({
       icon: <BookOpen className="w-4 h-4 text-emerald-400" />,
       color: "rgba(52, 211, 153, 0.15)",
       borderColor: "rgba(52, 211, 153, 0.4)",
-      action: () => {
-        const t = prompt("Quick log entry:");
-        if (t?.trim()) {
-          setDailyLog(p => [
-            {
-              id: Date.now(),
-              text: t,
-              time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-              date: TODAY,
-            },
-            ...p,
-          ]);
-          gainXP(5, "Entry logged 📓");
-        }
-      },
+      action: () => setShowWarLogModal(true),
     },
     {
       label: "Weight",
