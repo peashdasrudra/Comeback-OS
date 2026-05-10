@@ -156,25 +156,21 @@ const DashboardOverview = ({ T, C, mono, orb, raj, tab, setTab, xp, streak, wate
 
       {/* ── HERO HEADER ── */}
       <motion.div
-        initial={{opacity:0,y:-20}} animate={{opacity:1,y:0}} transition={{duration:.6}}
+        initial={{opacity:0,y:-20}} animate={{opacity:1,y:0}} transition={{duration:.6,type:"spring",stiffness:200}}
         style={{
           position:"relative", overflow:"hidden",
-          background:"linear-gradient(135deg,#020d06 0%,#020408 40%,#030c18 100%)",
-          borderBottom:`1px solid #00ff8822`,
-          padding:"20px 16px 16px",
+          background:"linear-gradient(160deg,#020d06 0%,#020408 35%,#030814 60%,#040610 100%)",
+          borderBottom:`1px solid #00ff8818`,
+          padding:"22px 16px 18px",
         }}
       >
-        {/* Glow orb background */}
-        <div style={{
-          position:"absolute", top:-60, right:-60, width:200, height:200,
-          background:"radial-gradient(circle,#00ff8812,transparent 70%)",
-          pointerEvents:"none"
-        }}/>
-        <div style={{
-          position:"absolute", bottom:-40, left:-40, width:150, height:150,
-          background:"radial-gradient(circle,#00aaff0a,transparent 70%)",
-          pointerEvents:"none"
-        }}/>
+        {/* Animated glow orbs */}
+        <motion.div animate={{scale:[1,1.2,1],opacity:[0.4,0.7,0.4]}} transition={{duration:6,repeat:Infinity,ease:"easeInOut"}}
+          style={{position:"absolute",top:-80,right:-60,width:240,height:240,background:"radial-gradient(circle,#00ff8814,transparent 65%)",pointerEvents:"none"}}/>
+        <motion.div animate={{scale:[1,1.15,1],opacity:[0.3,0.5,0.3]}} transition={{duration:8,repeat:Infinity,ease:"easeInOut",delay:2}}
+          style={{position:"absolute",bottom:-50,left:-40,width:180,height:180,background:"radial-gradient(circle,#00aaff0c,transparent 65%)",pointerEvents:"none"}}/>
+        <motion.div animate={{scale:[1,1.3,1],opacity:[0.2,0.4,0.2]}} transition={{duration:7,repeat:Infinity,ease:"easeInOut",delay:4}}
+          style={{position:"absolute",top:"40%",left:"50%",width:120,height:120,background:"radial-gradient(circle,#ffd70008,transparent 65%)",pointerEvents:"none"}}/>
 
         <div style={{ position:"relative", zIndex:1 }}>
           {/* Top row: name + clock */}
@@ -291,7 +287,7 @@ const DashboardOverview = ({ T, C, mono, orb, raj, tab, setTab, xp, streak, wate
       {/* ── LIVE STATS STRIP ── */}
       <motion.div
         initial={{opacity:0}} animate={{opacity:1}} transition={{delay:.7}}
-        style={{ display:"flex", gap:0, overflowX:"auto", background:"#020d06", borderBottom:`1px solid #00ff8815` }}
+        style={{ display:"flex", gap:6, overflowX:"auto", padding:"10px 12px", background:"rgba(2,8,4,0.6)", borderBottom:`1px solid #00ff8810` }}
       >
         {[
           { label:"STREAK", value:`${streak||0}d`, icon:"🔥", color:T.orange },
@@ -303,17 +299,19 @@ const DashboardOverview = ({ T, C, mono, orb, raj, tab, setTab, xp, streak, wate
         ].map((s,i)=>(
           <motion.div
             key={s.label}
-            initial={{opacity:0,y:-10}} animate={{opacity:1,y:0}} transition={{delay:.7+i*.05}}
+            initial={{opacity:0,scale:.8}} animate={{opacity:1,scale:1}} transition={{delay:.7+i*.06,type:"spring",stiffness:300}}
+            whileHover={{scale:1.05,y:-2}}
             style={{
-              flex:"0 0 auto", minWidth:60, padding:"8px 10px", textAlign:"center",
-              borderRight:`1px solid #00ff8812`
+              flex:1, minWidth:52, padding:"8px 6px", textAlign:"center",
+              background:`${s.color}08`, border:`1px solid ${s.color}18`,
+              borderRadius:10, cursor:"default",
             }}
           >
-            <div style={{ fontSize:12, marginBottom:2 }}>{s.icon||s.value}</div>
-            <div style={{ ...orb, fontSize:s.icon?12:10, fontWeight:900, color:s.color, lineHeight:1 }}>
+            <div style={{ fontSize:13, marginBottom:3 }}>{s.icon||s.value}</div>
+            <div style={{ ...orb, fontSize:s.icon?13:11, fontWeight:900, color:s.color, lineHeight:1, textShadow:`0 0 8px ${s.color}44` }}>
               {s.icon?s.value:""}
             </div>
-            <div style={{ fontSize:6, color:T.dim, ...mono, marginTop:1, letterSpacing:1 }}>{s.label}</div>
+            <div style={{ fontSize:6, color:T.dim, ...mono, marginTop:3, letterSpacing:1 }}>{s.label}</div>
           </motion.div>
         ))}
       </motion.div>
@@ -408,24 +406,26 @@ const DashboardOverview = ({ T, C, mono, orb, raj, tab, setTab, xp, streak, wate
 
         {/* ── FOUR METRICS RINGS ── */}
         <motion.div
-          initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} transition={{delay:1}}
-          style={{ ...C({padding:"16px"}), marginBottom:14 }}
+          initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} transition={{delay:1,type:"spring"}}
+          style={{ ...C({padding:"18px"}), marginBottom:14, background:"linear-gradient(135deg,rgba(10,15,20,0.8),rgba(6,13,18,0.9))", border:`1px solid ${T.green}12`, position:"relative", overflow:"hidden" }}
         >
-          <div style={{ fontSize:7, color:T.muted, ...mono, letterSpacing:3, marginBottom:12 }}>CORE METRICS</div>
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:4 }}>
+          <div style={{position:"absolute",top:0,left:0,right:0,height:1,background:`linear-gradient(90deg,transparent,${T.green}33,${T.blue}33,transparent)`}}/>
+          <div style={{ fontSize:7, color:T.muted, ...mono, letterSpacing:3, marginBottom:14 }}>⚡ CORE METRICS</div>
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:6 }}>
             {[
-              { label:"Thesis", pct:thesisPct, color:thesisPct<70?T.red:T.green },
-              { label:"Weight", pct:weightPct, color:T.pink },
-              { label:"Daily",  pct:dailyScore||0, color:sc },
-              { label:"XP",     pct:xpPct, color:T.gold },
+              { label:"Thesis", pct:thesisPct, color:thesisPct<70?T.red:T.green, emoji:"🧪" },
+              { label:"Weight", pct:weightPct, color:T.pink, emoji:"💪" },
+              { label:"Daily",  pct:dailyScore||0, color:sc, emoji:"⚡" },
+              { label:"XP",     pct:xpPct, color:T.gold, emoji:"👑" },
             ].map((m,i)=>(
               <motion.div
                 key={m.label}
-                initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} transition={{delay:1+i*.1}}
-                style={{ textAlign:"center" }}
+                initial={{opacity:0,scale:.7}} animate={{opacity:1,scale:1}} transition={{delay:1+i*.1,type:"spring",stiffness:250}}
+                whileHover={{scale:1.05}}
+                style={{ textAlign:"center", padding:"6px 0", borderRadius:12, background:`${m.color}06`, cursor:"default" }}
               >
-                <ArcRing pct={m.pct} size={68} stroke={6} color={m.color} label={`${m.pct}%`}/>
-                <div style={{ fontSize:8, color:T.muted, ...mono, marginTop:3, letterSpacing:1 }}>{m.label}</div>
+                <ArcRing pct={m.pct} size={72} stroke={6} color={m.color} label={`${m.pct}%`}/>
+                <div style={{ fontSize:8, color:m.color, ...mono, marginTop:4, letterSpacing:1, fontWeight:600 }}>{m.emoji} {m.label}</div>
               </motion.div>
             ))}
           </div>
@@ -460,7 +460,7 @@ const DashboardOverview = ({ T, C, mono, orb, raj, tab, setTab, xp, streak, wate
           <div style={{ marginTop:10, display:"flex", gap:8, alignItems:"center" }}>
             <div style={{ width:28, height:28, borderRadius:8, background:`${T.blue}18`,
               border:`1px solid ${T.blue}33`, display:"flex", alignItems:"center", justifyContent:"center",
-              fontSize:14 }}>👩‍🏫</div>
+              fontSize:14 }}>👨‍🏫</div>
             <div>
               <div style={{ fontSize:9, color:T.muted, ...mono }}>SUPERVISOR</div>
               <div style={{ fontSize:11, color:T.bright, ...raj, fontWeight:600 }}>Md. Riaz Mahmud</div>
@@ -472,30 +472,31 @@ const DashboardOverview = ({ T, C, mono, orb, raj, tab, setTab, xp, streak, wate
         <motion.div
           initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} transition={{delay:1.2}}
         >
-          <div style={{ fontSize:7, color:T.muted, ...mono, letterSpacing:3, marginBottom:10 }}>QUICK ACTIONS</div>
+          <div style={{ fontSize:7, color:T.muted, ...mono, letterSpacing:3, marginBottom:10 }}>⚡ QUICK ACTIONS</div>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:8 }}>
             {[
               { label:"Start Focus", icon:"⏱", color:T.orange, tab:"focus" },
               { label:"Thesis Plan", icon:"📋", color:T.blue,   tab:"plan" },
               { label:"Log Workout", icon:"💪", color:T.pink,   tab:"body" },
               { label:"Admissions",  icon:"🎓", color:"#a855f7", tab:"admissions" },
-              { label:"Body Stats",  icon:"📊", color:T.green,   tab:"body" },
-              { label:"My Profile",  icon:"👤", color:T.cyan,    tab:"me" },
+              { label:"Tasks",       icon:"✅", color:T.green,   tab:"tasks" },
+              { label:"Goals",       icon:"🎯", color:T.cyan,    tab:"goals" },
             ].map((a,i)=>(
               <motion.button
                 key={a.label}
-                whileTap={{scale:.95}}
+                whileTap={{scale:.92}}
+                whileHover={{scale:1.04,y:-2}}
                 onClick={()=>setTab(a.tab)}
-                initial={{opacity:0,y:8}} animate={{opacity:1,y:0}} transition={{delay:1.2+i*.05}}
+                initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} transition={{delay:1.2+i*.06,type:"spring",stiffness:300}}
                 style={{
-                  padding:"10px 6px", borderRadius:10, cursor:"pointer",
-                  background:`${a.color}12`, border:`1px solid ${a.color}33`,
-                  display:"flex", flexDirection:"column", alignItems:"center", gap:4,
-                  transition:"all .2s"
+                  padding:"12px 6px", borderRadius:12, cursor:"pointer",
+                  background:`linear-gradient(135deg,${a.color}10,${a.color}06)`, border:`1px solid ${a.color}28`,
+                  display:"flex", flexDirection:"column", alignItems:"center", gap:5,
+                  boxShadow:`0 2px 12px ${a.color}08`,
                 }}
               >
-                <span style={{ fontSize:16 }}>{a.icon}</span>
-                <span style={{ fontSize:8, color:a.color, ...raj, fontWeight:600, textAlign:"center", lineHeight:1.2 }}>
+                <span style={{ fontSize:20, filter:`drop-shadow(0 0 4px ${a.color}44)` }}>{a.icon}</span>
+                <span style={{ fontSize:8, color:a.color, ...raj, fontWeight:700, textAlign:"center", lineHeight:1.2, letterSpacing:.3 }}>
                   {a.label}
                 </span>
               </motion.button>

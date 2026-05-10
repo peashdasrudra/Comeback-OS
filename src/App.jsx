@@ -1665,17 +1665,19 @@ function AppMain({ initialData:D, pinHash, onPinChange }){
 </div>
 
         {/* ── TOP NAV BAR ── */}
-        <div style={{background:"rgba(2,4,8,0.4)",borderBottom:`1px solid rgba(255,255,255,0.05)`,padding:"10px 16px 8px",position:"sticky",top:0,zIndex:100,backdropFilter:"blur(24px)",WebkitBackdropFilter:"blur(24px)"}}>
+        <div style={{background:"linear-gradient(180deg,rgba(2,4,8,0.85),rgba(2,4,8,0.7))",borderBottom:`1px solid rgba(0,255,136,0.08)`,padding:"12px 16px 10px",position:"sticky",top:0,zIndex:100,backdropFilter:"blur(28px)",WebkitBackdropFilter:"blur(28px)"}}>
+          {/* Top accent line */}
+          <div style={{position:"absolute",top:0,left:0,right:0,height:1,background:`linear-gradient(90deg,transparent,${T.green}44,${T.blue}33,transparent)`}}/>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
             <div style={{display:"flex",alignItems:"center",gap:10}}>
-              <button onClick={()=>setSidebarOpen(o=>!o)} className="btn-tap" style={{background:"transparent",border:`1px solid ${T.border}`,borderRadius:8,padding:"6px 8px",cursor:"pointer",display:"flex",alignItems:"center",gap:4}}>
-                <div style={{width:16,height:2,background:T.green,borderRadius:1,position:"relative",transition:"all .2s",boxShadow:`0 0 6px ${T.green}44`}}>
-                  <div style={{width:16,height:2,background:T.green,borderRadius:1,position:"absolute",top:5,left:0,transition:"all .2s"}}/>
-                  <div style={{width:12,height:2,background:T.green,borderRadius:1,position:"absolute",top:-5,left:0,transition:"all .2s"}}/>
+              <button onClick={()=>setSidebarOpen(o=>!o)} className="btn-tap" style={{background:`${T.green}08`,border:`1px solid ${T.green}18`,borderRadius:10,padding:"7px 9px",cursor:"pointer",display:"flex",alignItems:"center",gap:4,transition:"all .2s"}}>
+                <div style={{width:16,height:2,background:T.green,borderRadius:1,position:"relative",transition:"all .3s",boxShadow:`0 0 6px ${T.green}44`}}>
+                  <div style={{width:16,height:2,background:T.green,borderRadius:1,position:"absolute",top:5,left:0,transition:"all .3s"}}/>
+                  <div style={{width:12,height:2,background:T.green,borderRadius:1,position:"absolute",top:-5,left:0,transition:"all .3s"}}/>
                 </div>
               </button>
               <div>
-                <div style={{...orb,fontSize:13,fontWeight:900,...gt(T.green)}}>⚔️ COMEBACK OS</div>
+                <div style={{...orb,fontSize:14,fontWeight:900,...gt(T.green),letterSpacing:1}}>⚔️ COMEBACK OS</div>
                 <div style={{display:"flex",gap:6,alignItems:"center",marginTop:2}}>
                   <div style={{fontSize:9,color:T.dim,letterSpacing:1,...mono}}>{rank.title} · {Math.max(0,Math.floor((new Date("2026-06-01")-new Date())/86400000))}d LEFT</div>
                   <span style={{fontSize:9,color:T.border}}>·</span>
@@ -1684,15 +1686,15 @@ function AppMain({ initialData:D, pinHash, onPinChange }){
               </div>
             </div>
             <div style={{display:"flex",alignItems:"center",gap:8}}>
-              <button onClick={()=>{if(!battlePin){setShowSetPin(true);}else{setBattleMode(true);setBattleStart(Date.now());}}} className="btn-tap" style={{padding:"5px 10px",background:T.pink+"22",border:`1px solid ${T.pink}33`,borderRadius:8,color:T.pink,fontSize:9,...mono,cursor:"pointer",letterSpacing:1}}>⚔️</button>
+              <button onClick={()=>{if(!battlePin){setShowSetPin(true);}else{setBattleMode(true);setBattleStart(Date.now());}}} className="btn-tap" style={{padding:"5px 10px",background:T.pink+"18",border:`1px solid ${T.pink}28`,borderRadius:10,color:T.pink,fontSize:9,...mono,cursor:"pointer",letterSpacing:1}}>⚔️</button>
               <div style={{textAlign:"right"}}>
-                <div style={{...orb,fontSize:11,fontWeight:700,color:T.green}}>{tp}%</div>
+                <div style={{...orb,fontSize:12,fontWeight:700,color:T.green,textShadow:`0 0 8px ${T.green}44`}}>{tp}%</div>
                 <div style={{fontSize:8,color:T.gold,...mono}}>⚡{xp} · LVL{xpLevel}</div>
               </div>
             </div>
-            <Ring pct={tp} size={38} stroke={3} color={T.green}/>
+            <Ring pct={tp} size={40} stroke={3} color={T.green}/>
           </div>
-          <div style={{position:"absolute",inset:0,background:"repeating-linear-gradient(0deg,transparent,transparent 3px,#00ff0804 4px)",pointerEvents:"none"}}/>
+          <div style={{position:"absolute",inset:0,background:"repeating-linear-gradient(0deg,transparent,transparent 4px,#00ff0803 5px)",pointerEvents:"none",opacity:.5}}/>
         </div>
 
         {/* ── SET PIN MODAL ── */}
@@ -1842,27 +1844,22 @@ function AppMain({ initialData:D, pinHash, onPinChange }){
         <button onClick={()=>setShowQuickLog(q=>!q)} className="btn-tap" style={{position:"fixed",bottom:78,right:16,width:50,height:50,borderRadius:"50%",background:`linear-gradient(135deg,${T.green},${T.blue})`,border:"none",color:"#020408",fontSize:22,cursor:"pointer",zIndex:showQuickLog?1901:150,boxShadow:`0 4px 24px ${T.green}55, 0 0 40px ${T.green}22`,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:900,transition:"all .3s cubic-bezier(.34,1.56,.64,1)",transform:showQuickLog?"rotate(45deg) scale(1.1)":"rotate(0) scale(1)"}}>+</button>
 
         {/* ── BOTTOM NAV ── */}
-        <div style={{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:430,zIndex:100,overflowX:"auto"}}>
-          {/* Gradient glow line */}
-          <div style={{height:1,background:`linear-gradient(90deg,transparent,${T.green}44,${T.blue}44,${T.green}44,transparent)`,animation:"navGlow 4s ease-in-out infinite"}}/>
-          <div style={{background:"rgba(2,4,8,0.92)",backdropFilter:"blur(28px)",WebkitBackdropFilter:"blur(28px)",display:"flex",borderTop:"1px solid rgba(255,255,255,0.03)"}}>
+        <div style={{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:430,zIndex:100}}>
+          {/* Top glow line */}
+          <div style={{height:1,background:`linear-gradient(90deg,transparent 5%,${T.green}33 30%,${T.blue}33 50%,${T.green}33 70%,transparent 95%)`,animation:"navGlow 4s ease-in-out infinite"}}/>
+          <div style={{background:"rgba(2,4,8,0.94)",backdropFilter:"blur(28px)",WebkitBackdropFilter:"blur(28px)",display:"flex",padding:"4px 8px 6px",gap:2}}>
           {[
             {id:"home",icon:"🏠",label:"HOME"},
             {id:"plan",icon:"📅",label:"PLAN"},
             {id:"body",icon:"💪",label:"BODY"},
             {id:"focus",icon:"⏱",label:"FOCUS"},
-            {id:"tasks",icon:"✅",label:"TASKS"},
-            {id:"progress",icon:"📈",label:"PROG"},
-            {id:"admissions",icon:"🎓",label:"ADMIT"},
-            {id:"goals",icon:"🎯",label:"GOALS"},
-            {id:"life",icon:"⚡",label:"LIFE"},
-            {id:"stats",icon:"🏅",label:"STATS"},
+            {id:"stats",icon:"📊",label:"STATS"},
             {id:"me",icon:"👤",label:"ME"},
           ].map(t=>(
-            <div key={t.id} className="tabitem" onClick={()=>setTab(t.id)} style={{flex:1,padding:"7px 1px 6px",textAlign:"center",cursor:"pointer",background:tab===t.id?"rgba(0,255,136,0.06)":"transparent",minWidth:36,position:"relative"}}>
-              {tab===t.id&&<div style={{position:"absolute",top:0,left:"50%",transform:"translateX(-50%)",width:16,height:2,borderRadius:"0 0 4px 4px",background:T.green,boxShadow:`0 0 8px ${T.green}88, 0 2px 12px ${T.green}44`}}/>}
-              <div style={{fontSize:12,transition:"all .2s",transform:tab===t.id?"scale(1.15)":"scale(1)",filter:tab===t.id?`drop-shadow(0 0 4px ${T.green}88)`:"none"}}>{t.icon}</div>
-              <div style={{fontSize:5,color:tab===t.id?T.green:T.muted,marginTop:1,letterSpacing:.2,...orb,fontWeight:tab===t.id?700:400,transition:"all .2s"}}>{t.label}</div>
+            <div key={t.id} className="tabitem" onClick={()=>setTab(t.id)} style={{flex:1,padding:"6px 2px 4px",textAlign:"center",cursor:"pointer",borderRadius:10,background:tab===t.id?`${T.green}0a`:"transparent",position:"relative",transition:"all .25s cubic-bezier(.34,1.56,.64,1)"}}>
+              {tab===t.id&&<div style={{position:"absolute",top:-1,left:"50%",transform:"translateX(-50%)",width:20,height:2,borderRadius:4,background:T.green,boxShadow:`0 0 10px ${T.green}aa, 0 2px 16px ${T.green}44`}}/>}
+              <div style={{fontSize:18,transition:"all .25s cubic-bezier(.34,1.56,.64,1)",transform:tab===t.id?"scale(1.2) translateY(-1px)":"scale(1)",filter:tab===t.id?`drop-shadow(0 0 6px ${T.green}88)`:"none"}}>{t.icon}</div>
+              <div style={{fontSize:7,color:tab===t.id?T.green:T.muted,marginTop:1,letterSpacing:.5,...orb,fontWeight:tab===t.id?700:400,transition:"all .2s"}}>{t.label}</div>
             </div>
           ))}
           </div>
