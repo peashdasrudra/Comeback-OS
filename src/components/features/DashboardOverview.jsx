@@ -2,10 +2,10 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-// ─── THESIS: 15 weeks, May 9 → June 15, 2026 ─────────────────────────────────
-const THESIS_START = new Date("2026-05-09");
+// ─── THESIS: 5 weeks, May 11 → June 15, 2026 ─────────────────────────────────
+const THESIS_START = new Date("2026-05-11");
 const THESIS_END   = new Date("2026-06-15");
-const THESIS_WEEKS = 15;
+const THESIS_WEEKS = 5;
 
 const NAV_TILES = [
   { id:"home",   icon:"🏠", label:"HOME",    color:"#00ff88", desc:"Dashboard" },
