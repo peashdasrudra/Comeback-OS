@@ -463,7 +463,7 @@ const DashboardOverview = ({ T, C, mono, orb, raj, tab, setTab, xp, streak, wate
               fontSize:14 }}>👩‍🏫</div>
             <div>
               <div style={{ fontSize:9, color:T.muted, ...mono }}>SUPERVISOR</div>
-              <div style={{ fontSize:11, color:T.bright, ...raj, fontWeight:600 }}>Dr. Susmita Islam</div>
+              <div style={{ fontSize:11, color:T.bright, ...raj, fontWeight:600 }}>Md. Riaz Mahmud</div>
             </div>
           </div>
         </motion.div>

@@ -127,7 +127,7 @@ const AdmissionsTab = ({ T, C, mono, orb, raj, gainXP }) => {
   };
 
   const SOP_TEMPLATES = {
-    kuet: `I am Peash Rudra, a BSc CSE graduate from NUBTK with a 3.95/4.00 GPA and National Debate Champion 2024. My thesis, "CRO vs SHAP: Interpretable ML for Multi-omics Cancer Subtype Prediction," supervised by Dr. Susmita Islam, demonstrates my commitment to cutting-edge research at the intersection of machine learning and bioinformatics.
+    kuet: `I am Peash Rudra, a BSc CSE graduate from NUBTK with a 3.95/4.00 GPA and National Debate Champion 2024. My thesis, "CRO vs SHAP: Interpretable ML for Multi-omics Cancer Subtype Prediction," supervised by Md. Riaz Mahmud, demonstrates my commitment to cutting-edge research at the intersection of machine learning and bioinformatics.
 
 I wish to pursue MSc CSE at KUET to continue under expert supervision, leverage Khulna's research infrastructure, and contribute to the department's ML research agenda. My background in multi-omics analysis, Python, and interpretable AI aligns with current faculty research directions.
 

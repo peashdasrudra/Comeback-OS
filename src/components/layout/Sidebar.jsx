@@ -1,8 +1,7 @@
-import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Home, Calendar, Dumbbell, Clock, User, TrendingUp, 
-  CheckSquare, Target, Zap, Trophy, X, ChevronLeft, ChevronRight 
+  CheckSquare, Target, Zap, Trophy, X 
 } from "lucide-react";
 
 const navItems = [
@@ -46,7 +45,7 @@ const Sidebar = ({ tab, setTab, sidebarOpen, setSidebarOpen, T }) => {
             style={{
               position: "fixed",
               inset: 0,
-              zIndex: 40,
+              zIndex: 1040,
               background: "rgba(0,0,0,0.5)",
               backdropFilter: "blur(4px)",
             }}
@@ -62,14 +61,14 @@ const Sidebar = ({ tab, setTab, sidebarOpen, setSidebarOpen, T }) => {
           top: 0,
           left: 0,
           bottom: 0,
-          zIndex: 50,
+          zIndex: 1050,
           overflow: "hidden",
         }}
       >
         <div style={{
           width: 240,
           height: "100%",
-          background: `${T.bg2}/95`,
+          background: "rgba(10,21,32,0.95)",
           backdropFilter: "blur(12px)",
           borderRight: `1px solid ${T.border}`,
           display: "flex",
@@ -189,35 +188,6 @@ const Sidebar = ({ tab, setTab, sidebarOpen, setSidebarOpen, T }) => {
           </div>
         </div>
       </motion.div>
-
-      <motion.button
-        whileTap={{ scale: 0.95 }}
-        onClick={() => setSidebarOpen(!sidebarOpen)}
-        style={{
-          position: "fixed",
-          top: 12,
-          left: sidebarOpen ? 260 : 12,
-          zIndex: 600,
-          width: 36,
-          height: 36,
-          borderRadius: 8,
-          background: `${T.bg2}/90`,
-          backdropFilter: "blur(12px)",
-          border: `1px solid ${T.border}`,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          cursor: "pointer",
-          transition: "all 300ms",
-          color: T.green,
-        }}
-      >
-        {sidebarOpen ? (
-          <ChevronLeft size={16} />
-        ) : (
-          <ChevronRight size={16} />
-        )}
-      </motion.button>
     </>
   );
 };

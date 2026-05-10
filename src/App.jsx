@@ -104,30 +104,39 @@ const GSTYLE = `
   body{background:#020408;}
   ::-webkit-scrollbar{width:3px;height:3px;}
   ::-webkit-scrollbar-track{background:#030810;}
-  ::-webkit-scrollbar-thumb{background:#00ff8855;border-radius:2px;}
-  @keyframes fadeUp{0%{opacity:0;transform:translateY(14px)}100%{opacity:1;transform:translateY(0)}}
-  @keyframes popIn{0%{transform:scale(.6);opacity:0}80%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
-  @keyframes xpToast{0%{opacity:0;transform:translateY(20px) scale(.8)}20%{opacity:1;transform:translateY(0) scale(1)}80%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-20px) scale(.8)}}
-  @keyframes badgePop{0%{transform:scale(0) rotate(-20deg);opacity:0}60%{transform:scale(1.2) rotate(3deg)}100%{transform:scale(1) rotate(0deg);opacity:1}}
+  ::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#00ff8855,#00b4ff44);border-radius:2px;}
+  @keyframes fadeUp{0%{opacity:0;transform:translateY(14px) scale(0.98)}100%{opacity:1;transform:translateY(0) scale(1)}}
+  @keyframes popIn{0%{transform:scale(.5);opacity:0;filter:blur(4px)}60%{transform:scale(1.06)}100%{transform:scale(1);opacity:1;filter:blur(0)}}
+  @keyframes xpToast{0%{opacity:0;transform:translateY(20px) scale(.8)}15%{opacity:1;transform:translateY(0) scale(1.05)}25%{transform:translateY(0) scale(1)}80%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-20px) scale(.8)}}
+  @keyframes badgePop{0%{transform:scale(0) rotate(-20deg);opacity:0;filter:blur(6px)}50%{transform:scale(1.15) rotate(2deg);filter:blur(0)}100%{transform:scale(1) rotate(0deg);opacity:1}}
   @keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
-  @keyframes battlePulse{0%,100%{box-shadow:0 0 0 0 #ff006e22}50%{box-shadow:0 0 20px 4px #ff006e33}}
-  @keyframes quoteFade{0%{opacity:0;transform:translateY(6px)}100%{opacity:1;transform:translateY(0)}}
+  @keyframes battlePulse{0%,100%{box-shadow:0 0 0 0 #ff006e22}50%{box-shadow:0 0 24px 6px #ff006e33}}
+  @keyframes quoteFade{0%{opacity:0;transform:translateY(8px) scale(0.98)}100%{opacity:1;transform:translateY(0) scale(1)}}
   @keyframes slideUp{0%{opacity:0;transform:translateY(100%)}100%{opacity:1;transform:translateY(0)}}
   @keyframes slideDown{0%{opacity:0;transform:translateY(-20px)}100%{opacity:1;transform:translateY(0)}}
-  @keyframes scoreCount{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
+  @keyframes scoreCount{0%{transform:scale(1)}50%{transform:scale(1.2)}100%{transform:scale(1)}}
   @keyframes burnout{0%,100%{border-color:#ff224444}50%{border-color:#ff2244aa}}
-  @keyframes challengePulse{0%,100%{box-shadow:0 0 0 0 #ffd70022}50%{box-shadow:0 0 16px 4px #ffd70033}}
-  @keyframes fab{0%{transform:scale(0) rotate(-180deg)}100%{transform:scale(1) rotate(0deg)}}
+  @keyframes challengePulse{0%,100%{box-shadow:0 0 0 0 #ffd70022}50%{box-shadow:0 0 20px 6px #ffd70033}}
+  @keyframes fab{0%{transform:scale(0) rotate(-180deg);filter:blur(4px)}70%{transform:scale(1.1) rotate(10deg)}100%{transform:scale(1) rotate(0deg);filter:blur(0)}}
   @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
-  @keyframes clockPulse{0%,100%{opacity:1}50%{opacity:.4}}
+  @keyframes clockPulse{0%,100%{opacity:1}50%{opacity:.35}}
   @keyframes tickerSlide{0%{transform:translateX(100%)}100%{transform:translateX(-100%)}}
-  @keyframes glowPulse{0%,100%{box-shadow:0 0 0 0 #00ff8822}50%{box-shadow:0 0 16px 4px #00ff8833}}
+  @keyframes glowPulse{0%,100%{box-shadow:0 0 0 0 #00ff8822}50%{box-shadow:0 0 20px 6px #00ff8833}}
   @keyframes progressFill{0%{width:0%}100%{width:var(--w)}}
   @keyframes breathe{0%,100%{transform:scale(1);opacity:.7}50%{transform:scale(1.04);opacity:1}}
-  .btn-tap:active{transform:scale(.95);}
-  .hovlift:hover{transform:translateY(-2px);transition:transform .2s;}
-  .tabitem:hover{background:#00ff8808;}
-  input,textarea,select{outline:none;font-family:inherit;}
+  @keyframes pageIn{0%{opacity:0;transform:translateY(10px) scale(0.98)}100%{opacity:1;transform:translateY(0) scale(1)}}
+  @keyframes navGlow{0%,100%{box-shadow:inset 0 1px 0 rgba(0,255,136,0.05)}50%{box-shadow:inset 0 1px 0 rgba(0,255,136,0.15),0 0 12px rgba(0,255,136,0.05)}}
+  @keyframes floatOrb{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(10px,-15px) scale(1.05)}50%{transform:translate(-5px,-25px) scale(0.95)}75%{transform:translate(-15px,-10px) scale(1.02)}}
+  .btn-tap{transition:all .15s cubic-bezier(.4,0,.2,1);}
+  .btn-tap:active{transform:scale(.93);}
+  .btn-tap:hover{filter:brightness(1.12);}
+  .hovlift{transition:all .25s cubic-bezier(.34,1.56,.64,1);}
+  .hovlift:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,0,0,.3);}
+  .tabitem{transition:all .2s cubic-bezier(.4,0,.2,1);position:relative;}
+  .tabitem:hover{background:rgba(0,255,136,0.06) !important;}
+  .tabitem:active{transform:scale(.92);transition:transform .1s;}
+  input,textarea,select{outline:none;font-family:inherit;transition:border-color .2s,box-shadow .2s;}
+  input:focus,textarea:focus{border-color:rgba(0,255,136,0.5) !important;box-shadow:0 0 0 2px rgba(0,255,136,0.1);}
   input::placeholder,textarea::placeholder{color:#1a3a2a;}
   select option{background:#0a1520;color:#a8d8c0;}
 `;
@@ -1642,14 +1651,17 @@ function AppMain({ initialData:D, pinHash, onPinChange }){
         {/* ── GLOBAL AMBIENT LIGHTS ── */}
 <div style={{position:"fixed",inset:0,zIndex:0,pointerEvents:"none",overflow:"hidden"}}>
   <div style={{position:"absolute",top:"-15%",left:"5%",width:460,height:460,
-    background:"radial-gradient(circle,rgba(0,255,136,0.13) 0%,transparent 70%)",
-    filter:"blur(80px)"}}/>
+    background:"radial-gradient(circle,rgba(0,255,136,0.12) 0%,transparent 70%)",
+    filter:"blur(80px)",animation:"floatOrb 20s ease-in-out infinite"}}/>
   <div style={{position:"absolute",bottom:"-10%",right:"0%",width:400,height:400,
-    background:"radial-gradient(circle,rgba(0,180,255,0.11) 0%,transparent 70%)",
-    filter:"blur(70px)"}}/>
+    background:"radial-gradient(circle,rgba(0,180,255,0.10) 0%,transparent 70%)",
+    filter:"blur(70px)",animation:"floatOrb 25s ease-in-out infinite reverse"}}/>
   <div style={{position:"absolute",top:"45%",right:"-5%",width:260,height:260,
-    background:"radial-gradient(circle,rgba(255,0,110,0.08) 0%,transparent 70%)",
-    filter:"blur(55px)"}}/>
+    background:"radial-gradient(circle,rgba(255,0,110,0.07) 0%,transparent 70%)",
+    filter:"blur(55px)",animation:"floatOrb 18s ease-in-out infinite 3s"}}/>
+  <div style={{position:"absolute",top:"20%",left:"40%",width:200,height:200,
+    background:"radial-gradient(circle,rgba(255,215,0,0.04) 0%,transparent 70%)",
+    filter:"blur(60px)",animation:"floatOrb 22s ease-in-out infinite 7s"}}/>
 </div>
 
         {/* ── TOP NAV BAR ── */}
@@ -1827,25 +1839,33 @@ function AppMain({ initialData:D, pinHash, onPinChange }){
           </div>
         )}
         {/* FAB button */}
-        <button onClick={()=>setShowQuickLog(q=>!q)} className="btn-tap" style={{position:"fixed",bottom:78,right:16,width:48,height:48,borderRadius:"50%",background:`linear-gradient(135deg,${T.green},${T.blue})`,border:"none",color:"#020408",fontSize:22,cursor:"pointer",zIndex:showQuickLog?1901:150,boxShadow:`0 4px 20px ${T.green}66`,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:900,transition:"all .2s",transform:showQuickLog?"rotate(45deg)":"rotate(0)"}}>+</button>
+        <button onClick={()=>setShowQuickLog(q=>!q)} className="btn-tap" style={{position:"fixed",bottom:78,right:16,width:50,height:50,borderRadius:"50%",background:`linear-gradient(135deg,${T.green},${T.blue})`,border:"none",color:"#020408",fontSize:22,cursor:"pointer",zIndex:showQuickLog?1901:150,boxShadow:`0 4px 24px ${T.green}55, 0 0 40px ${T.green}22`,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:900,transition:"all .3s cubic-bezier(.34,1.56,.64,1)",transform:showQuickLog?"rotate(45deg) scale(1.1)":"rotate(0) scale(1)"}}>+</button>
 
         {/* ── BOTTOM NAV ── */}
-        <div style={{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:430,background:"rgba(2,4,8,0.4)",borderTop:"1px solid rgba(255,255,255,0.05)",backdropFilter:"blur(24px)",WebkitBackdropFilter:"blur(24px)",display:"flex",zIndex:100,overflowX:"auto"}}>
+        <div style={{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:430,zIndex:100,overflowX:"auto"}}>
+          {/* Gradient glow line */}
+          <div style={{height:1,background:`linear-gradient(90deg,transparent,${T.green}44,${T.blue}44,${T.green}44,transparent)`,animation:"navGlow 4s ease-in-out infinite"}}/>
+          <div style={{background:"rgba(2,4,8,0.92)",backdropFilter:"blur(28px)",WebkitBackdropFilter:"blur(28px)",display:"flex",borderTop:"1px solid rgba(255,255,255,0.03)"}}>
           {[
             {id:"home",icon:"🏠",label:"HOME"},
             {id:"plan",icon:"📅",label:"PLAN"},
             {id:"body",icon:"💪",label:"BODY"},
             {id:"focus",icon:"⏱",label:"FOCUS"},
+            {id:"tasks",icon:"✅",label:"TASKS"},
+            {id:"progress",icon:"📈",label:"PROG"},
             {id:"admissions",icon:"🎓",label:"ADMIT"},
+            {id:"goals",icon:"🎯",label:"GOALS"},
             {id:"life",icon:"⚡",label:"LIFE"},
-            {id:"me",icon:"👤",label:"ME"},
             {id:"stats",icon:"🏅",label:"STATS"},
+            {id:"me",icon:"👤",label:"ME"},
           ].map(t=>(
-            <div key={t.id} className="tabitem" onClick={()=>setTab(t.id)} style={{flex:1,padding:"7px 2px",textAlign:"center",cursor:"pointer",borderTop:tab===t.id?`2px solid ${T.green}`:"2px solid transparent",background:tab===t.id?"#00ff8808":"transparent",transition:"all .2s",minWidth:40}}>
-              <div style={{fontSize:12}}>{t.icon}</div>
-              <div style={{fontSize:6,color:tab===t.id?T.green:T.muted,marginTop:1,letterSpacing:.3,...orb}}>{t.label}</div>
+            <div key={t.id} className="tabitem" onClick={()=>setTab(t.id)} style={{flex:1,padding:"7px 1px 6px",textAlign:"center",cursor:"pointer",background:tab===t.id?"rgba(0,255,136,0.06)":"transparent",minWidth:36,position:"relative"}}>
+              {tab===t.id&&<div style={{position:"absolute",top:0,left:"50%",transform:"translateX(-50%)",width:16,height:2,borderRadius:"0 0 4px 4px",background:T.green,boxShadow:`0 0 8px ${T.green}88, 0 2px 12px ${T.green}44`}}/>}
+              <div style={{fontSize:12,transition:"all .2s",transform:tab===t.id?"scale(1.15)":"scale(1)",filter:tab===t.id?`drop-shadow(0 0 4px ${T.green}88)`:"none"}}>{t.icon}</div>
+              <div style={{fontSize:5,color:tab===t.id?T.green:T.muted,marginTop:1,letterSpacing:.2,...orb,fontWeight:tab===t.id?700:400,transition:"all .2s"}}>{t.label}</div>
             </div>
           ))}
+          </div>
         </div>
       </div>
   );
