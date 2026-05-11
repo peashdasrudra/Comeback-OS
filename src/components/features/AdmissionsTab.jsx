@@ -6,74 +6,94 @@ import { motion, AnimatePresence } from "framer-motion";
 const UNIS = [
   {
     id:"kuet", name:"KUET", fullName:"Khulna University of Engineering & Technology",
-    location:"Khulna", icon:"🏛️", color:"#00ff88", status:"HOME GROUND",
-    chancePct:90, chanceLabel:"VERY HIGH", chanceColor:"#00ff88",
-    intake:"Sep 2026", minGPA:"2.75", minIELTS:"N/A",
+    location:"Khulna", icon:"🏛️", color:"#00ff88", status:"HOME GROUND — #1 PICK",
+    chancePct:92, chanceLabel:"VERY HIGH", chanceColor:"#00ff88",
+    intake:"Sep 2026", minGPA:"2.75", minIELTS:"N/A", duration:"2 years",
     exam:"Written + Viva", fees:"৳3k/year", researchActive:true,
-    pros:["Home city – ৳0 rent","10-min commute","Strong ML faculty","Research labs"],
+    url:"kuet.ac.bd/pgadmission",
+    researchAreas:["Machine Learning","Data Mining","NLP","Computer Vision"],
+    pros:["Home city — ৳0 rent, 10-min commute","Your 3.95 GPA far exceeds 2.75 min","Strong ML & AI faculty","Supervisor Md. Riaz Mahmud is here","Research labs with GPU access"],
+    cons:["Smaller alumni network vs BUET","Less international recognition"],
     deadline:"Sep 2026",
+    strategy:"Apply FIRST. Home advantage is massive.",
     notes:"Your best bet. Apply first.",
   },
   {
     id:"ku", name:"KU", fullName:"Khulna University",
-    location:"Khulna", icon:"🎓", color:"#ff8800", status:"HOME GROUND",
-    chancePct:82, chanceLabel:"HIGH", chanceColor:"#ff8800",
-    intake:"Dec 2026", minGPA:"3.0", minIELTS:"N/A",
+    location:"Khulna", icon:"🎓", color:"#ff8800", status:"HOME GROUND — BACKUP",
+    chancePct:80, chanceLabel:"HIGH", chanceColor:"#ff8800",
+    intake:"Nov-Dec 2026", minGPA:"3.0", minIELTS:"N/A", duration:"2 years",
     exam:"Entrance Test", fees:"৳2k/year", researchActive:true,
-    pros:["Home city","Interdisciplinary research","Good faculty network"],
-    deadline:"Dec 2026",
+    url:"ku.ac.bd/discipline/cse",
+    researchAreas:["AI","Data Science","IoT","Software Engineering"],
+    pros:["Home city — zero relocation cost","Interdisciplinary research","Good faculty-student ratio","Cheapest tuition"],
+    cons:["CSE dept smaller than KUET","Fewer research publications"],
+    deadline:"Nov-Dec 2026",
+    strategy:"Strong backup. Same city = no disruption.",
     notes:"Strong backup. Same city advantage.",
   },
   {
-    id:"du", name:"DU", fullName:"University of Dhaka",
-    location:"Dhaka", icon:"🏫", color:"#a855f7", status:"STRETCH",
-    chancePct:45, chanceLabel:"REACH", chanceColor:"#a855f7",
-    intake:"Apr 2027", minGPA:"3.5", minIELTS:"6.0",
-    exam:"Very competitive", fees:"৳5k/year", researchActive:true,
-    pros:["Highest prestige","Research funding","Wide network"],
-    deadline:"Apr 2027",
-    notes:"Prestige play. Prepare hard for entrance.",
+    id:"buet", name:"BUET", fullName:"Bangladesh University of Engineering & Technology",
+    location:"Dhaka", icon:"⚙️", color:"#00aaff", status:"DREAM — STRETCH TARGET",
+    chancePct:40, chanceLabel:"REACH", chanceColor:"#00aaff",
+    intake:"Jul-Aug 2026", minGPA:"3.50", minIELTS:"N/A", duration:"2 years",
+    exam:"Highly competitive written exam", fees:"৳4k/year", researchActive:true,
+    url:"pgadmission.buet.ac.bd",
+    researchAreas:["ML & Deep Learning","Computer Vision","Bioinformatics","Optimization","NLP"],
+    pros:["#1 engineering school in BD","World-class CS department","Strongest alumni network","Best research funding & labs"],
+    cons:["Extremely competitive admission","Relocation to Dhaka = ৳8-12k/mo rent","Min GPA 3.50 — competition is fierce"],
+    deadline:"Jul-Aug 2026",
+    strategy:"Dream play. Deadline approaching FAST — prepare NOW.",
+    notes:"Most competitive. Jul-Aug 2026 deadline approaching.",
   },
   {
-    id:"buet", name:"BUET", fullName:"Bangladesh University of Engineering & Technology",
-    location:"Dhaka", icon:"⚙️", color:"#00aaff", status:"TARGET",
-    chancePct:70, chanceLabel:"MODERATE", chanceColor:"#00aaff",
-    intake:"Jul 2026", minGPA:"3.25", minIELTS:"N/A",
-    exam:"Written admission", fees:"৳4k/year", researchActive:true,
-    pros:["Top engineering school","Strong CS department","Alumni network"],
-    deadline:"Jul 2026",
-    notes:"Apply soon – Jul 2026 deadline approaching.",
+    id:"du", name:"DU", fullName:"University of Dhaka",
+    location:"Dhaka", icon:"🏫", color:"#a855f7", status:"PRESTIGE TARGET",
+    chancePct:60, chanceLabel:"MODERATE", chanceColor:"#a855f7",
+    intake:"Apr 2027", minGPA:"3.00", minIELTS:"6.0", duration:"2 years",
+    exam:"Written + Interview", fees:"৳5k/year", researchActive:true,
+    url:"msadmission.cse.du.ac.bd",
+    researchAreas:["ML","IoT","Cyber Security","Cloud Computing","Data Analytics"],
+    pros:["Highest prestige general university","Research funding available","Wider academic network","More time to prepare — Apr 2027"],
+    cons:["Relocation to Dhaka = ৳10k/mo rent","Requires IELTS 6.0","Less engineering-focused than BUET"],
+    deadline:"Apr 2027",
+    strategy:"Long-term play. Use extra months for IELTS + publications.",
+    notes:"Prestige play. Prepare IELTS + entrance exam.",
   },
 ];
 
 const DOCUMENTS = [
-  { id:"transcript", label:"Academic Transcript", priority:"CRITICAL", icon:"📋" },
-  { id:"certificate", label:"BSc Certificate", priority:"CRITICAL", icon:"🎓" },
-  { id:"sop", label:"Statement of Purpose", priority:"CRITICAL", icon:"✍️" },
+  { id:"transcript", label:"Academic Transcript (attested)", priority:"CRITICAL", icon:"📋" },
+  { id:"certificate", label:"BSc Certificate / Provisional", priority:"CRITICAL", icon:"🎓" },
+  { id:"sop", label:"Statement of Purpose (per uni)", priority:"CRITICAL", icon:"✍️" },
   { id:"cv", label:"Updated CV / Resume", priority:"HIGH", icon:"📄" },
-  { id:"recommendation1", label:"Recommendation Letter #1", priority:"HIGH", icon:"💌" },
-  { id:"recommendation2", label:"Recommendation Letter #2", priority:"HIGH", icon:"💌" },
-  { id:"research_paper", label:"Thesis Abstract / Paper", priority:"MEDIUM", icon:"🧪" },
-  { id:"ielts", label:"IELTS Score (if needed)", priority:"MEDIUM", icon:"🌍" },
-  { id:"nid", label:"National ID / Passport", priority:"LOW", icon:"🪪" },
-  { id:"photos", label:"Passport Photos", priority:"LOW", icon:"📷" },
+  { id:"recommendation1", label:"Recommendation Letter #1 (Supervisor)", priority:"HIGH", icon:"💌" },
+  { id:"recommendation2", label:"Recommendation Letter #2 (HOD/Prof)", priority:"HIGH", icon:"💌" },
+  { id:"research_paper", label:"Thesis Abstract / Paper Draft", priority:"HIGH", icon:"🧪" },
+  { id:"research_summary", label:"1-Page Research Summary", priority:"MEDIUM", icon:"📑" },
+  { id:"ielts", label:"IELTS Score (for DU)", priority:"MEDIUM", icon:"🌍" },
+  { id:"nid", label:"National ID / Passport", priority:"MEDIUM", icon:"🪪" },
+  { id:"photos", label:"Passport Size Photos (6 copies)", priority:"LOW", icon:"📷" },
+  { id:"bank_statement", label:"Bank Statement / Solvency", priority:"LOW", icon:"🏦" },
 ];
 
 const EXAM_TOPICS = [
-  { subject:"Algorithms & DSA", weight:25, color:"#00ff88", icon:"💡" },
-  { subject:"Machine Learning", weight:20, color:"#00aaff", icon:"🤖" },
-  { subject:"Database Systems", weight:15, color:"#ffd700", icon:"🗄️" },
-  { subject:"Operating Systems", weight:15, color:"#ff8800", icon:"⚙️" },
-  { subject:"Computer Networks", weight:15, color:"#a855f7", icon:"🌐" },
-  { subject:"Discrete Math",     weight:10, color:"#ff0088", icon:"📐" },
+  { subject:"Algorithms & DSA", weight:25, color:"#00ff88", icon:"💡", subtopics:"Arrays, Trees, Graphs, DP, Sorting" },
+  { subject:"Machine Learning", weight:20, color:"#00aaff", icon:"🤖", subtopics:"SVM, RF, XGBoost, Neural Nets, SHAP" },
+  { subject:"Database Systems", weight:15, color:"#ffd700", icon:"🗄️", subtopics:"SQL, Normalization, ER, Transactions" },
+  { subject:"Operating Systems", weight:15, color:"#ff8800", icon:"⚙️", subtopics:"Scheduling, Deadlocks, Paging, Threads" },
+  { subject:"Computer Networks", weight:15, color:"#a855f7", icon:"🌐", subtopics:"OSI, TCP/IP, Subnetting, HTTP/DNS" },
+  { subject:"Discrete Math",     weight:10, color:"#ff0088", icon:"📐", subtopics:"Sets, Relations, Graph Theory, Logic" },
 ];
 
 const TIMELINE_EVENTS = [
-  { date:"Jun 15, 2026", label:"Thesis Submission", color:"#ff4444", urgent:true, icon:"🧪" },
-  { date:"Jul 2026",     label:"BUET Application Opens", color:"#00aaff", urgent:false, icon:"⚙️" },
-  { date:"Sep 2026",     label:"KUET Admission Exam", color:"#00ff88", urgent:false, icon:"🏛️" },
-  { date:"Dec 2026",     label:"KU Application Deadline", color:"#ff8800", urgent:false, icon:"🎓" },
-  { date:"Apr 2027",     label:"DU Application Opens", color:"#a855f7", urgent:false, icon:"🏫" },
+  { date:"Jun 15, 2026", label:"Thesis Submission Deadline", color:"#ff4444", urgent:true, icon:"🧪" },
+  { date:"Jul 2026",     label:"BUET MSc Application Window", color:"#00aaff", urgent:true, icon:"⚙️" },
+  { date:"Aug 2026",     label:"BUET Written Exam (est.)", color:"#00aaff", urgent:false, icon:"📝" },
+  { date:"Sep 2026",     label:"KUET MSc Admission Exam", color:"#00ff88", urgent:false, icon:"🏛️" },
+  { date:"Oct 2026",     label:"IELTS Exam (target)", color:"#ffd700", urgent:false, icon:"🌍" },
+  { date:"Nov-Dec 2026", label:"KU Application Deadline", color:"#ff8800", urgent:false, icon:"🎓" },
+  { date:"Apr 2027",     label:"DU MSc Application Opens", color:"#a855f7", urgent:false, icon:"🏫" },
 ];
 
 const COST_DATA = [
@@ -84,12 +104,13 @@ const COST_DATA = [
 ];
 
 const PROFESSORS = [
-  { name:"Dr. Mohammad Shamsul Arefin", uni:"KUET", dept:"CSE", research:"ML, Data Mining", email:"sarefin@cse.kuet.ac.bd", status:"not_sent", color:"#00ff88" },
-  { name:"Dr. K.M. Azharul Hasan", uni:"KUET", dept:"CSE", research:"Bioinformatics, ML", email:"azharul@cse.kuet.ac.bd", status:"not_sent", color:"#00ff88" },
-  { name:"Dr. Muhammad Masroor Ali", uni:"BUET", dept:"CSE", research:"ML, Pattern Recognition", email:"masroorali@cse.buet.ac.bd", status:"not_sent", color:"#00aaff" },
-  { name:"Dr. Md. Monirul Islam", uni:"BUET", dept:"CSE", research:"Neural Networks, Optimization", email:"monirul@cse.buet.ac.bd", status:"not_sent", color:"#00aaff" },
-  { name:"Prof. Dr. Md. Rezaul Karim", uni:"KU", dept:"CSE", research:"AI, Data Science", email:"mrkarim@ku.ac.bd", status:"not_sent", color:"#ff8800" },
-  { name:"Dr. Md. Abdur Razzaque", uni:"DU", dept:"CSE", research:"ML, IoT", email:"razzaque@cse.du.ac.bd", status:"not_sent", color:"#a855f7" },
+  { name:"Dr. Mohammad Shamsul Arefin", uni:"KUET", dept:"CSE", research:"ML, Data Mining, Big Data", email:"sarefin@cse.kuet.ac.bd", color:"#00ff88" },
+  { name:"Dr. K.M. Azharul Hasan", uni:"KUET", dept:"CSE", research:"Bioinformatics, ML, Database", email:"azharul@cse.kuet.ac.bd", color:"#00ff88" },
+  { name:"Dr. Muhammad Masroor Ali", uni:"BUET", dept:"CSE", research:"ML, Pattern Recognition, CV", email:"masroorali@cse.buet.ac.bd", color:"#00aaff" },
+  { name:"Dr. Md. Monirul Islam", uni:"BUET", dept:"CSE", research:"Neural Networks, Evolutionary Opt.", email:"monirul@cse.buet.ac.bd", color:"#00aaff" },
+  { name:"Dr. Md. Mosaddek Khan", uni:"DU", dept:"CSE", research:"ML, AI, Data Science", email:"mosaddek@cse.du.ac.bd", color:"#a855f7" },
+  { name:"Prof. Dr. Md. Rezaul Karim", uni:"KU", dept:"CSE", research:"AI, Data Science, IoT", email:"mrkarim@ku.ac.bd", color:"#ff8800" },
+  { name:"Dr. Md. Abdur Razzaque", uni:"DU", dept:"CSE", research:"ML, IoT, Distributed Systems", email:"razzaque@cse.du.ac.bd", color:"#a855f7" },
 ];
 
 // ─── SUB-TABS ────────────────────────────────────────────────────────────────
@@ -287,7 +308,7 @@ I seek admission to DU's MSc CSE program to challenge myself at the highest leve
                 <div style={{ fontSize:7, color:T.muted, ...mono, letterSpacing:2, marginBottom:8 }}>QUICK COMPARE</div>
                 <table style={{ width:"100%", borderCollapse:"collapse", minWidth:300, fontSize:9 }}>
                   <thead>
-                    <tr>{["",UNIS[0].name,UNIS[1].name,UNIS[2].name,UNIS[3].name].map((h,i)=>(
+                    <tr>{["","KUET","KU","BUET","DU"].map((h,i)=>(
                       <th key={i} style={{ padding:"5px 6px", textAlign:i===0?"left":"center",
                         color:i===0?T.muted:[T.green,T.orange,T.blue,"#a855f7"][i-1],
                         ...mono, fontSize:8, borderBottom:`1px solid ${T.border}`, fontWeight:700 }}>{h}</th>
@@ -296,15 +317,18 @@ I seek admission to DU's MSc CSE program to challenge myself at the highest leve
                   <tbody>
                     {[
                       ["City",    "Khulna🏠","Khulna🏠","Dhaka✈️","Dhaka✈️"],
-                      ["Chance",  "90%","82%","45%","70%"],
-                      ["Deadline","Sep 26","Dec 26","Apr 27","Jul 26"],
-                      ["Rent",    "৳0","৳0","৳8-12k","৳8-12k"],
+                      ["Chance",  "92%","80%","40%","60%"],
+                      ["Min GPA", "2.75","3.0","3.50","3.00"],
+                      ["IELTS",   "N/A","N/A","N/A","6.0"],
+                      ["Deadline","Sep 26","Nov 26","Jul 26","Apr 27"],
+                      ["Rent/mo", "৳0","৳0","৳8-12k","৳10k+"],
+                      ["Yearly",  "৳45k","৳48k","৳184k","৳209k"],
                     ].map(([l,...v],ri)=>(
                       <tr key={ri} style={{ background:ri%2===0?T.bg2:"transparent" }}>
                         <td style={{ padding:"5px 6px", color:T.muted, ...raj, fontSize:9 }}>{l}</td>
                         {v.map((val,ci)=>(
                           <td key={ci} style={{ padding:"5px 6px", textAlign:"center",
-                            color:[T.green,T.orange,"#a855f7",T.blue][ci], ...mono, fontSize:8 }}>{val}</td>
+                            color:[T.green,T.orange,T.blue,"#a855f7"][ci], ...mono, fontSize:8 }}>{val}</td>
                         ))}
                       </tr>
                     ))}
@@ -363,21 +387,42 @@ I seek admission to DU's MSc CSE program to challenge myself at the highest leve
                     </div>
 
                     {/* Requirements */}
-                    <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:6, marginBottom:10 }}>
+                    <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr 1fr", gap:5, marginBottom:10 }}>
                       {[
                         { l:"Min GPA", v:uni.minGPA, c:T.green },
-                        { l:"Exam",    v:uni.exam,   c:T.orange },
+                        { l:"IELTS",   v:uni.minIELTS||"N/A", c:T.gold },
                         { l:"Fees",    v:uni.fees,   c:T.blue },
+                        { l:"Duration",v:uni.duration||"2 yrs",c:T.muted },
                       ].map((s,i)=>(
-                        <div key={i} style={{ padding:"8px", borderRadius:7, background:T.bg2, border:`1px solid ${T.border}`, textAlign:"center" }}>
+                        <div key={i} style={{ padding:"7px 4px", borderRadius:7, background:T.bg2, border:`1px solid ${T.border}`, textAlign:"center" }}>
                           <div style={{ fontSize:9, color:s.c, ...raj, fontWeight:700 }}>{s.v}</div>
                           <div style={{ fontSize:6, color:T.muted, ...mono, marginTop:1 }}>{s.l}</div>
                         </div>
                       ))}
                     </div>
 
+                    {/* Exam type */}
+                    <div style={{ padding:"8px 10px", borderRadius:7, background:T.bg2, border:`1px solid ${T.orange}22`, marginBottom:10 }}>
+                      <div style={{ fontSize:7, color:T.orange, ...mono, letterSpacing:2, marginBottom:3 }}>📝 EXAM FORMAT</div>
+                      <div style={{ fontSize:10, color:T.bright, ...raj }}>{uni.exam}</div>
+                    </div>
+
+                    {/* Research Areas */}
+                    {uni.researchAreas && (
+                      <div style={{ marginBottom:10 }}>
+                        <div style={{ fontSize:7, color:T.blue, ...mono, letterSpacing:2, marginBottom:6 }}>🔬 RESEARCH AREAS</div>
+                        <div style={{ display:"flex", flexWrap:"wrap", gap:4 }}>
+                          {uni.researchAreas.map((r,i)=>(
+                            <span key={i} style={{ fontSize:8, padding:"3px 8px", borderRadius:6,
+                              background:`${uni.color}15`, border:`1px solid ${uni.color}33`,
+                              color:uni.color, ...mono }}>{r}</span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
                     {/* Pros */}
-                    <div style={{ marginBottom:10 }}>
+                    <div style={{ marginBottom:8 }}>
                       <div style={{ fontSize:7, color:T.green, ...mono, letterSpacing:2, marginBottom:6 }}>✅ ADVANTAGES</div>
                       {uni.pros.map((p,i)=>(
                         <div key={i} style={{ display:"flex", gap:6, alignItems:"center", marginBottom:4,
@@ -388,12 +433,36 @@ I seek admission to DU's MSc CSE program to challenge myself at the highest leve
                       ))}
                     </div>
 
-                    {/* Note */}
-                    <div style={{ padding:"8px 12px", borderRadius:8,
-                      background:`${uni.color}10`, border:`1px solid ${uni.color}33`,
-                      fontSize:11, color:T.bright, ...raj, fontStyle:"italic" }}>
-                      💬 {uni.notes}
-                    </div>
+                    {/* Cons */}
+                    {uni.cons && (
+                      <div style={{ marginBottom:10 }}>
+                        <div style={{ fontSize:7, color:T.red||"#ff4444", ...mono, letterSpacing:2, marginBottom:6 }}>⚠️ CHALLENGES</div>
+                        {uni.cons.map((c,i)=>(
+                          <div key={i} style={{ display:"flex", gap:6, alignItems:"center", marginBottom:4,
+                            fontSize:10, color:T.muted, ...raj }}>
+                            <div style={{ width:5, height:5, borderRadius:"50%", background:T.red||"#ff4444", flexShrink:0 }}/>
+                            {c}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Strategy */}
+                    {uni.strategy && (
+                      <div style={{ padding:"8px 12px", borderRadius:8,
+                        background:`${uni.color}10`, border:`1px solid ${uni.color}33`,
+                        fontSize:11, color:T.bright, ...raj, fontWeight:600, marginBottom:8 }}>
+                        🎯 {uni.strategy}
+                      </div>
+                    )}
+
+                    {/* URL */}
+                    {uni.url && (
+                      <div style={{ padding:"6px 10px", borderRadius:6, background:T.bg2, border:`1px solid ${T.border}`,
+                        fontSize:9, color:T.muted, ...mono, textAlign:"center" }}>
+                        🌐 {uni.url}
+                      </div>
+                    )}
                   </div>
                 </motion.div>
               )}
@@ -474,6 +543,7 @@ I seek admission to DU's MSc CSE program to challenge myself at the highest leve
                       <span style={{ fontSize:10, color:t.color, ...mono, fontWeight:700 }}>{t.weight}%</span>
                     </div>
                     <Bar pct={t.weight*4} color={t.color} height={5}/>
+                    {t.subtopics && <div style={{ fontSize:8, color:T.muted, ...raj, marginTop:3 }}>{t.subtopics}</div>}
                   </motion.div>
                 ))}
               </div>
